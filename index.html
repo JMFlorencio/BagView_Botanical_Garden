@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BAGVIEW | AR Eco-Tourism</title>
+    
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+    <style>
+        :root { 
+            --accent: #00A699; 
+            --glass: rgba(255, 255, 255, 0.9); 
+            --blur: blur(20px); 
+            --bg-page: #E9EDF0;
+        }
+        
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
+
+        /* --- FLASH SPLASH SCREEN --- */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999; 
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease;
+        }
+
+        .splash-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .splash-logo {
+            width: 300px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: logoEnter 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .splash-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: brightness(0) invert(1); 
+        }
+
+        .splash-text {
+            font-size: 50px;
+            font-weight: 900;
+            color: #FFFFFF;
+            letter-spacing: 5px;
+            margin: 0;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: textFadeUp 0.6s ease forwards 0.4s;
+        }
+
+        @keyframes logoEnter {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes textFadeUp {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- APP STYLES --- */
+        video { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; object-fit: cover !important; z-index: -5 !important; }
+
+        .overlay-screen { position: fixed; inset: 0; z-index: 2000; background: var(--bg-page); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.8s ease; }
+        .hidden { display: none !important; opacity: 0; pointer-events: none; }
+        
+        #tour-modal { z-index: 3000; background: white; }
+        .close-tour-btn { 
+            position: absolute; top: 20px; right: 20px; z-index: 3100; 
+            padding: 12px 20px; background: var(--accent); color: white; 
+            border: none; border-radius: 50px; font-weight: 800; font-size: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer;
+        }
+
+        .main-card { 
+            width: 90%; 
+            height: 92%; 
+            background: #F2F5F7; 
+            border-radius: 1px; 
+            padding: 0;
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+            overflow: hidden; 
+        }
+
+        .carousel-viewport { 
+            width: 100%; 
+            height: 65%; 
+            position: relative; 
+            overflow: hidden;
+        }
+
+        .slide { 
+            position: absolute; 
+            inset: 0; 
+            opacity: 0; 
+            transition: opacity 1s ease-in-out; 
+            background-size: cover; 
+            background-position: center; 
+        }
+        .slide.active { opacity: 1; }
+
+        .slide::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.8) 80%, #ffffff 100%);
+            z-index: 2;
+        }
+        
+        #slide1 { background-image: url('Assets/A2_Main Entrance.png'); }
+        #slide2 { background-image: url('Assets/A1_Map.jpg'); }
+        #slide3 { background-image: url('Assets/Cordillera%20Village.png'); }
+
+        .floating-badge { 
+            position: absolute; 
+            top: 20px; 
+            left: 20px; 
+            background: var(--accent); 
+            color: white; 
+            padding: 6px 14px; 
+            border-radius: 8px; 
+            font-size: 11px; 
+            font-weight: 800; 
+            z-index: 10; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+
+        .hero-info-overlay { 
+            position: absolute; 
+            bottom: 40px; 
+            left: 20px; 
+            color: #222; 
+            z-index: 5; 
+        }
+        .hero-info-overlay h2 { font-size: 28px; margin: 0; font-weight: 900; line-height: 1.1; }
+        .hero-info-overlay p { font-size: 14px; margin: 5px 0 0; font-weight: 600; color: #555; }
+
+        .indicators { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
+        .dot { width: 8px; height: 8px; background: rgba(0,0,0,0.15); border-radius: 50%; transition: 0.3s; }
+        .dot.active { width: 22px; background: var(--accent); border-radius: 10px; }
+
+        .hero-text-area { flex: 1; padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .hero-title { font-size: 26px; font-weight: 800; color: #222; margin-bottom: 25px; line-height: 1.2; }
+
+        .get-started-btn { width: 100%; height: 75px; background: var(--accent); color: white; border: none; border-radius: 40px; font-size: 19px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding-right: 70px; position: relative; cursor: pointer; }
+        .btn-arrow-circle { position: absolute; right: 10px; width: 55px; height: 55px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+        .tutorial-video-box { width: 100%; max-width: 400px; aspect-ratio: 16/9; background: #111; border-radius: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #fff; gap: 12px; position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        .skip-btn-aesthetic { margin-top: 15px; padding: 12px 35px; border: 1.5px solid #ddd; border-radius: 50px; color: #777; font-size: 13px; font-weight: 600; letter-spacing: 0.5px; background: transparent; cursor: pointer; transition: all 0.3s ease; }
+        
+        .nav-bar { position: fixed; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; z-index: 150; pointer-events: none; }
+        .cam-btn { width: 70px; height: 70px; border-radius: 50%; background: #ffffff; border: 4px solid #eee; display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s; }
+        .cam-btn.active { border-color: var(--accent); background: var(--accent); }
+        
+        .bottom-dock { position: fixed; bottom: 0; width: 100%; height: 320px; z-index: 120; transform: translateY(285px); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .bottom-dock.expanded { background: white; transform: translateY(0); border-radius: 30px 30px 0 0; }
+        .drag-handle { width: 100%; height: 60px; display: flex; justify-content: center; align-items: center; }
+        .handle-bar { width: 50px; height: 5px; background: rgba(0, 0, 0, 0.2); border-radius: 10px; }
+        .scroll-container { display: flex; gap: 12px; overflow-x: auto; padding: 10px 20px 30px; width: 100%; scrollbar-width: none; opacity: 0; transition: 0.3s; }
+        .bottom-dock.expanded .scroll-container { opacity: 1; }
+        
+        .station-card { min-width: 110px; height: 140px; background: #f9f9f9; border-radius: 16px; overflow: hidden; border: 1px solid #eee; flex-shrink: 0; transition: transform 0.2s, border-color 0.2s; }
+        .station-card.found { border: 3px solid var(--accent) !important; transform: scale(1.05); background: #fff; box-shadow: 0 8px 20px rgba(0,166,153,0.15); }
+        
+        .gps-display { position: absolute; top: 40px; left: 20px; background: var(--glass); backdrop-filter: var(--blur); padding: 10px 18px; border-radius: 12px; z-index: 100; display: flex; align-items: center; gap: 10px; }
+        .pulse.live { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse-scanning 1.5s infinite; }
+        @keyframes pulse-scanning { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
+
+        .back-btn {
+            position: absolute; top: 40px; right: 20px;
+            width: 44px; height: 44px;
+            background: var(--glass); backdrop-filter: var(--blur);
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            z-index: 100; cursor: pointer; border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s;
+        }
+        .back-btn:active { transform: scale(0.9); }
+        .back-icon { width: 22px; height: 22px; fill: none; stroke: #222; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+</head>
+<body>
+
+    <div id="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo"><img src="Assets/Logo_Icon.png" alt="Logo"></div>
+            <h1 class="splash-text">BAGVIEW</h1>
+        </div>
+    </div>
+
+    <audio id="match-sound" src="https://cdn.pixabay.com/audio/2021/08/04/audio_bb630cc098.mp3" preload="auto"></audio>
+
+    <div id="tour-modal" class="overlay-screen hidden">
+        <button class="close-tour-btn" onclick="closeTour()">X</button>
+        <iframe id="tour-iframe" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+    </div>
+
+    <div id="home-page" class="overlay-screen">
+        <div class="main-card">
+            <div class="carousel-viewport">
+                <div class="slide active" id="slide1">
+                    <div class="floating-badge">Featured</div>
+                    <div class="hero-info-overlay">
+                        <h2>Botanical Garden</h2>
+                        <p>Step into Baguio's vibrant floral heart.</p>
+                    </div>
+                </div>
+                <div class="slide" id="slide2">
+                    <div class="floating-badge">Interactive</div>
+                    <div class="hero-info-overlay">
+                        <h2>AR Navigation</h2>
+                        <p>Unlock stories using your camera lens.</p>
+                    </div>
+                </div>
+                <div class="slide" id="slide3">
+                    <div class="floating-badge">Cultural</div>
+                    <div class="hero-info-overlay">
+                        <h2>Cordillera Village</h2>
+                        <p>Discover the heritage of the mountains.</p>
+                    </div>
+                </div>
+                <div class="indicators">
+                    <div class="dot active"></div><div class="dot"></div><div class="dot"></div>
+                </div>
+            </div>
+            <div class="hero-text-area">
+                <h1 class="hero-title">Let's Enjoy The<br>Beautiful World!</h1>
+                <button class="get-started-btn" onclick="goToTutorial()">
+                    Get Started
+                    <div class="btn-arrow-circle">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tutorial-page" class="overlay-screen hidden" style="background: white;">
+        <div style="width: 85%; height: 90%; display: flex; flex-direction: column; align-items: center; justify-content: space-around;">
+            <div style="text-align: center;">
+                <h2 style="font-weight: 900; margin-bottom: 8px; color: #111; font-size: 26px;">Quick Guide</h2>
+                <p style="color: #888; font-size: 14px; line-height: 1.4;">Point your camera at the markers <br> to unlock hidden stories.</p>
+            </div>
+            <div class="tutorial-video-box">
+                <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <svg width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+                <span style="font-size: 10px; font-weight: 700; letter-spacing: 2px; opacity: 0.6;">TUTORIAL PREVIEW</span>
+            </div>
+            <button class="skip-btn-aesthetic" onclick="startScanner()">Skip Tutorial</button>
+        </div>
+    </div>
+
+    <div id="ui-layer" class="hidden">
+        <div class="gps-display">
+            <div class="pulse live"></div>
+            <div id="gps-status" style="font-size:11px; font-weight:900; color:#666;">SCANNING...</div>
+        </div>
+        <button class="back-btn" onclick="goBackHome()">
+            <svg class="back-icon" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>
+        </button>
+        <div class="bottom-dock" id="dock">
+            <div class="drag-handle" id="handle"><div class="handle-bar"></div></div>
+            <div class="scroll-container" id="gallery-root"></div>
+        </div>
+        <div class="nav-bar">
+            <div class="cam-btn active" id="cam-toggle" onclick="toggleScanner()">
+                <svg viewBox="0 0 24 24" width="30" fill="#fff"><path d="M12 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm7-4h-2.69l-1.83-2H9.52l-1.83 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-7 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+            </div>
+        </div>
+    </div>
+
+    <a-scene mindar-image="imageTargetSrc: targets.mind; autoStart: false; uiLoading: no; uiScanning: no;" embedded renderer="transparent: true; alpha: true; colorManagement: true;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+        <a-entity id="target-container"></a-entity>
+    </a-scene>
+
+<script>
+    // --- STATE MANAGEMENT ---
+    let lastFoundIndex = null; 
+
+    // --- NAVIGATION ---
+    window.addEventListener('popstate', (event) => {
+        const modal = document.getElementById('tour-modal');
+        if (!modal.classList.contains('hidden')) {
+            closeTour();
+            history.pushState({ page: 'scanner' }, "Scanner", "#scanner");
+            return;
+        }
+        event.state ? renderPage(event.state.page) : renderPage('home');
+    });
+
+    function renderPage(pageId) {
+        const home = document.getElementById('home-page');
+        const tutorial = document.getElementById('tutorial-page');
+        const uiLayer = document.getElementById('ui-layer');
+        [home, tutorial, uiLayer].forEach(el => el.classList.add('hidden'));
+
+        if (pageId === 'home') home.classList.remove('hidden');
+        else if (pageId === 'tutorial') tutorial.classList.remove('hidden');
+        else if (pageId === 'scanner') uiLayer.classList.remove('hidden');
+    }
+
+    function goBackHome() {
+        const sceneEl = document.querySelector('a-scene');
+        const arSystem = sceneEl.systems['mindar-image-system'];
+        if (arSystem) arSystem.stop();
+        document.getElementById('cam-toggle').classList.add('active');
+        history.pushState({ page: 'home' }, "Home", "#home");
+        renderPage('home');
+    }
+
+    // --- SPLASH ---
+    window.addEventListener('load', () => {
+        const splash = document.getElementById('splash-screen');
+        setTimeout(() => {
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.display = 'none';
+                history.replaceState({ page: 'home' }, "Home", "#home");
+                startCarousel(); 
+            }, 600);
+        }, 2500); 
+    });
+
+    // --- CAROUSEL ---
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    function startCarousel() { setInterval(() => {
+        slides[currentSlide].classList.remove('active');
+        dots[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+        dots[currentSlide].classList.add('active');
+    }, 4000); }
+
+    // --- APP DATA ---
+    const stations = [
+        { name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/BagView_Botanical_Map/" },
+        { name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://jmflorencio.github.io/BagView_Botanical_Map/" },
+        { name: "Arbor", thumb: "Assets/Arbor.png", link: "https://tour.panoee.net/69b7b676cd5918466513b640" },
+        { name: "Cactus & Succulents", thumb: "Assets/Cactus&Succulents.png", link: "https://tour.panoee.net/69b7b991cd59184ead13b71f" },
+        { name: "Centennial Garden", thumb: "Assets/Centennial Garden.png", link: "https://tour.panoee.net/69b7b991cd59184ead13b71f" },
+        { name: "Chinese Garden", thumb: "Assets/Chinese%20Garden.png", link: "https://tour.panoee.net/69b74a8ccd5918bff013a943" },
+		{ name: "City of Vaughan", thumb: "Assets/City%20of%20Vaughan%20Friendship%20Garden.png", link: "https://tour.panoee.net/69b7b820a3e4d78d0cc8db9e" },
+		{ name: "Cordillera Village", thumb: "Assets/Cordillera%20Village.png", link: "https://tour.panoee.net/69b7b964a3e4d75529c8dc1a" },
+        { name: "Dahlia Garden", thumb: "Assets/Dahlia Garden.png", link: "https://tour.panoee.net/69b74a8ccd5918bff013a943" },
+        { name: "Greenhouse", thumb: "Assets/Greenhouse.png", link: "https://tour.panoee.net/69b7b91fa3e4d7ebe6c8dbfe" },
+        { name: "Japanese Garden", thumb: "Assets/Japanese%20Garden.png", link: "https://tour.panoee.net/69b7b63aa3e4d733edc8db51" },
+        { name: "Japanese Tunnel", thumb: "Assets/Japanese%20Tunnel.png", link: "https://tour.panoee.net/japanese-tunnel/1" },
+        { name: "Korea Garden", thumb: "Assets/Korea%20Garden.png", link: "https://tour.panoee.net/koreagarden/1" },
+        { name: "Orchidarium", thumb: "Assets/Orchidarium.png", link: "https://tour.panoee.net/orchidarium/1" },
+        { name: "Philippine-Thailand Friendship Garden", thumb: "Assets/Philippine-Thailand Frienship Garden.png", link: "https://tour.panoee.net/69b184dfa0e1d16f1a9e388d/69b187aba0e1d18afb9e38fb" },
+        { name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.png", link: "https://tour.panoee.net/69b7b586a3e4d741fdc8db26" }
+    ];
+
+    function goToTutorial() { history.pushState({ page: 'tutorial' }, "Tutorial", "#tutorial"); renderPage('tutorial'); }
+    function startScanner() {
+        history.pushState({ page: 'scanner' }, "Scanner", "#scanner");
+        renderPage('scanner');
+        const sceneEl = document.querySelector('a-scene');
+        const arSystem = sceneEl.systems['mindar-image-system'];
+        if (arSystem && !arSystem.mainLoopId) arSystem.start();
+        initExperience();
+    }
+
+    function closeTour() {
+        document.getElementById('tour-modal').classList.add('hidden');
+        document.getElementById('tour-iframe').src = ""; 
+        document.getElementById('gps-status').innerText = "SCANNING...";
+    }
+
+    // --- CORE LOGIC: RESPONSIVENESS (SILENT) + AR TRIGGER (SOUND) ---
+    function initExperience() {
+        const root = document.getElementById('gallery-root');
+        const container = document.getElementById('target-container');
+        if (root.children.length > 0) return;
+
+        stations.forEach((s, i) => {
+            const card = document.createElement('div');
+            card.className = 'station-card';
+            card.id = `card-${i}`;
+            
+            // Interaction: Tap is SILENT. Purely visual highlight.
+            card.onclick = () => {
+                highlightCard(i);
+                document.getElementById('gps-status').innerText = "SELECTED: " + s.name;
+            };
+
+            card.innerHTML = `
+                <div style="height:70%; pointer-events:none;"><img src="${s.thumb}" style="width:100%; height:100%; object-fit:cover;"></div>
+                <div style="font-size:9px; text-align:center; padding:10px 5px; font-weight:800; color:#444; pointer-events:none;">${s.name.toUpperCase()}</div>
+            `;
+            root.appendChild(card);
+
+            const entity = document.createElement('a-entity');
+            entity.setAttribute('mindar-image-target', `targetIndex: ${i}`);
+            
+            entity.addEventListener("targetFound", () => {
+                if (lastFoundIndex === i) return;
+                lastFoundIndex = i;
+                
+                // AR FOUND: Visual highlight AND Sound/Vibration
+                highlightCard(i);
+                document.getElementById('gps-status').innerText = "MATCHED: " + s.name;
+
+                // --- SOUND TRIGGERED ONLY HERE ---
+                const sound = document.getElementById('match-sound');
+                sound.currentTime = 0;
+                sound.play();
+                if ("vibrate" in navigator) navigator.vibrate(60);
+                
+                setTimeout(() => {
+                    const modal = document.getElementById('tour-modal');
+                    document.getElementById('tour-iframe').src = s.link;
+                    modal.classList.remove('hidden');
+                }, 1200);
+            });
+
+            entity.addEventListener("targetLost", () => {
+                document.getElementById('gps-status').innerText = "SCANNING...";
+            });
+            container.appendChild(entity);
+        });
+        initDraggable();
+    }
+
+    // Helper for visual feedback only (The "Jump" effect via scroll and border)
+    function highlightCard(index) {
+        const cardEl = document.getElementById(`card-${index}`);
+        const dock = document.getElementById('dock');
+
+        document.querySelectorAll('.station-card').forEach(c => c.classList.remove('found'));
+        cardEl.classList.add('found');
+        cardEl.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+
+        if(!dock.classList.contains('expanded')) {
+            dock.classList.add('expanded');
+            dock.style.transform = `translateY(0)`;
+        }
+    }
+
+    async function toggleScanner() {
+        const btn = document.getElementById('cam-toggle');
+        const arSystem = document.querySelector('a-scene').systems['mindar-image-system'];
+        if(!btn.classList.contains('active')) {
+            await arSystem.start();
+            btn.classList.add('active');
+        } else {
+            arSystem.stop();
+            btn.classList.remove('active');
+        }
+    }
+
+    function initDraggable() {
+        const dock = document.getElementById('dock');
+        const handle = document.getElementById('handle');
+        let startY, isDragging = false;
+
+        handle.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; isDragging = true; dock.style.transition = 'none'; });
+        window.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            let move = (dock.classList.contains('expanded') ? 0 : 285) + (e.touches[0].clientY - startY);
+            if (move < 0) move = 0; if (move > 285) move = 285;
+            dock.style.transform = `translateY(${move}px)`;
+        });
+        window.addEventListener('touchend', (e) => {
+            if (!isDragging) return;
+            isDragging = false; dock.style.transition = '0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+            if (e.changedTouches[0].clientY < startY - 40) {
+                dock.classList.add('expanded'); dock.style.transform = `translateY(0)`;
+            } else {
+                dock.classList.remove('expanded'); dock.style.transform = `translateY(285px)`;
+            }
+        });
+    }
+</script>
+</body>
+</html>
