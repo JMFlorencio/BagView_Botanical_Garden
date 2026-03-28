@@ -13,7 +13,8 @@
             --accent: #00A699; 
             --glass: rgba(255, 255, 255, 0.9); 
             --blur: blur(20px); 
-            --bg-page: #E9EDF0;
+            --bg-page: #ffffff;
+            --dark-green: #004d47;
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -21,59 +22,18 @@
 
         /* --- FLASH SPLASH SCREEN --- */
         #splash-screen {
-            position: fixed;
-            inset: 0;
-            z-index: 9999; 
-            background: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: fixed; inset: 0; z-index: 9999; 
+            background: var(--accent); display: flex; align-items: center; justify-content: center;
             transition: opacity 0.6s ease;
         }
 
-        .splash-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
+        .splash-content { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .splash-logo { width: 300px; height: 300px; display: flex; align-items: center; justify-content: center; animation: logoEnter 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .splash-logo img { width: 100%; height: 100%; object-fit: contain; filter: brightness(0) invert(1); }
+        .splash-text { font-size: 50px; font-weight: 900; color: #FFFFFF; letter-spacing: 5px; margin: 0; opacity: 0; transform: translateY(10px); animation: textFadeUp 0.6s ease forwards 0.4s; }
 
-        .splash-logo {
-            width: 300px;
-            height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: logoEnter 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .splash-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            filter: brightness(0) invert(1); 
-        }
-
-        .splash-text {
-            font-size: 50px;
-            font-weight: 900;
-            color: #FFFFFF;
-            letter-spacing: 5px;
-            margin: 0;
-            opacity: 0;
-            transform: translateY(10px);
-            animation: textFadeUp 0.6s ease forwards 0.4s;
-        }
-
-        @keyframes logoEnter {
-            0% { transform: scale(0); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        @keyframes textFadeUp {
-            0% { opacity: 0; transform: translateY(10px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes logoEnter { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes textFadeUp { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
 
         /* --- APP STYLES --- */
         video { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; object-fit: cover !important; z-index: -5 !important; }
@@ -89,85 +49,89 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer;
         }
 
-        .main-card { 
-            width: 90%; 
-            height: 92%; 
-            background: #F2F5F7; 
-            border-radius: 1px; 
-            padding: 0;
-            display: flex; 
-            flex-direction: column; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
-            overflow: hidden; 
-        }
+        .main-card { width: 100%; height: 100%; background: #ffffff; display: flex; flex-direction: column; overflow: hidden; }
 
-        .carousel-viewport { 
-            width: 100%; 
-            height: 65%; 
-            position: relative; 
-            overflow: hidden;
-        }
-
-        .slide { 
-            position: absolute; 
-            inset: 0; 
-            opacity: 0; 
-            transition: opacity 1s ease-in-out; 
-            background-size: cover; 
-            background-position: center; 
-        }
+        .carousel-viewport { width: 100%; height: 75%; position: relative; overflow: hidden; }
+        .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1s ease-in-out; background-size: cover; background-position: center; }
         .slide.active { opacity: 1; }
-
-        .slide::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.8) 80%, #ffffff 100%);
-            z-index: 2;
+        
+        .slide::after { 
+            content: ''; position: absolute; inset: 0; 
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(255,255,255,0.7) 85%, #ffffff 100%); 
+            z-index: 2; 
         }
         
-        #slide1 { background-image: url('Assets/A2_Main Entrance.png'); }
-        #slide2 { background-image: url('Assets/A1_Map.jpg'); }
+        #slide1 { background-image: url('Assets/Hero_Image_Map.png'); }
+        #slide2 { background-image: url('Assets/Hero_Image_SC_tunnel.png'); }
         #slide3 { background-image: url('Assets/Cordillera%20Village.png'); }
 
+        /* UPDATED: Changed from absolute top-left to inline positioning */
         .floating-badge { 
-            position: absolute; 
-            top: 20px; 
-            left: 20px; 
+            display: inline-block;
             background: var(--accent); 
             color: white; 
-            padding: 6px 14px; 
-            border-radius: 8px; 
-            font-size: 11px; 
+            padding: 4px 10px; 
+            border-radius: 6px; 
+            font-size: 10px; 
             font-weight: 800; 
-            z-index: 10; 
             text-transform: uppercase; 
             letter-spacing: 1px; 
+            margin-bottom: 8px; /* Gap between label and title */
         }
 
         .hero-info-overlay { 
             position: absolute; 
-            bottom: 40px; 
-            left: 20px; 
-            color: #222; 
+            bottom: 50px; 
+            left: 30px; 
             z-index: 5; 
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
-        .hero-info-overlay h2 { font-size: 28px; margin: 0; font-weight: 900; line-height: 1.1; }
-        .hero-info-overlay p { font-size: 14px; margin: 5px 0 0; font-weight: 600; color: #555; }
+        
+        .hero-info-overlay h2 { 
+            font-size: 24px; 
+            margin: 0; 
+            font-weight: 900; 
+            line-height: 1.1; 
+            color: var(--accent); 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
 
-        .indicators { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
-        .dot { width: 8px; height: 8px; background: rgba(0,0,0,0.15); border-radius: 50%; transition: 0.3s; }
+        .hero-info-overlay p { 
+            font-size: 13px; 
+            margin: 6px 0 0; 
+            font-weight: 600; 
+            color: #444; 
+        }
+
+        .indicators { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
+        .dot { width: 8px; height: 8px; background: rgba(0,0,0,0.1); border-radius: 50%; transition: 0.3s; }
         .dot.active { width: 22px; background: var(--accent); border-radius: 10px; }
 
-        .hero-text-area { flex: 1; padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .hero-title { font-size: 26px; font-weight: 800; color: #222; margin-bottom: 25px; line-height: 1.2; }
+        .hero-text-area { flex: 1; padding: 0 30px 40px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; background: white; }
+        .hero-title { font-size: 28px; font-weight: 800; color: #222; margin-bottom: 25px; line-height: 1.2; }
 
-        .get-started-btn { width: 100%; height: 75px; background: var(--accent); color: white; border: none; border-radius: 40px; font-size: 19px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding-right: 70px; position: relative; cursor: pointer; }
+        .get-started-btn { width: 100%; max-width: 350px; height: 75px; background: var(--accent); color: white; border: none; border-radius: 40px; font-size: 19px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding-right: 70px; position: relative; cursor: pointer; box-shadow: 0 10px 25px rgba(0,166,153,0.25); }
         .btn-arrow-circle { position: absolute; right: 10px; width: 55px; height: 55px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
-        .tutorial-video-box { width: 100%; max-width: 400px; aspect-ratio: 16/9; background: #111; border-radius: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #fff; gap: 12px; position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
-        .skip-btn-aesthetic { margin-top: 15px; padding: 12px 35px; border: 1.5px solid #ddd; border-radius: 50px; color: #777; font-size: 13px; font-weight: 600; letter-spacing: 0.5px; background: transparent; cursor: pointer; transition: all 0.3s ease; }
+        /* --- TUTORIAL & UI --- */
+        .tutorial-video-box { 
+            width: 92%; height: 65vh; background: #111; border-radius: 28px; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.3); margin: 20px auto;
+        }
+        .preview-video-element { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.8); position: absolute; top: 0; left: 0; z-index: 1; }
         
+        .action-row { display: flex; gap: 15px; width: 92%; margin-bottom: 20px; }
+        .btn-outline { flex: 1; height: 60px; border-radius: 18px; border: 2px solid #ddd; background: white; color: #444; font-weight: 900; font-size: 16px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn-filled { flex: 1.2; height: 60px; border-radius: 18px; border: none; background: var(--dark-green); color: white; font-weight: 900; font-size: 16px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+
+        #video-overlay { position: fixed; inset: 0; z-index: 4000; background: rgba(0,0,0,0.95); display: flex; align-items: center; justify-content: center; }
+        .video-popup-container { width: 90%; max-width: 450px; position: relative; aspect-ratio: 9/16; }
+        .close-video-popup { position: absolute; top: -50px; right: 0; color: white; background: none; border: none; font-size: 35px; font-weight: bold; cursor: pointer; }
+
+        /* --- SCANNER UI --- */
         .nav-bar { position: fixed; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; z-index: 150; pointer-events: none; }
         .cam-btn { width: 70px; height: 70px; border-radius: 50%; background: #ffffff; border: 4px solid #eee; display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s; }
         .cam-btn.active { border-color: var(--accent); background: var(--accent); }
@@ -186,15 +150,7 @@
         .pulse.live { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse-scanning 1.5s infinite; }
         @keyframes pulse-scanning { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
 
-        .back-btn {
-            position: absolute; top: 40px; right: 20px;
-            width: 44px; height: 44px;
-            background: var(--glass); backdrop-filter: var(--blur);
-            border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            z-index: 100; cursor: pointer; border: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s;
-        }
-        .back-btn:active { transform: scale(0.9); }
+        .back-btn { position: absolute; top: 40px; right: 20px; width: 44px; height: 44px; background: var(--glass); backdrop-filter: var(--blur); border-radius: 12px; display: flex; align-items: center; justify-content: center; z-index: 100; cursor: pointer; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s; }
         .back-icon { width: 22px; height: 22px; fill: none; stroke: #222; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
     </style>
 </head>
@@ -218,78 +174,71 @@
         <div class="main-card">
             <div class="carousel-viewport">
                 <div class="slide active" id="slide1">
-                    <div class="floating-badge">Featured</div>
                     <div class="hero-info-overlay">
-                        <h2>Botanical Garden</h2>
-                        <p>Step into Baguio's vibrant floral heart.</p>
+                        <div class="floating-badge">Featured</div>
+                        <h2>Interactive Map</h2>
+                        <p>Navigate the blooms with real-time digital precision.</p>
                     </div>
                 </div>
                 <div class="slide" id="slide2">
-                    <div class="floating-badge">Interactive</div>
                     <div class="hero-info-overlay">
+                        <div class="floating-badge">Interactive</div>
                         <h2>AR Navigation</h2>
                         <p>Unlock stories using your camera lens.</p>
                     </div>
                 </div>
                 <div class="slide" id="slide3">
-                    <div class="floating-badge">Cultural</div>
                     <div class="hero-info-overlay">
+                        <div class="floating-badge">Cultural</div>
                         <h2>Cordillera Village</h2>
                         <p>Discover the heritage of the mountains.</p>
                     </div>
                 </div>
-                <div class="indicators">
-                    <div class="dot active"></div><div class="dot"></div><div class="dot"></div>
-                </div>
+                <div class="indicators"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
             </div>
             <div class="hero-text-area">
-                <h1 class="hero-title">Let's Enjoy The<br>Beautiful World!</h1>
-                <button class="get-started-btn" onclick="goToTutorial()">
-                    Get Started
-                    <div class="btn-arrow-circle">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </div>
-                </button>
+                <h1 class="hero-title">Explore Botanical in AR </h1>
+                <button class="get-started-btn" onclick="goToTutorial()">Get Started<div class="btn-arrow-circle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div></button>
             </div>
         </div>
     </div>
 
-    <div id="tutorial-page" class="overlay-screen hidden" style="background: white;">
-        <div style="width: 85%; height: 90%; display: flex; flex-direction: column; align-items: center; justify-content: space-around;">
-            <div style="text-align: center;">
-                <h2 style="font-weight: 900; margin-bottom: 8px; color: #111; font-size: 26px;">Quick Guide</h2>
-                <p style="color: #888; font-size: 14px; line-height: 1.4;">Point your camera at the markers <br> to unlock hidden stories.</p>
+    <div id="tutorial-page" class="overlay-screen hidden" style="background: white; overflow-y: auto;">
+        <div style="width: 100%; height: 100%; padding: 40px 0; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+            <div style="text-align: center; margin-top: 10px;">
+                <h2 style="font-weight: 900; margin: 0; color: #111; font-size: 32px; letter-spacing: -1px; text-transform: uppercase;">Quick Guide</h2>
+                <p style="color: #666; font-size: 14px; margin-top: 5px; font-weight: 500;">Scan markers to unlock hidden stories</p>
             </div>
             <div class="tutorial-video-box">
-                <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <svg width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                <video class="preview-video-element" autoplay loop muted playsinline><source src="Assets/Tutorial_Video.mp4" type="video/mp4"></video>
+                <div style="z-index: 5; display: flex; flex-direction: column; align-items: center;">
+                    <div style="width: 70px; height: 70px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; border: 2px solid rgba(255,255,255,0.6); backdrop-filter: blur(10px);">
+                        <svg width="28" height="28" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                    <span style="font-size: 12px; font-weight: 900; letter-spacing: 3px; color: #fff; text-transform: uppercase; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">Preview Guide</span>
                 </div>
-                <span style="font-size: 10px; font-weight: 700; letter-spacing: 2px; opacity: 0.6;">TUTORIAL PREVIEW</span>
             </div>
-            <button class="skip-btn-aesthetic" onclick="startScanner()">Skip Tutorial</button>
+            <div class="action-row">
+                <button class="btn-outline" onclick="startScanner()">Skip</button>
+                <button class="btn-filled" onclick="openVideoPopup()">Watch Full</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="video-overlay" class="hidden">
+        <div class="video-popup-container">
+            <button class="close-video-popup" onclick="closeVideoPopup()">✕</button>
+            <div style="width: 100%; height: 100%; position:relative;">
+                <iframe id="tutorial-iframe" src="" style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:28px;border:none;" allow="autoplay; fullscreen" allowfullscreen></iframe>
+            </div>
         </div>
     </div>
 
     <div id="ui-layer" class="hidden">
-        <div class="gps-display">
-            <div class="pulse live"></div>
-            <div id="gps-status" style="font-size:11px; font-weight:900; color:#666;">SCANNING...</div>
-        </div>
-        <button class="back-btn" onclick="goBackHome()">
-            <svg class="back-icon" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>
-        </button>
-        <div class="bottom-dock" id="dock">
-            <div class="drag-handle" id="handle"><div class="handle-bar"></div></div>
-            <div class="scroll-container" id="gallery-root"></div>
-        </div>
-        <div class="nav-bar">
-            <div class="cam-btn active" id="cam-toggle" onclick="toggleScanner()">
-                <svg viewBox="0 0 24 24" width="30" fill="#fff"><path d="M12 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm7-4h-2.69l-1.83-2H9.52l-1.83 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-7 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
-            </div>
-        </div>
+        <div class="gps-display"><div class="pulse live"></div><div id="gps-status" style="font-size:11px; font-weight:900; color:#666;">SCANNING...</div></div>
+        <button class="back-btn" onclick="goBackHome()"><svg class="back-icon" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg></button>
+        <div class="bottom-dock" id="dock"><div class="drag-handle" id="handle"><div class="handle-bar"></div></div><div class="scroll-container" id="gallery-root"></div></div>
+        <div class="nav-bar"><div class="cam-btn active" id="cam-toggle" onclick="toggleScanner()"><svg viewBox="0 0 24 24" width="30" fill="#fff"><path d="M12 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm7-4h-2.69l-1.83-2H9.52l-1.83 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-7 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg></div></div>
     </div>
 
     <a-scene mindar-image="imageTargetSrc: targets.mind; autoStart: false; uiLoading: no; uiScanning: no;" embedded renderer="transparent: true; alpha: true; colorManagement: true;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
@@ -298,17 +247,11 @@
     </a-scene>
 
 <script>
-    // --- STATE MANAGEMENT ---
     let lastFoundIndex = null; 
 
-    // --- NAVIGATION ---
     window.addEventListener('popstate', (event) => {
         const modal = document.getElementById('tour-modal');
-        if (!modal.classList.contains('hidden')) {
-            closeTour();
-            history.pushState({ page: 'scanner' }, "Scanner", "#scanner");
-            return;
-        }
+        if (!modal.classList.contains('hidden')) { closeTour(); history.pushState({ page: 'scanner' }, "Scanner", "#scanner"); return; }
         event.state ? renderPage(event.state.page) : renderPage('home');
     });
 
@@ -317,7 +260,6 @@
         const tutorial = document.getElementById('tutorial-page');
         const uiLayer = document.getElementById('ui-layer');
         [home, tutorial, uiLayer].forEach(el => el.classList.add('hidden'));
-
         if (pageId === 'home') home.classList.remove('hidden');
         else if (pageId === 'tutorial') tutorial.classList.remove('hidden');
         else if (pageId === 'scanner') uiLayer.classList.remove('hidden');
@@ -332,41 +274,29 @@
         renderPage('home');
     }
 
-    // --- SPLASH ---
     window.addEventListener('load', () => {
         const splash = document.getElementById('splash-screen');
-        setTimeout(() => {
-            splash.style.opacity = '0';
-            setTimeout(() => {
-                splash.style.display = 'none';
-                history.replaceState({ page: 'home' }, "Home", "#home");
-                startCarousel(); 
-            }, 600);
-        }, 2500); 
+        setTimeout(() => { splash.style.opacity = '0'; setTimeout(() => { splash.style.display = 'none'; history.replaceState({ page: 'home' }, "Home", "#home"); startCarousel(); }, 600); }, 2500); 
     });
 
-    // --- CAROUSEL ---
     let currentSlide = 0;
     const slides = document.querySelectorAll('.slide');
     const dots = document.querySelectorAll('.dot');
     function startCarousel() { setInterval(() => {
-        slides[currentSlide].classList.remove('active');
-        dots[currentSlide].classList.remove('active');
+        slides[currentSlide].classList.remove('active'); dots[currentSlide].classList.remove('active');
         currentSlide = (currentSlide + 1) % slides.length;
-        slides[currentSlide].classList.add('active');
-        dots[currentSlide].classList.add('active');
+        slides[currentSlide].classList.add('active'); dots[currentSlide].classList.add('active');
     }, 4000); }
 
-    // --- APP DATA ---
     const stations = [
-        { name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/Interactive_Map/" },
-        { name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://tour.panoee.net/69b7b676cd5918466513b640" },
+        { name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/BagView_Botanical_Map/" },
+        { name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://jmflorencio.github.io/BagView_Botanical_Map/" },
         { name: "Arbor", thumb: "Assets/Arbor.png", link: "https://tour.panoee.net/69b7b676cd5918466513b640" },
         { name: "Cactus & Succulents", thumb: "Assets/Cactus&Succulents.png", link: "https://tour.panoee.net/69b7b991cd59184ead13b71f" },
         { name: "Centennial Garden", thumb: "Assets/Centennial Garden.png", link: "https://tour.panoee.net/69b7b991cd59184ead13b71f" },
         { name: "Chinese Garden", thumb: "Assets/Chinese%20Garden.png", link: "https://tour.panoee.net/69b74a8ccd5918bff013a943" },
-		{ name: "City of Vaughan", thumb: "Assets/City%20of%20Vaughan%20Friendship%20Garden.png", link: "https://tour.panoee.net/69b7b820a3e4d78d0cc8db9e" },
-		{ name: "Cordillera Village", thumb: "Assets/Cordillera%20Village.png", link: "https://tour.panoee.net/69b7b964a3e4d75529c8dc1a" },
+        { name: "City of Vaughan", thumb: "Assets/City%20of%20Vaughan%20Friendship%20Garden.png", link: "https://tour.panoee.net/69b7b820a3e4d78d0cc8db9e" },
+        { name: "Cordillera Village", thumb: "Assets/Cordillera%20Village.png", link: "https://tour.panoee.net/69b7b964a3e4d75529c8dc1a" },
         { name: "Dahlia Garden", thumb: "Assets/Dahlia Garden.png", link: "https://tour.panoee.net/69b74a8ccd5918bff013a943" },
         { name: "Greenhouse", thumb: "Assets/Greenhouse.png", link: "https://tour.panoee.net/69b7b91fa3e4d7ebe6c8dbfe" },
         { name: "Japanese Garden", thumb: "Assets/Japanese%20Garden.png", link: "https://tour.panoee.net/69b7b63aa3e4d733edc8db51" },
@@ -387,99 +317,61 @@
         initExperience();
     }
 
-    function closeTour() {
-        document.getElementById('tour-modal').classList.add('hidden');
-        document.getElementById('tour-iframe').src = ""; 
-        document.getElementById('gps-status').innerText = "SCANNING...";
+    function closeTour() { document.getElementById('tour-modal').classList.add('hidden'); document.getElementById('tour-iframe').src = ""; document.getElementById('gps-status').innerText = "SCANNING..."; }
+
+    function openVideoPopup() {
+        const modal = document.getElementById('video-overlay');
+        const iframe = document.getElementById('tutorial-iframe');
+        iframe.src = "Assets/Tutorial_Video.mp4"; 
+        modal.classList.remove('hidden');
     }
 
-    // --- CORE LOGIC: RESPONSIVENESS (SILENT) + AR TRIGGER (SOUND) ---
+    function closeVideoPopup() {
+        const modal = document.getElementById('video-overlay');
+        const iframe = document.getElementById('tutorial-iframe');
+        iframe.src = ""; 
+        modal.classList.add('hidden');
+    }
+
     function initExperience() {
         const root = document.getElementById('gallery-root');
         const container = document.getElementById('target-container');
         if (root.children.length > 0) return;
-
         stations.forEach((s, i) => {
-            const card = document.createElement('div');
-            card.className = 'station-card';
-            card.id = `card-${i}`;
-            
-            // Interaction: Tap is SILENT. Purely visual highlight.
-            card.onclick = () => {
-                highlightCard(i);
-                document.getElementById('gps-status').innerText = "SELECTED: " + s.name;
-            };
-
-            card.innerHTML = `
-                <div style="height:70%; pointer-events:none;"><img src="${s.thumb}" style="width:100%; height:100%; object-fit:cover;"></div>
-                <div style="font-size:9px; text-align:center; padding:10px 5px; font-weight:800; color:#444; pointer-events:none;">${s.name.toUpperCase()}</div>
-            `;
+            const card = document.createElement('div'); card.className = 'station-card'; card.id = `card-${i}`;
+            card.onclick = () => { highlightCard(i); document.getElementById('gps-status').innerText = "SELECTED: " + s.name; };
+            card.innerHTML = `<div style="height:70%; pointer-events:none;"><img src="${s.thumb}" style="width:100%; height:100%; object-fit:cover;"></div><div style="font-size:9px; text-align:center; padding:10px 5px; font-weight:800; color:#444; pointer-events:none;">${s.name.toUpperCase()}</div>`;
             root.appendChild(card);
-
-            const entity = document.createElement('a-entity');
-            entity.setAttribute('mindar-image-target', `targetIndex: ${i}`);
-            
+            const entity = document.createElement('a-entity'); entity.setAttribute('mindar-image-target', `targetIndex: ${i}`);
             entity.addEventListener("targetFound", () => {
-                if (lastFoundIndex === i) return;
-                lastFoundIndex = i;
-                
-                // AR FOUND: Visual highlight AND Sound/Vibration
-                highlightCard(i);
-                document.getElementById('gps-status').innerText = "MATCHED: " + s.name;
-
-                // --- SOUND TRIGGERED ONLY HERE ---
-                const sound = document.getElementById('match-sound');
-                sound.currentTime = 0;
-                sound.play();
+                if (lastFoundIndex === i) return; lastFoundIndex = i; highlightCard(i); document.getElementById('gps-status').innerText = "MATCHED: " + s.name;
+                const sound = document.getElementById('match-sound'); sound.currentTime = 0; sound.play();
                 if ("vibrate" in navigator) navigator.vibrate(60);
-                
-                setTimeout(() => {
-                    const modal = document.getElementById('tour-modal');
-                    document.getElementById('tour-iframe').src = s.link;
-                    modal.classList.remove('hidden');
-                }, 1200);
+                setTimeout(() => { const modal = document.getElementById('tour-modal'); document.getElementById('tour-iframe').src = s.link; modal.classList.remove('hidden'); }, 1200);
             });
-
-            entity.addEventListener("targetLost", () => {
-                document.getElementById('gps-status').innerText = "SCANNING...";
-            });
+            entity.addEventListener("targetLost", () => { document.getElementById('gps-status').innerText = "SCANNING..."; });
             container.appendChild(entity);
         });
         initDraggable();
     }
 
-    // Helper for visual feedback only (The "Jump" effect via scroll and border)
     function highlightCard(index) {
         const cardEl = document.getElementById(`card-${index}`);
         const dock = document.getElementById('dock');
-
         document.querySelectorAll('.station-card').forEach(c => c.classList.remove('found'));
-        cardEl.classList.add('found');
-        cardEl.scrollIntoView({ behavior: 'smooth', inline: 'center' });
-
-        if(!dock.classList.contains('expanded')) {
-            dock.classList.add('expanded');
-            dock.style.transform = `translateY(0)`;
-        }
+        cardEl.classList.add('found'); cardEl.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+        if(!dock.classList.contains('expanded')) { dock.classList.add('expanded'); dock.style.transform = `translateY(0)`; }
     }
 
     async function toggleScanner() {
         const btn = document.getElementById('cam-toggle');
         const arSystem = document.querySelector('a-scene').systems['mindar-image-system'];
-        if(!btn.classList.contains('active')) {
-            await arSystem.start();
-            btn.classList.add('active');
-        } else {
-            arSystem.stop();
-            btn.classList.remove('active');
-        }
+        if(!btn.classList.contains('active')) { await arSystem.start(); btn.classList.add('active'); } else { arSystem.stop(); btn.classList.remove('active'); }
     }
 
     function initDraggable() {
-        const dock = document.getElementById('dock');
-        const handle = document.getElementById('handle');
+        const dock = document.getElementById('dock'); const handle = document.getElementById('handle');
         let startY, isDragging = false;
-
         handle.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; isDragging = true; dock.style.transition = 'none'; });
         window.addEventListener('touchmove', (e) => {
             if (!isDragging) return;
@@ -488,13 +380,9 @@
             dock.style.transform = `translateY(${move}px)`;
         });
         window.addEventListener('touchend', (e) => {
-            if (!isDragging) return;
-            isDragging = false; dock.style.transition = '0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-            if (e.changedTouches[0].clientY < startY - 40) {
-                dock.classList.add('expanded'); dock.style.transform = `translateY(0)`;
-            } else {
-                dock.classList.remove('expanded'); dock.style.transform = `translateY(285px)`;
-            }
+            if (!isDragging) return; isDragging = false; dock.style.transition = '0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+            if (e.changedTouches[0].clientY < startY - 40) { dock.classList.add('expanded'); dock.style.transform = `translateY(0)`; }
+            else { dock.classList.remove('expanded'); dock.style.transform = `translateY(285px)`; }
         });
     }
 </script>
