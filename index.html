@@ -343,7 +343,7 @@
     let lastFoundIndex = null; 
     let isOpeningTour = false;
 
- const stations = [
+    const stations = [
         { name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/Interactive_Map/" },
         { name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://tour.panoee.net/mainentrance/1" },
         { name: "Arbor", thumb: "Assets/Arbor.png", link: "https://tour.panoee.net/69b7b676cd5918466513b640" },
@@ -361,6 +361,10 @@
         { name: "Philippine-Thailand Friendship Garden", thumb: "Assets/Philippine-Thailand Frienship Garden.png", link: "https://tour.panoee.net/69b184dfa0e1d16f1a9e388d/69b187aba0e1d18afb9e38fb" },
         { name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.png", link: "https://tour.panoee.net/69b7b586a3e4d741fdc8db26" }
     ];
+    function toggleNews(show) {
+        document.getElementById('news-panel').classList.toggle('show', show);
+    }
+
     function renderPage(pageId) {
         document.getElementById('home-page').classList.add('hidden');
         document.getElementById('tutorial-page').classList.add('hidden');
