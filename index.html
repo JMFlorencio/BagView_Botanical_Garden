@@ -15,7 +15,8 @@
             --blur: blur(20px); 
             --bg-page: #ffffff;
             --dark-green: #004d47;
-            --soft-bg: #f8f9fa;
+            --soft-bg: #f2f4f7;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.08);
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -42,9 +43,9 @@
         .overlay-screen { position: fixed; inset: 0; z-index: 2000; background: var(--bg-page); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.8s ease; }
         .hidden { display: none !important; opacity: 0; pointer-events: none; }
         
-        #tour-modal { z-index: 3000; background: white; }
+        #tour-modal { z-index: 4000; background: white; } 
         .close-tour-btn { 
-            position: absolute; top: 20px; right: 20px; z-index: 3100; 
+            position: absolute; top: 20px; right: 20px; z-index: 4100; 
             padding: 12px 20px; background: var(--accent); color: white; 
             border: none; border-radius: 50px; font-weight: 800; font-size: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer;
@@ -115,32 +116,41 @@
         .get-started-btn { width: 100%; max-width: 350px; height: 75px; background: var(--accent); color: white; border: none; border-radius: 40px; font-size: 19px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding-right: 70px; position: relative; cursor: pointer; box-shadow: 0 10px 25px rgba(0,166,153,0.25); }
         .btn-arrow-circle { position: absolute; right: 10px; width: 55px; height: 55px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
-        /* --- DISCOVER / UPDATES PANEL --- */
+        /* --- DISCOVER PANEL --- */
         #news-panel {
-            position: fixed; top: 0; left: 0; bottom: 0; width: 100%; z-index: 2500; 
+            position: fixed; top: 0; left: 0; bottom: 0; width: 100%; z-index: 3500; 
             background: var(--soft-bg); transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex; flex-direction: column;
         }
         #news-panel.show { transform: translateX(0); }
-        .news-header { padding: 60px 25px 20px; display: flex; justify-content: space-between; align-items: center; background: white; }
-        .close-news { background: #f0f0f0; border: none; border-radius: 50%; cursor: pointer; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
-        .news-content { flex: 1; overflow-y: auto; padding: 15px; }
+        .news-header { padding: 50px 25px 20px; display: flex; justify-content: space-between; align-items: center; background: white; border-bottom: 1px solid #eee; }
+        .close-news { background: #f5f5f5; border: none; border-radius: 14px; cursor: pointer; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
+        
+        .news-content { flex: 1; overflow-y: auto; padding: 20px 15px; }
         
         .discover-card { 
             background: #fff; 
-            border-radius: 24px; 
-            margin-bottom: 20px; 
+            border-radius: 28px; 
+            margin-bottom: 25px; 
             overflow: hidden; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            box-shadow: var(--card-shadow);
         }
-        .discover-media { width: 100%; aspect-ratio: 4/5; background: #eee; position: relative; }
+        .discover-media { width: 100%; aspect-ratio: 1/1; background: #eee; position: relative; }
         .discover-media img, .discover-media video { width: 100%; height: 100%; object-fit: cover; }
-        .discover-info { padding: 20px; }
-        .discover-tag { font-size: 10px; font-weight: 900; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
-        .discover-title { font-size: 20px; font-weight: 800; color: #111; margin: 0 0 10px; line-height: 1.2; }
-        .discover-desc { font-size: 14px; color: #666; line-height: 1.5; margin: 0; }
+        
+        .discover-info { padding: 20px; position: relative; }
+        .discover-tag { 
+            position: absolute; top: -15px; left: 20px;
+            background: var(--accent); color: white;
+            padding: 6px 14px; border-radius: 12px;
+            font-size: 10px; font-weight: 900; 
+            text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0,166,153,0.3);
+        }
+        .discover-title { font-size: 22px; font-weight: 900; color: #111; margin: 10px 0 8px; line-height: 1.2; letter-spacing: -0.5px; }
+        .discover-desc { font-size: 15px; color: #555; line-height: 1.6; margin: 0; font-weight: 500; }
 
-        /* --- SCANNER RETICLE & LASER --- */
+        /* --- SCANNER RETICLE --- */
         #scan-reticle {
             position: fixed; top: 43%; left: 50%;
             transform: translate(-50%, -50%);
@@ -149,7 +159,7 @@
             border-radius: 30px;
             z-index: 10; pointer-events: none;
             transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            overflow: hidden; /* Keeps the laser inside the frame */
+            overflow: hidden;
         }
         
         #scan-reticle::before {
@@ -158,20 +168,16 @@
             border-radius: 35px;
             z-index: 5;
             clip-path: polygon(0 0, 20% 0, 20% 8px, 8px 8px, 8px 20%, 0 20%, 0 0, 80% 0, 80% 8px, 92% 8px, 92% 20%, 100% 20%, 100% 0, 75% 0, 100% 100%, 75% 100%, 75% 90%, 90% 90%, 90% 75%, 100% 75%, 100% 100%, 0 100%, 0 75%, 10% 75%, 10% 90%, 25% 90%, 25% 100%, 0 100%);
+            transition: opacity 0.3s ease;
         }
 
-        /* --- MOVING LASER LINE --- */
         .scanning-line {
             position: absolute;
-            top: 0;
-            left: 5%;
-            width: 100%;
-            height: 4px;
+            top: 0; left: 5%; width: 100%; height: 4px;
             background: linear-gradient(to right, transparent, var(--accent), transparent);
             box-shadow: 0 0 15px var(--accent), 0 0 25px var(--accent);
             border-radius: 50%;
-            z-index: 2;
-            opacity: 0;
+            z-index: 2; opacity: 0;
             animation: scan-move 2.5s ease-in-out infinite;
         }
 
@@ -182,15 +188,79 @@
             100% { top: 95%; opacity: 0; }
         }
 
-        /* --- NAVIGATION --- */
-        .nav-bar { position: fixed; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 20px; z-index: 150; pointer-events: none; }
-        .nav-btn { width: 70px; height: 70px; border-radius: 50%; background: #ffffff; border: 4px solid #eee; display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: all 0.2s ease; }
-        .cam-btn.active { border-color: var(--accent); background: var(--accent); }
-        .nav-icon { width: 28px; height: 28px; fill: none; stroke: #222; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+        /* --- UI LAYER BACKGROUND TOGGLE --- */
+        #ui-layer {
+            position: fixed; inset: 0; z-index: 100;
+            background: transparent;
+            transition: background 0.5s ease;
+        }
+        
+        #ui-layer.camera-off { background: #000000; }
+        #ui-layer.camera-off .scanning-line { display: none !important; }
+        #ui-layer.camera-off #scan-reticle::before { opacity: 0.3; }
 
-        .bottom-dock { position: fixed; bottom: 0; width: 100%; height: 320px; z-index: 120; transform: translateY(285px); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .bottom-dock.expanded { background: white; transform: translateY(0); border-radius: 30px 30px 0 0; }
-        .drag-handle { width: 100%; height: 60px; display: flex; justify-content: center; align-items: center; }
+        /* --- NAVIGATION --- */
+        .nav-bar { 
+            position: fixed; 
+            bottom: 30px; 
+            left: 0; 
+            right: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 35px; 
+            z-index: 3000;
+            pointer-events: none; 
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        
+        .nav-bar.hidden-nav {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+        
+        .nav-btn-secondary { 
+            width: 50px; height: 50px; border-radius: 50%; 
+            background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255,255,255,0.3); display: flex; 
+            align-items: center; justify-content: center; 
+            cursor: pointer; pointer-events: auto; 
+        }
+        
+        .iphone-cam-btn { 
+            width: 82px; height: 82px; border-radius: 50%; 
+            background: transparent; border: 4px solid #ffffff; 
+            display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; pointer-events: auto; position: relative;
+            transition: transform 0.2s cubic-bezier(0.1, 0.5, 0.1, 1);
+        }
+        .iphone-cam-btn::after {
+            content: ''; width: 66px; height: 66px; 
+            background: rgba(255, 255, 255, 0.8); 
+            border-radius: 50%; 
+            transition: all 0.3s ease;
+        }
+        
+        .iphone-cam-btn.off { border-color: rgba(255,255,255,0.4); }
+        .iphone-cam-btn.off::after { background: rgba(255,255,255,0.2); width: 40px; height: 40px; }
+
+        .iphone-cam-btn:active { transform: scale(0.92); }
+        .nav-icon-light { width: 24px; height: 24px; fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* --- BOTTOM DOCK --- */
+        .bottom-dock { 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            height: 320px; 
+            z-index: 2500; 
+            transform: translateY(285px); 
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        .bottom-dock.expanded { background: white; transform: translateY(0); border-radius: 30px 30px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,0.1); }
+        
+        .drag-handle { width: 100%; height: 60px; display: flex; justify-content: center; align-items: center; cursor: grab; }
         .handle-bar { width: 50px; height: 5px; background: rgba(0, 0, 0, 0.2); border-radius: 10px; }
         .scroll-container { display: flex; gap: 12px; overflow-x: auto; padding: 10px 20px 30px; width: 100%; scrollbar-width: none; opacity: 0; transition: 0.3s; }
         .bottom-dock.expanded .scroll-container { opacity: 1; }
@@ -200,6 +270,8 @@
         
         .gps-display { position: absolute; top: 40px; left: 20px; background: var(--glass); backdrop-filter: var(--blur); padding: 10px 18px; border-radius: 12px; z-index: 100; display: flex; align-items: center; gap: 10px; }
         .pulse.live { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse-scanning 1.5s infinite; }
+        .pulse.standby { background: #999 !important; animation: none !important; }
+        
         @keyframes pulse-scanning { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
 
         .tutorial-video-box { width: 92%; height: 65vh; background: #111; border-radius: 28px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.3); margin: 20px auto; }
@@ -221,11 +293,11 @@
     <div id="news-panel">
         <div class="news-header">
             <div>
-                <span style="color: var(--accent); font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Discover</span>
-                <h2 style="margin:0; font-size: 28px; font-weight: 900;">Latest Updates</h2>
+                <span style="color: var(--accent); font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 2px;">Trending</span>
+                <h2 style="margin:0; font-size: 32px; font-weight: 900; letter-spacing: -1px;">Updates</h2>
             </div>
             <button class="close-news" onclick="toggleNews(false)">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
             </button>
         </div>
         <div class="news-content">
@@ -234,20 +306,9 @@
                     <video muted loop playsinline autoplay><source src="Assets/Admin_Update_Video.mp4" type="video/mp4"></video>
                 </div>
                 <div class="discover-info">
-                    <span class="discover-tag">New Feature</span>
-                    <h3 class="discover-title">Scan to Discover</h3>
-                    <p class="discover-desc">Point your camera at the Ecoverse magazine illustrations to watch them transform with high-fidelity tracking.</p>
-                </div>
-            </div>
-
-            <div class="discover-card">
-                <div class="discover-media">
-                    <img src="Assets/Cordillera Village.png" alt="Update">
-                </div>
-                <div class="discover-info">
-                    <span class="discover-tag">Community</span>
-                    <h3 class="discover-title">Seasonal Shift</h3>
-                    <p class="discover-desc">The "Floral Calendar" page is now live. Explore real-time growth progress for this month's featured blooms.</p>
+                    <span class="discover-tag">AR Engine</span>
+                    <h3 class="discover-title">Ecoverse Interactivity</h3>
+                    <p class="discover-desc">We've enhanced tracking stability for print media scanning.</p>
                 </div>
             </div>
         </div>
@@ -279,12 +340,17 @@
                 </div>
                 <div class="slide" id="slide3">
                     <div class="hero-info-overlay">
-                        <div class="floating-badge">Cultural</div>
+                        <div class="floating-badge">Culture</div>
                         <h2>Cordillera Village</h2>
-                        <p>Discover the heritage of the mountains.</p>
+                        <p>Explore the heritage of the highlands.</p>
                     </div>
                 </div>
-                <div class="indicators"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+
+                <div class="indicators">
+                    <div class="dot active"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
             </div>
             <div class="hero-text-area">
                 <h1 class="hero-title">Explore Botanical in AR</h1>
@@ -293,18 +359,24 @@
         </div>
     </div>
 
-    <div id="tutorial-page" class="overlay-screen hidden">
+     <div id="tutorial-page" class="overlay-screen hidden" style="background: white; overflow-y: auto;">
         <div style="width: 100%; height: 100%; padding: 40px 0; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
-            <div style="text-align: center;">
-                <h2 style="font-weight: 900; margin: 0; font-size: 32px; text-transform: uppercase;">Quick Guide</h2>
-                <p style="color: #666; font-size: 14px; margin-top: 5px;">Scan markers to unlock hidden stories</p>
+            <div style="text-align: center; margin-top: 10px;">
+                <h2 style="font-weight: 900; margin: 0; color: #111; font-size: 32px; letter-spacing: -1px; text-transform: uppercase;">Quick Guide</h2>
+                <p style="color: #666; font-size: 14px; margin-top: 5px; font-weight: 500;">Scan markers to unlock hidden stories</p>
             </div>
             <div class="tutorial-video-box">
                 <video class="preview-video-element" autoplay loop muted playsinline><source src="Assets/Tutorial_Video.mp4" type="video/mp4"></video>
+                <div style="z-index: 5; display: flex; flex-direction: column; align-items: center;">
+                    <div style="width: 70px; height: 70px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; border: 2px solid rgba(255,255,255,0.6); backdrop-filter: blur(10px);">
+                        <svg width="28" height="28" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                    <span style="font-size: 12px; font-weight: 900; letter-spacing: 3px; color: #fff; text-transform: uppercase; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">Preview Guide</span>
+                </div>
             </div>
             <div class="action-row">
                 <button class="btn-outline" onclick="startScanner()">Skip</button>
-                <button class="btn-filled" onclick="startScanner()">I'm Ready</button>
+                <button class="btn-filled" onclick="openVideoPopup()">Watch Full</button>
             </div>
         </div>
     </div>
@@ -314,22 +386,25 @@
             <div class="scanning-line" id="laser-line"></div>
         </div>
         
-        <div class="gps-display"><div class="pulse live"></div><div id="gps-status" style="font-size:11px; font-weight:900; color:#666;">SCANNING...</div></div>
+        <div class="gps-display">
+            <div id="gps-pulse" class="pulse live"></div>
+            <div id="gps-status" style="font-size:11px; font-weight:900; color:#666;">SCANNING...</div>
+        </div>
         
         <div class="bottom-dock" id="dock">
             <div class="drag-handle" id="handle"><div class="handle-bar"></div></div>
             <div class="scroll-container" id="gallery-root"></div>
         </div>
         
-        <div class="nav-bar">
-            <div class="nav-btn" onclick="toggleNews(true)">
-                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8z"/></svg>
+        <div class="nav-bar" id="main-nav">
+            <div class="nav-btn-secondary" onclick="toggleNews(true)">
+                <svg class="nav-icon-light" viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8z"/></svg>
             </div>
-            <div class="nav-btn cam-btn active" id="cam-toggle" onclick="toggleScanner()">
-                <svg viewBox="0 0 24 24" width="30" fill="#fff"><path d="M12 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm7-4h-2.69l-1.83-2H9.52l-1.83 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-7 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
-            </div>
-            <div class="nav-btn" onclick="goBackHome()">
-                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>
+            
+            <div class="iphone-cam-btn active" id="cam-toggle" onclick="toggleScanner()"></div>
+            
+            <div class="nav-btn-secondary" onclick="goBackHome()">
+                <svg class="nav-icon-light" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>
             </div>
         </div>
     </div>
@@ -340,8 +415,8 @@
     </a-scene>
 
 <script>
-    let lastFoundIndex = null; 
     let isOpeningTour = false;
+    let currentHeroSlide = 0;
 
     const stations = [
         { name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/Interactive_Map/" },
@@ -361,22 +436,31 @@
         { name: "Philippine-Thailand Friendship Garden", thumb: "Assets/Philippine-Thailand Frienship Garden.png", link: "https://tour.panoee.net/69b184dfa0e1d16f1a9e388d/69b187aba0e1d18afb9e38fb" },
         { name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.png", link: "https://tour.panoee.net/69b7b586a3e4d741fdc8db26" }
     ];
-    function toggleNews(show) {
-        document.getElementById('news-panel').classList.toggle('show', show);
+
+    function goToTutorial() { history.pushState({ page: 'tutorial' }, "Tutorial", "#tutorial"); renderPage('tutorial'); }
+
+    function startHeroRotation() {
+        const slides = document.querySelectorAll('#home-page .slide');
+        const dots = document.querySelectorAll('#home-page .dot');
+        if (slides.length === 0) return;
+        setInterval(() => {
+            slides[currentHeroSlide].classList.remove('active');
+            dots[currentHeroSlide].classList.remove('active');
+            currentHeroSlide = (currentHeroSlide + 1) % slides.length;
+            slides[currentHeroSlide].classList.add('active');
+            dots[currentHeroSlide].classList.add('active');
+        }, 4000);
     }
+
+    function toggleNews(show) { document.getElementById('news-panel').classList.toggle('show', show); }
 
     function renderPage(pageId) {
         document.getElementById('home-page').classList.add('hidden');
         document.getElementById('tutorial-page').classList.add('hidden');
         document.getElementById('ui-layer').classList.add('hidden');
-        
         if (pageId === 'home') document.getElementById('home-page').classList.remove('hidden');
         if (pageId === 'tutorial') document.getElementById('tutorial-page').classList.remove('hidden');
-        if (pageId === 'scanner') {
-            document.getElementById('ui-layer').classList.remove('hidden');
-            // Ensure laser starts when scanner page loads
-            document.getElementById('laser-line').style.animationPlayState = 'running';
-        }
+        if (pageId === 'scanner') document.getElementById('ui-layer').classList.remove('hidden');
     }
 
     function goToTutorial() { renderPage('tutorial'); }
@@ -404,27 +488,30 @@
             const card = document.createElement('div'); 
             card.className = 'station-card'; card.id = `card-${i}`;
             card.innerHTML = `<div style="height:70%"><img src="${s.thumb}" style="width:100%; height:100%; object-fit:cover;"></div><div style="font-size:9px; text-align:center; padding:10px 5px; font-weight:800;">${s.name.toUpperCase()}</div>`;
-            card.onclick = () => highlightCard(i);
+            
+            card.onclick = () => {
+                highlightCard(i);
+                document.getElementById('gps-status').innerText = "SELECTED: " + s.name.toUpperCase();
+            };
+            
             root.appendChild(card);
             
             const entity = document.createElement('a-entity'); 
             entity.setAttribute('mindar-image-target', `targetIndex: ${i}`);
             
             entity.addEventListener("targetFound", () => {
-                if (isOpeningTour) return;
+                const btn = document.getElementById('cam-toggle');
+                if (isOpeningTour || !btn.classList.contains('active')) return;
                 isOpeningTour = true;
                 highlightCard(i);
-                document.getElementById('gps-status').innerText = "MATCHED: " + s.name;
+                
+                document.getElementById('gps-status').innerText = "MATCHED: " + s.name.toUpperCase();
+                
                 document.getElementById('match-sound').play();
-                if ("vibrate" in navigator) navigator.vibrate(60);
                 setTimeout(() => {
                     document.getElementById('tour-iframe').src = s.link;
                     document.getElementById('tour-modal').classList.remove('hidden');
                 }, 1000);
-            });
-
-            entity.addEventListener("targetLost", () => {
-                document.getElementById('gps-status').innerText = "SCANNING...";
             });
             container.appendChild(entity);
         });
@@ -435,6 +522,25 @@
         document.getElementById('tour-modal').classList.add('hidden');
         document.getElementById('tour-iframe').src = "";
         isOpeningTour = false;
+        if(!document.getElementById('ui-layer').classList.contains('camera-off')) {
+            document.getElementById('gps-status').innerText = "SCANNING...";
+        }
+		 function openVideoPopup() {
+        const modal = document.getElementById('video-overlay');
+        const video = document.getElementById('tutorial-full-video');
+        video.src = "Assets/Tutorial_Video.mp4"; 
+        modal.classList.remove('hidden');
+        video.play();
+    }
+
+    function closeVideoPopup() {
+        const modal = document.getElementById('video-overlay');
+        const video = document.getElementById('tutorial-full-video');
+        video.pause();
+        video.src = ""; 
+        modal.classList.add('hidden');
+    }
+
     }
 
     function highlightCard(index) {
@@ -446,49 +552,79 @@
         }
         document.getElementById('dock').classList.add('expanded');
         document.getElementById('dock').style.transform = 'translateY(0)';
+        document.getElementById('main-nav').classList.add('hidden-nav');
     }
 
     async function toggleScanner() {
         const arSystem = document.querySelector('a-scene').systems['mindar-image-system'];
         const btn = document.getElementById('cam-toggle');
-        const laser = document.getElementById('laser-line');
+        const uiLayer = document.getElementById('ui-layer');
+        const statusText = document.getElementById('gps-status');
+        const statusPulse = document.getElementById('gps-pulse');
         
         if(btn.classList.contains('active')) {
-            arSystem.stop();
-            btn.classList.remove('active');
-            laser.style.animationPlayState = 'paused';
-            laser.style.opacity = '0';
+            if (arSystem) arSystem.stop();
+            btn.classList.replace('active', 'off');
+            uiLayer.classList.add('camera-off');
+            statusText.innerText = "CAMERA STANDBY";
+            statusPulse.classList.add('standby');
         } else {
-            await arSystem.start();
-            btn.classList.add('active');
-            laser.style.animationPlayState = 'running';
-            laser.style.opacity = '1';
+            if (arSystem) await arSystem.start();
+            btn.classList.replace('off', 'active');
+            uiLayer.classList.remove('camera-off');
+            statusText.innerText = "SCANNING..."; 
+            statusPulse.classList.remove('standby');
         }
     }
 
     function initDraggable() {
         const dock = document.getElementById('dock');
         const handle = document.getElementById('handle');
+        const nav = document.getElementById('main-nav');
         let startY, isDragging = false;
-        handle.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; isDragging = true; dock.style.transition = 'none'; });
+        
+        handle.addEventListener('touchstart', (e) => { 
+            startY = e.touches[0].clientY; 
+            isDragging = true; 
+            dock.style.transition = 'none'; 
+        });
+
         window.addEventListener('touchmove', (e) => {
             if (!isDragging) return;
             let move = (dock.classList.contains('expanded') ? 0 : 285) + (e.touches[0].clientY - startY);
             if (move < 0) move = 0; if (move > 285) move = 285;
             dock.style.transform = `translateY(${move}px)`;
+            let opacity = move / 285;
+            nav.style.opacity = opacity;
         });
+
         window.addEventListener('touchend', (e) => {
-            if (!isDragging) return; isDragging = false; 
+            if (!isDragging) return; 
+            isDragging = false; 
             dock.style.transition = '0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-            if (e.changedTouches[0].clientY < startY - 40) { dock.classList.add('expanded'); dock.style.transform = `translateY(0)`; }
-            else { dock.classList.remove('expanded'); dock.style.transform = `translateY(285px)`; }
+            
+            if (e.changedTouches[0].clientY < startY - 40) { 
+                dock.classList.add('expanded'); 
+                dock.style.transform = `translateY(0)`; 
+                nav.classList.add('hidden-nav');
+                nav.style.opacity = "0";
+            }
+            else { 
+                dock.classList.remove('expanded'); 
+                dock.style.transform = `translateY(285px)`; 
+                nav.classList.remove('hidden-nav');
+                nav.style.opacity = "1";
+            }
         });
     }
 
     window.addEventListener('load', () => {
         setTimeout(() => { 
             document.getElementById('splash-screen').style.opacity = '0';
-            setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 600);
+            setTimeout(() => {
+                document.getElementById('splash-screen').style.display = 'none';
+                startHeroRotation();
+            }, 600);
         }, 2000);
     });
 </script>
