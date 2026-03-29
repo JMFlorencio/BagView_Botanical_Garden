@@ -15,8 +15,7 @@
             --blur: blur(20px); 
             --bg-page: #ffffff;
             --dark-green: #004d47;
-            --soft-bg: #f2f4f7;
-            --card-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --soft-bg: #f8f9fa;
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -116,47 +115,32 @@
         .get-started-btn { width: 100%; max-width: 350px; height: 75px; background: var(--accent); color: white; border: none; border-radius: 40px; font-size: 19px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding-right: 70px; position: relative; cursor: pointer; box-shadow: 0 10px 25px rgba(0,166,153,0.25); }
         .btn-arrow-circle { position: absolute; right: 10px; width: 55px; height: 55px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
-        /* --- UPDATED DISCOVER PANEL --- */
+        /* --- DISCOVER / UPDATES PANEL --- */
         #news-panel {
             position: fixed; top: 0; left: 0; bottom: 0; width: 100%; z-index: 2500; 
             background: var(--soft-bg); transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex; flex-direction: column;
         }
         #news-panel.show { transform: translateX(0); }
-        .news-header { padding: 50px 25px 20px; display: flex; justify-content: space-between; align-items: center; background: white; border-bottom: 1px solid #eee; }
-        .close-news { background: #f5f5f5; border: none; border-radius: 14px; cursor: pointer; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
-        
-        .news-content { flex: 1; overflow-y: auto; padding: 20px 15px; }
+        .news-header { padding: 60px 25px 20px; display: flex; justify-content: space-between; align-items: center; background: white; }
+        .close-news { background: #f0f0f0; border: none; border-radius: 50%; cursor: pointer; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
+        .news-content { flex: 1; overflow-y: auto; padding: 15px; }
         
         .discover-card { 
             background: #fff; 
-            border-radius: 28px; 
-            margin-bottom: 25px; 
+            border-radius: 24px; 
+            margin-bottom: 20px; 
             overflow: hidden; 
-            box-shadow: var(--card-shadow);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
-        .discover-media { width: 100%; aspect-ratio: 1/1; background: #eee; position: relative; }
+        .discover-media { width: 100%; aspect-ratio: 4/5; background: #eee; position: relative; }
         .discover-media img, .discover-media video { width: 100%; height: 100%; object-fit: cover; }
-        
-        .discover-info { padding: 20px; position: relative; }
-        .discover-tag { 
-            position: absolute; top: -15px; left: 20px;
-            background: var(--accent); color: white;
-            padding: 6px 14px; border-radius: 12px;
-            font-size: 10px; font-weight: 900; 
-            text-transform: uppercase; letter-spacing: 1px;
-            box-shadow: 0 4px 10px rgba(0,166,153,0.3);
-        }
-        .discover-title { font-size: 22px; font-weight: 900; color: #111; margin: 10px 0 8px; line-height: 1.2; letter-spacing: -0.5px; }
-        .discover-desc { font-size: 15px; color: #555; line-height: 1.6; margin: 0; font-weight: 500; }
+        .discover-info { padding: 20px; }
+        .discover-tag { font-size: 10px; font-weight: 900; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
+        .discover-title { font-size: 20px; font-weight: 800; color: #111; margin: 0 0 10px; line-height: 1.2; }
+        .discover-desc { font-size: 14px; color: #666; line-height: 1.5; margin: 0; }
 
-        .coming-soon-banner {
-            background: linear-gradient(135deg, #222, #444);
-            border-radius: 24px; padding: 30px 20px; margin-top: 10px;
-            text-align: center; color: white;
-        }
-
-        /* --- SCANNER RETICLE --- */
+        /* --- SCANNER RETICLE & LASER --- */
         #scan-reticle {
             position: fixed; top: 43%; left: 50%;
             transform: translate(-50%, -50%);
@@ -165,7 +149,7 @@
             border-radius: 30px;
             z-index: 10; pointer-events: none;
             transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            overflow: hidden;
+            overflow: hidden; /* Keeps the laser inside the frame */
         }
         
         #scan-reticle::before {
@@ -176,13 +160,18 @@
             clip-path: polygon(0 0, 20% 0, 20% 8px, 8px 8px, 8px 20%, 0 20%, 0 0, 80% 0, 80% 8px, 92% 8px, 92% 20%, 100% 20%, 100% 0, 75% 0, 100% 100%, 75% 100%, 75% 90%, 90% 90%, 90% 75%, 100% 75%, 100% 100%, 0 100%, 0 75%, 10% 75%, 10% 90%, 25% 90%, 25% 100%, 0 100%);
         }
 
+        /* --- MOVING LASER LINE --- */
         .scanning-line {
             position: absolute;
-            top: 0; left: 5%; width: 100%; height: 4px;
+            top: 0;
+            left: 5%;
+            width: 100%;
+            height: 4px;
             background: linear-gradient(to right, transparent, var(--accent), transparent);
             box-shadow: 0 0 15px var(--accent), 0 0 25px var(--accent);
             border-radius: 50%;
-            z-index: 2; opacity: 0;
+            z-index: 2;
+            opacity: 0;
             animation: scan-move 2.5s ease-in-out infinite;
         }
 
@@ -194,37 +183,10 @@
         }
 
         /* --- NAVIGATION --- */
-        .nav-bar { position: fixed; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 35px; z-index: 150; pointer-events: none; }
-        
-        .nav-btn-secondary { width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: auto; transition: opacity 0.3s ease; }
-        
-        /* IPHONE CAMERA BUTTON - REVERSED COLORS */
-        .iphone-cam-btn { 
-            width: 82px; height: 82px; border-radius: 50%; 
-            background: transparent; border: 4px solid var(--accent); 
-            display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; pointer-events: auto; position: relative;
-            transition: transform 0.2s cubic-bezier(0.1, 0.5, 0.1, 1), border-color 0.3s ease;
-        }
-        .iphone-cam-btn::after {
-            content: ''; width: 66px; height: 66px; 
-            background: #ffffff; 
-            border-radius: 50%; 
-            transition: all 0.3s ease;
-        }
-        
-        .iphone-cam-btn.active::after {
-            width: 58px; height: 58px;
-            border: 2px solid rgba(0,0,0,0.1); 
-        }
-        
-        /* State when OFF */
-        .iphone-cam-btn.off { border-color: rgba(255,255,255,0.4); }
-        .iphone-cam-btn.off::after { background: rgba(255,255,255,0.2); width: 40px; height: 40px; }
-
-        .iphone-cam-btn:active { transform: scale(0.92); }
-
-        .nav-icon-light { width: 24px; height: 24px; fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+        .nav-bar { position: fixed; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 20px; z-index: 150; pointer-events: none; }
+        .nav-btn { width: 70px; height: 70px; border-radius: 50%; background: #ffffff; border: 4px solid #eee; display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: all 0.2s ease; }
+        .cam-btn.active { border-color: var(--accent); background: var(--accent); }
+        .nav-icon { width: 28px; height: 28px; fill: none; stroke: #222; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 
         .bottom-dock { position: fixed; bottom: 0; width: 100%; height: 320px; z-index: 120; transform: translateY(285px); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .bottom-dock.expanded { background: white; transform: translateY(0); border-radius: 30px 30px 0 0; }
@@ -236,10 +198,8 @@
         .station-card { min-width: 110px; height: 140px; background: #f9f9f9; border-radius: 16px; overflow: hidden; border: 1px solid #eee; flex-shrink: 0; transition: transform 0.2s; }
         .station-card.found { border: 3px solid var(--accent) !important; transform: scale(1.05); background: #fff; box-shadow: 0 8px 20px rgba(0,166,153,0.15); }
         
-        .gps-display { position: absolute; top: 40px; left: 20px; background: var(--glass); backdrop-filter: var(--blur); padding: 10px 18px; border-radius: 12px; z-index: 100; display: flex; align-items: center; gap: 10px; transition: opacity 0.3s ease; }
+        .gps-display { position: absolute; top: 40px; left: 20px; background: var(--glass); backdrop-filter: var(--blur); padding: 10px 18px; border-radius: 12px; z-index: 100; display: flex; align-items: center; gap: 10px; }
         .pulse.live { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse-scanning 1.5s infinite; }
-        .pulse.standby { background: #999; animation: none; }
-        
         @keyframes pulse-scanning { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
 
         .tutorial-video-box { width: 92%; height: 65vh; background: #111; border-radius: 28px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.3); margin: 20px auto; }
@@ -261,11 +221,11 @@
     <div id="news-panel">
         <div class="news-header">
             <div>
-                <span style="color: var(--accent); font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 2px;">Trending</span>
-                <h2 style="margin:0; font-size: 32px; font-weight: 900; letter-spacing: -1px;">Updates</h2>
+                <span style="color: var(--accent); font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Discover</span>
+                <h2 style="margin:0; font-size: 28px; font-weight: 900;">Latest Updates</h2>
             </div>
             <button class="close-news" onclick="toggleNews(false)">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
             </button>
         </div>
         <div class="news-content">
@@ -274,9 +234,9 @@
                     <video muted loop playsinline autoplay><source src="Assets/Admin_Update_Video.mp4" type="video/mp4"></video>
                 </div>
                 <div class="discover-info">
-                    <span class="discover-tag">AR Engine</span>
-                    <h3 class="discover-title">Ecoverse Interactivity</h3>
-                    <p class="discover-desc">We've enhanced the tracking stability. Aim at the magazine illustrations to see the 3D flora bloom in real-time.</p>
+                    <span class="discover-tag">New Feature</span>
+                    <h3 class="discover-title">Scan to Discover</h3>
+                    <p class="discover-desc">Point your camera at the Ecoverse magazine illustrations to watch them transform with high-fidelity tracking.</p>
                 </div>
             </div>
 
@@ -285,17 +245,11 @@
                     <img src="Assets/Cordillera Village.png" alt="Update">
                 </div>
                 <div class="discover-info">
-                    <span class="discover-tag">Heritage</span>
-                    <h3 class="discover-title">The Village Guide</h3>
-                    <p class="discover-desc">The Cordillera Village tour now includes narrated heritage stories. Look for the "Voice" icon when you scan.</p>
+                    <span class="discover-tag">Community</span>
+                    <h3 class="discover-title">Seasonal Shift</h3>
+                    <p class="discover-desc">The "Floral Calendar" page is now live. Explore real-time growth progress for this month's featured blooms.</p>
                 </div>
             </div>
-
-            <div class="coming-soon-banner">
-                <h4 style="margin:0 0 5px; font-weight: 800; text-transform: uppercase; font-size: 12px; opacity: 0.7;">Coming Soon</h4>
-                <p style="margin:0; font-size: 18px; font-weight: 700;">Night Bloom AR Experience</p>
-            </div>
-            <p style="text-align:center; font-size: 12px; color: #999; margin-top: 25px;">You're all caught up!</p>
         </div>
     </div>
 
@@ -346,11 +300,11 @@
                 <p style="color: #666; font-size: 14px; margin-top: 5px;">Scan markers to unlock hidden stories</p>
             </div>
             <div class="tutorial-video-box">
-                <video id="tutorialVideo" class="preview-video-element" autoplay loop muted playsinline><source src="Assets/Tutorial_Video.mp4" type="video/mp4"></video>
+                <video class="preview-video-element" autoplay loop muted playsinline><source src="Assets/Tutorial_Video.mp4" type="video/mp4"></video>
             </div>
             <div class="action-row">
                 <button class="btn-outline" onclick="startScanner()">Skip</button>
-                <button class="btn-filled" onclick="openVideoTutorial()">Watch</button>
+                <button class="btn-filled" onclick="startScanner()">I'm Ready</button>
             </div>
         </div>
     </div>
@@ -360,10 +314,7 @@
             <div class="scanning-line" id="laser-line"></div>
         </div>
         
-        <div class="gps-display" id="gps-display">
-            <div id="gps-pulse" class="pulse live"></div>
-            <div id="gps-status" style="font-size:11px; font-weight:900; color:#666;">SCANNING...</div>
-        </div>
+        <div class="gps-display"><div class="pulse live"></div><div id="gps-status" style="font-size:11px; font-weight:900; color:#666;">SCANNING...</div></div>
         
         <div class="bottom-dock" id="dock">
             <div class="drag-handle" id="handle"><div class="handle-bar"></div></div>
@@ -371,14 +322,14 @@
         </div>
         
         <div class="nav-bar">
-            <div class="nav-btn-secondary" onclick="toggleNews(true)">
-                <svg class="nav-icon-light" viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8z"/></svg>
+            <div class="nav-btn" onclick="toggleNews(true)">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8z"/></svg>
             </div>
-            
-            <div class="iphone-cam-btn active" id="cam-toggle" onclick="toggleScanner()"></div>
-            
-            <div class="nav-btn-secondary" onclick="goBackHome()">
-                <svg class="nav-icon-light" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>
+            <div class="nav-btn cam-btn active" id="cam-toggle" onclick="toggleScanner()">
+                <svg viewBox="0 0 24 24" width="30" fill="#fff"><path d="M12 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zm7-4h-2.69l-1.83-2H9.52l-1.83 2H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-7 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+            </div>
+            <div class="nav-btn" onclick="goBackHome()">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>
             </div>
         </div>
     </div>
@@ -389,6 +340,7 @@
     </a-scene>
 
 <script>
+    let lastFoundIndex = null; 
     let isOpeningTour = false;
 
     const stations = [
@@ -409,17 +361,6 @@
         { name: "Philippine-Thailand Friendship Garden", thumb: "Assets/Philippine-Thailand Frienship Garden.png", link: "https://tour.panoee.net/69b184dfa0e1d16f1a9e388d/69b187aba0e1d18afb9e38fb" },
         { name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.png", link: "https://tour.panoee.net/69b7b586a3e4d741fdc8db26" }
     ];
-
-    function openVideoTutorial() {
-        const video = document.getElementById('tutorialVideo');
-        if (video) {
-            video.muted = false;
-            video.currentTime = 0;
-            video.play();
-            if (video.requestFullscreen) { video.requestFullscreen(); } 
-        }
-    }
-
     function toggleNews(show) {
         document.getElementById('news-panel').classList.toggle('show', show);
     }
@@ -433,6 +374,8 @@
         if (pageId === 'tutorial') document.getElementById('tutorial-page').classList.remove('hidden');
         if (pageId === 'scanner') {
             document.getElementById('ui-layer').classList.remove('hidden');
+            // Ensure laser starts when scanner page loads
+            document.getElementById('laser-line').style.animationPlayState = 'running';
         }
     }
 
@@ -481,10 +424,7 @@
             });
 
             entity.addEventListener("targetLost", () => {
-                const btn = document.getElementById('cam-toggle');
-                if(btn.classList.contains('active')) {
-                    document.getElementById('gps-status').innerText = "SCANNING...";
-                }
+                document.getElementById('gps-status').innerText = "SCANNING...";
             });
             container.appendChild(entity);
         });
@@ -512,41 +452,17 @@
         const arSystem = document.querySelector('a-scene').systems['mindar-image-system'];
         const btn = document.getElementById('cam-toggle');
         const laser = document.getElementById('laser-line');
-        const statusText = document.getElementById('gps-status');
-        const statusPulse = document.getElementById('gps-pulse');
-        const navBtns = document.querySelectorAll('.nav-btn-secondary'); // Select both side icons
         
         if(btn.classList.contains('active')) {
-            // TURN OFF
             arSystem.stop();
-            btn.classList.replace('active', 'off');
-            
-            // 1. Hide Laser line
-            laser.style.display = 'none'; 
-            
-            // 2. Change Label
-            statusText.innerText = "CAMERA STANDBY";
-            statusPulse.classList.add('standby');
-            
-            // 3. Dim secondary elements
-            navBtns.forEach(el => el.style.opacity = '0.4');
-            document.getElementById('gps-display').style.opacity = '0.5';
-
+            btn.classList.remove('active');
+            laser.style.animationPlayState = 'paused';
+            laser.style.opacity = '0';
         } else {
-            // TURN ON
             await arSystem.start();
-            btn.classList.replace('off', 'active');
-            
-            // 1. Show Laser line
-            laser.style.display = 'block'; 
-            
-            // 2. Return Labels
-            statusText.innerText = "SCANNING...";
-            statusPulse.classList.remove('standby');
-            
-            // 3. Restore Visibility
-            navBtns.forEach(el => el.style.opacity = '1');
-            document.getElementById('gps-display').style.opacity = '1';
+            btn.classList.add('active');
+            laser.style.animationPlayState = 'running';
+            laser.style.opacity = '1';
         }
     }
 
