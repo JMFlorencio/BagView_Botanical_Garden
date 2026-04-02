@@ -527,11 +527,23 @@
             const entity = document.createElement('a-entity'); 
             entity.setAttribute('mindar-image-target', `targetIndex: ${i}`);
             
-            entity.addEventListener("targetFound", () => {
+           entity.addEventListener("targetFound", () => {
                 const btn = document.getElementById('cam-toggle');
+                
+                // Check if the camera is active and we aren't already mid-transition
                 if (isOpeningTour || !btn.classList.contains('active')) return;
+                
                 isOpeningTour = true;
                 highlightCard(i);
+                
+                // Immediate UI feedback
+                document.getElementById('gps-status').innerText = "MATCHED: " + s.name.toUpperCase();
+                document.getElementById('match-sound').play();
+
+                // REMOVED DELAY: Load iframe and show modal instantly
+                document.getElementById('tour-iframe').src = s.link;
+                document.getElementById('tour-modal').classList.remove('hidden');
+            });
                 
                 document.getElementById('gps-status').innerText = "MATCHED: " + s.name.toUpperCase();
                 
