@@ -425,24 +425,66 @@
         if(btn.classList.contains('active')) { if (arSystem) arSystem.stop(); btn.classList.replace('active', 'off'); uiLayer.classList.add('camera-off'); statusText.innerText = "CAMERA STANDBY"; statusPulse.classList.add('standby'); } else { if (arSystem) await arSystem.start(); btn.classList.replace('off', 'active'); uiLayer.classList.remove('camera-off'); statusText.innerText = "SCANNING..."; statusPulse.classList.remove('standby'); }
     }
 
-    function initDraggable() {
-        const dock = document.getElementById('dock'); const handle = document.getElementById('handle'); const nav = document.getElementById('main-nav');
-        let startY, isDragging = false;
-        handle.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; isDragging = true; dock.style.transition = 'none'; });
-        window.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-            let move = (dock.classList.contains('expanded') ? 0 : 285) + (e.touches[0].clientY - startY);
-            if (move < 0) move = 0; if (move > 285) move = 285;
-            dock.style.transform = `translateY(${move}px)`;
-            nav.style.opacity = move / 285;
-        });
-        window.addEventListener('touchend', (e) => {
-            if (!isDragging) return; isDragging = false; dock.style.transition = '0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-            if (e.changedTouches[0].clientY < startY - 40) { dock.classList.add('expanded'); dock.style.transform = `translateY(0)`; nav.classList.add('hidden-nav'); nav.style.opacity = "0"; }
-            else { dock.classList.remove('expanded'); dock.style.transform = `translateY(285px)`; nav.classList.remove('hidden-nav'); nav.style.opacity = "1"; }
-        });
-    }
+function initDraggable() {
+    const dock = document.getElementById('dock');
+    const handle = document.getElementById('handle');
+    const nav = document.getElementById('main-nav');
+    
+    let startY, initialTranslateY;
+    let isDragging = false;
 
+    handle.addEventListener('touchstart', (e) => {
+        startY = e.touches[0].clientY;
+        isDragging = true;
+        dock.style.transition = 'none';
+        
+        // Get the current actual position of the dock
+        const style = window.getComputedStyle(dock);
+        const matrix = new WebKitCSSMatrix(style.transform);
+        initialTranslateY = matrix.m42;
+    });
+
+    window.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        
+        const deltaY = e.touches[0].clientY - startY;
+        let newTranslateY = initialTranslateY + deltaY;
+
+        // Constraints: Don't let it go above 0 or below its "closed" position
+        const maxMove = window.innerHeight * 0.34; // Matches your 34dvh CSS
+        if (newTranslateY < 0) newTranslateY = 0;
+        if (newTranslateY > maxMove) newTranslateY = maxMove;
+
+        dock.style.transform = `translateY(${newTranslateY}px)`;
+        
+        // Fade the nav bar based on dock position
+        const opacity = newTranslateY / maxMove;
+        nav.style.opacity = opacity;
+    });
+
+    window.addEventListener('touchend', (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        dock.style.transition = '0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+
+        const currentY = e.changedTouches[0].clientY;
+        const maxMove = window.innerHeight * 0.34;
+
+        // Logic: If dragged up significantly, or currently high up, snap to top
+        if (currentY < startY - 20 || (currentY === startY && initialTranslateY === 0)) {
+            dock.classList.add('expanded');
+            dock.style.transform = `translateY(0)`;
+            nav.classList.add('hidden-nav');
+            nav.style.opacity = "0";
+        } else {
+            // Snap to bottom
+            dock.classList.remove('expanded');
+            dock.style.transform = `translateY(${maxMove}px)`;
+            nav.classList.remove('hidden-nav');
+            nav.style.opacity = "1";
+        }
+    });
+}
     window.addEventListener('load', () => { setTimeout(() => { document.getElementById('splash-screen').style.opacity = '0'; setTimeout(() => { document.getElementById('splash-screen').style.display = 'none'; startHeroRotation(); }, 400); }, 800); });
 </script>
 </body>
