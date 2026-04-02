@@ -502,10 +502,9 @@
         initExperience();
     }
 
-    function goBackHome() {
-        const arSystem = document.querySelector('a-scene').systems['mindar-image-system'];
-        if (arSystem) arSystem.stop();
-        renderPage('home');
+   function goBackHome() {
+        // This triggers a full browser reload to reset the application state
+        window.location.reload();
     }
 
     function initExperience() {
