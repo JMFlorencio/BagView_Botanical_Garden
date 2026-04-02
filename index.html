@@ -12,17 +12,36 @@
         /* --- BRANDING & FONTS --- */
         @font-face {
             font-family: 'Agrandir';
+            src: url('Assets/agrandir-thin.woff2') format('woff2'); 
+            font-weight: 100;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Agrandir';
+            src: url('Assets/agrandir-regular.woff2') format('woff2'); 
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Agrandir';
             src: url('Assets/agrandir-text-bold.woff2') format('woff2'); 
             font-weight: 700;
             font-style: normal;
         }
 
+        @font-face {
+            font-family: 'Agrandir';
+            src: url('Assets/agrandir-grand-heavy.woff2') format('woff2'); 
+            font-weight: 900;
+            font-style: normal;
+        }
+
         :root { 
             --accent: #00A699; 
-            /* Splash Colors from Design */
             --color-bag: #01211e;
             --color-view: #f7eaea;
-            
             --glass: rgba(255, 255, 255, 0.9); 
             --blur: blur(20px); 
             --bg-page: #ffffff;
@@ -31,10 +50,15 @@
             --card-shadow: 0 10px 30px rgba(0,0,0,0.08);
         }
         
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            font-family: 'Agrandir', sans-serif !important; 
+        }
+        
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
 
-        /* --- UPDATED SPLASH SCREEN --- */
+        /* --- SPLASH SCREEN --- */
         #splash-screen {
             position: fixed; inset: 0; z-index: 9999; 
             background: var(--accent); display: flex; align-items: center; justify-content: center;
@@ -46,17 +70,10 @@
         .splash-logo img { width: 100%; height: 100%; object-fit: contain; filter: brightness(0) invert(1); }
         
         .splash-text { 
-            font-family: 'Agrandir', sans-serif;
-            font-size: 52px; 
-            letter-spacing: 1px; 
-            margin: 0; 
-            opacity: 0; 
-            transform: translateY(10px); 
-            animation: textFadeUp 0.6s ease forwards 0.4s; 
-            display: flex;
+            font-size: 52px; letter-spacing: 1px; margin: 0; opacity: 0; 
+            transform: translateY(10px); animation: textFadeUp 0.6s ease forwards 0.4s; display: flex;
         }
         
-        /* Typography Split Styling */
         .splash-text .bag { color: var(--color-bag); font-weight: 700; }
         .splash-text .view { color: var(--color-view); font-weight: 700; }
 
@@ -75,7 +92,7 @@
         .close-tour-btn { 
             position: absolute; top: 20px; right: 20px; z-index: 4100; 
             padding: 12px 20px; background: var(--accent); color: white; 
-            border: none; border-radius: 50px; font-weight: 800; font-size: 12px;
+            border: none; border-radius: 50px; font-weight: 700; font-size: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer;
         }
 
@@ -102,7 +119,7 @@
             padding: 4px 10px; 
             border-radius: 6px; 
             font-size: 10px; 
-            font-weight: 800; 
+            font-weight: 700; 
             text-transform: uppercase; 
             letter-spacing: 1px; 
             margin-bottom: 8px; 
@@ -130,7 +147,7 @@
         .hero-info-overlay p { 
             font-size: 13px; 
             margin: 6px 0 0; 
-            font-weight: 600; 
+            font-weight: 400; 
             color: #444; 
         }
 
@@ -139,7 +156,7 @@
         .dot.active { width: 22px; background: var(--accent); border-radius: 10px; }
 
         .hero-text-area { flex: 1; padding: 0 30px 40px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; background: white; }
-        .hero-title { font-size: 28px; font-weight: 800; color: #222; margin-bottom: 25px; line-height: 1.2; }
+        .hero-title { font-size: 28px; font-weight: 900; color: #222; margin-bottom: 25px; line-height: 1.2; }
 
         .get-started-btn { width: 100%; max-width: 350px; height: 75px; background: var(--accent); color: white; border: none; border-radius: 40px; font-size: 19px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding-right: 70px; position: relative; cursor: pointer; box-shadow: 0 10px 25px rgba(0,166,153,0.25); }
         .btn-arrow-circle { position: absolute; right: 10px; width: 55px; height: 55px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
@@ -171,12 +188,12 @@
             position: absolute; top: -15px; left: 20px;
             background: var(--accent); color: white;
             padding: 6px 14px; border-radius: 12px;
-            font-size: 10px; font-weight: 900; 
+            font-size: 10px; font-weight: 700; 
             text-transform: uppercase; letter-spacing: 1px;
             box-shadow: 0 4px 10px rgba(0,166,153,0.3);
         }
         .discover-title { font-size: 22px; font-weight: 900; color: #111; margin: 10px 0 8px; line-height: 1.2; letter-spacing: -0.5px; }
-        .discover-desc { font-size: 15px; color: #555; line-height: 1.6; margin: 0; font-weight: 500; }
+        .discover-desc { font-size: 15px; color: #555; line-height: 1.6; margin: 0; font-weight: 400; }
 
         /* --- SCANNER RETICLE --- */
         #scan-reticle {
@@ -256,22 +273,32 @@
             cursor: pointer; pointer-events: auto; 
         }
         
+        /* --- AR SCANNER BUTTON STYLE --- */
         .iphone-cam-btn { 
             width: 82px; height: 82px; border-radius: 50%; 
-            background: transparent; border: 4px solid #ffffff; 
+            background: var(--accent); border: 4px solid #ffffff; 
             display: flex; align-items: center; justify-content: center; 
             cursor: pointer; pointer-events: auto; position: relative;
-            transition: transform 0.2s cubic-bezier(0.1, 0.5, 0.1, 1);
+            transition: all 0.3s cubic-bezier(0.1, 0.5, 0.1, 1);
+            box-shadow: 0 8px 25px rgba(0, 166, 153, 0.4);
         }
-        .iphone-cam-btn::after {
-            content: ''; width: 66px; height: 66px; 
-            background: rgba(255, 255, 255, 0.8); 
-            border-radius: 50%; 
-            transition: all 0.3s ease;
+
+        .iphone-cam-btn svg {
+            width: 38px; height: 38px;
+            stroke: white;
+            transition: transform 0.3s ease;
         }
         
-        .iphone-cam-btn.off { border-color: rgba(255,255,255,0.4); }
-        .iphone-cam-btn.off::after { background: rgba(255,255,255,0.2); width: 40px; height: 40px; }
+        .iphone-cam-btn.off { 
+            border-color: rgba(255,255,255,0.4); 
+            background: rgba(0,0,0,0.4);
+            box-shadow: none;
+        }
+
+        .iphone-cam-btn.off svg {
+            opacity: 0.5;
+            transform: scale(0.8) rotate(-45deg);
+        }
 
         .iphone-cam-btn:active { transform: scale(0.92); }
         .nav-icon-light { width: 24px; height: 24px; fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
@@ -316,11 +343,11 @@
         }
 
         .action-row { display: flex; gap: 15px; width: 92%; margin-bottom: 20px; }
-        .btn-outline { flex: 1; height: 60px; border-radius: 18px; border: 2px solid #ddd; background: white; color: #444; font-weight: 900; font-size: 16px; cursor: pointer; }
+        .btn-outline { flex: 1; height: 60px; border-radius: 18px; border: 2px solid #ddd; background: white; color: #444; font-weight: 700; font-size: 16px; cursor: pointer; }
         
         .btn-filled { 
             flex: 1.2; height: 60px; border-radius: 18px; border: none; 
-            background: var(--accent); color: white; font-weight: 900; font-size: 16px; 
+            background: var(--accent); color: white; font-weight: 700; font-size: 16px; 
             cursor: pointer; box-shadow: 0 6px 20px rgba(0,166,153,0.2); transition: 0.3s;
         }
         .btn-filled:active { transform: scale(0.96); opacity: 0.9; }
@@ -341,7 +368,7 @@
     <div id="news-panel">
         <div class="news-header">
             <div>
-                <span style="color: var(--accent); font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 2px;">System</span>
+                <span style="color: var(--accent); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 2px;">System</span>
                 <h2 style="margin:0; font-size: 32px; font-weight: 900; letter-spacing: -1px;">Updates</h2>
             </div>
             <button class="close-news" onclick="toggleNews(false)">
@@ -416,7 +443,7 @@
         <div style="width: 100%; height: 100%; padding: 40px 0; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
             <div style="text-align: center; margin-top: 10px;">
                 <h2 style="font-weight: 900; margin: 0; color: var(--accent); font-size: 32px; letter-spacing: -1px; text-transform: uppercase;">Quick Guide</h2>
-                <p style="color: #666; font-size: 14px; margin-top: 5px; font-weight: 500;">Scan markers to unlock hidden stories</p>
+                <p style="color: #666; font-size: 14px; margin-top: 5px; font-weight: 400;">Scan markers to unlock hidden stories</p>
             </div>
             
             <div class="tutorial-video-box">
@@ -445,7 +472,7 @@
         
         <div class="gps-display">
             <div id="gps-pulse" class="pulse live"></div>
-            <div id="gps-status" style="font-size:11px; font-weight:900; color:#666;">SCANNING...</div>
+            <div id="gps-status" style="font-size:11px; font-weight:700; color:#666;">SCANNING...</div>
         </div>
         
         <div class="bottom-dock" id="dock">
@@ -458,7 +485,17 @@
                 <svg class="nav-icon-light" viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8z"/></svg>
             </div>
             
-            <div class="iphone-cam-btn active" id="cam-toggle" onclick="toggleScanner()"></div>
+            <div class="iphone-cam-btn active" id="cam-toggle" onclick="toggleScanner()">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+                    <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+                    <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+                    <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+                    <line x1="7" y1="12" x2="17" y2="12"></line>
+                    <polyline points="10 9 7 12 10 15"></polyline>
+                    <polyline points="14 15 17 12 14 9"></polyline>
+                </svg>
+            </div>
             
             <div class="nav-btn-secondary" onclick="goBackHome()">
                 <svg class="nav-icon-light" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>
@@ -481,7 +518,7 @@
         { name: "Arbor", thumb: "Assets/Arbor.png", link: "https://tour.panoee.net/arbor" },
         { name: "Asian Garden", thumb: "Assets/Asian Garden.png", link: "https://tour.panoee.net/asian-garden" },
         { name: "Cactus & Succulents", thumb: "Assets/Cactus&Succulents.png", link: "https://tour.panoee.net/cactus-succulent-garden/1-1" },
-        { name: "Centennial Garden", thumb: "Assets/Centennial Garden.png", link: "https://tour.panoee.net/centennialgarden/1" },
+        { name: "Centennial Garden", thumb: "Assets/Centennialgarden/1" },
         { name: "Chinese Garden", thumb: "Assets/Chinese%20Garden.png", link: "https://tour.panoee.net/chinese-garden" },
         { name: "City of Vaughan", thumb: "Assets/City%20of%20Vaughan%20Friendship%20Garden.png", link: "https://tour.panoee.net/city-of-vaughan" },
         { name: "Cordillera Village", thumb: "Assets/Cordillera%20Village.png", link: "https://tour.panoee.net/cordillera-village/1" },
@@ -541,7 +578,7 @@
         stations.forEach((s, i) => {
             const card = document.createElement('div'); 
             card.className = 'station-card'; card.id = `card-${i}`;
-            card.innerHTML = `<div style="height:70%"><img src="${s.thumb}" style="width:100%; height:100%; object-fit:cover;"></div><div style="font-size:9px; text-align:center; padding:10px 5px; font-weight:800;">${s.name.toUpperCase()}</div>`;
+            card.innerHTML = `<div style="height:70%"><img src="${s.thumb}" style="width:100%; height:100%; object-fit:cover;"></div><div style="font-size:9px; text-align:center; padding:10px 5px; font-weight:700;">${s.name.toUpperCase()}</div>`;
             
             card.onclick = () => {
                 highlightCard(i);
