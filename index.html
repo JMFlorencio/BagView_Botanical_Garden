@@ -482,6 +482,7 @@
         }, 4000);
     }
 
+    // Toggle News panel
     function toggleNews(show) { document.getElementById('news-panel').classList.toggle('show', show); }
 
     function renderPage(pageId) {
@@ -495,13 +496,14 @@
 
     function startScanner() {
         renderPage('scanner');
-        initExperience();
         const sceneEl = document.querySelector('a-scene');
         const arSystem = sceneEl.systems['mindar-image-system'];
         requestAnimationFrame(() => { if (arSystem && !arSystem.mainLoopId) arSystem.start(); });
+        initExperience();
     }
 
-    function goBackHome() {
+   function goBackHome() {
+        // This triggers a full browser reload to reset the application state
         window.location.reload();
     }
 
@@ -519,6 +521,7 @@
                 highlightCard(i);
                 document.getElementById('gps-status').innerText = "SELECTED: " + s.name.toUpperCase();
             };
+            
             root.appendChild(card);
             
             const entity = document.createElement('a-entity'); 
@@ -527,15 +530,16 @@
             entity.addEventListener("targetFound", () => {
                 const btn = document.getElementById('cam-toggle');
                 if (isOpeningTour || !btn.classList.contains('active')) return;
-                
                 isOpeningTour = true;
                 highlightCard(i);
                 
                 document.getElementById('gps-status').innerText = "MATCHED: " + s.name.toUpperCase();
+                
                 document.getElementById('match-sound').play();
-
-                document.getElementById('tour-iframe').src = s.link;
-                document.getElementById('tour-modal').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('tour-iframe').src = s.link;
+                    document.getElementById('tour-modal').classList.remove('hidden');
+                }, 1000);
             });
             container.appendChild(entity);
         });
@@ -642,9 +646,12 @@
         });
     }
 
-    window.addEventListener('load', () => {
+window.addEventListener('load', () => {
+        // Reduced from 2000ms (2s) to 800ms for a quicker first impression
         setTimeout(() => { 
             document.getElementById('splash-screen').style.opacity = '0';
+            
+            // Reduced from 600ms to 400ms for a faster fade-out
             setTimeout(() => {
                 document.getElementById('splash-screen').style.display = 'none';
                 startHeroRotation();
