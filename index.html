@@ -376,32 +376,53 @@
 
     function goBackHome() { window.location.reload(); }
 
-    function initExperience() {
-        const root = document.getElementById('gallery-root');
-        const container = document.getElementById('target-container');
-        if (root.children.length > 0) return;
+  function initExperience() {
+    const root = document.getElementById('gallery-root');
+    const container = document.getElementById('target-container');
+    const matchSound = document.getElementById('match-sound'); //
+    
+    if (root.children.length > 0) return;
+    
+    stations.forEach((s, i) => {
+        // Card Creation Logic
+        const card = document.createElement('div'); 
+        card.className = 'station-card'; 
+        card.id = `card-${i}`;
+        card.innerHTML = `<div style="height:70%"><img src="${s.thumb}" style="width:100%; height:100%; object-fit:cover;"></div>
+                          <div style="font-size:9px; text-align:center; padding:10px 5px; font-weight:700;">${s.name.toUpperCase()}</div>`;
         
-        stations.forEach((s, i) => {
-            const card = document.createElement('div'); card.className = 'station-card'; card.id = `card-${i}`;
-            card.innerHTML = `<div style="height:70%"><img src="${s.thumb}" style="width:100%; height:100%; object-fit:cover;"></div><div style="font-size:9px; text-align:center; padding:10px 5px; font-weight:700;">${s.name.toUpperCase()}</div>`;
-            card.onclick = () => { highlightCard(i); document.getElementById('gps-status').innerText = "SELECTED: " + s.name.toUpperCase(); };
-            root.appendChild(card);
+        card.onclick = () => { 
+            highlightCard(i); 
+            document.getElementById('gps-status').innerText = "SELECTED: " + s.name.toUpperCase(); 
+        };
+        root.appendChild(card);
+        
+        // AR Entity Logic
+        const entity = document.createElement('a-entity'); 
+        entity.setAttribute('mindar-image-target', `targetIndex: ${i}`);
+        
+        entity.addEventListener("targetFound", () => {
+            const btn = document.getElementById('cam-toggle');
+            if (isOpeningTour || !btn.classList.contains('active')) return;
             
-            const entity = document.createElement('a-entity'); entity.setAttribute('mindar-image-target', `targetIndex: ${i}`);
-            entity.addEventListener("targetFound", () => {
-                const btn = document.getElementById('cam-toggle');
-                if (isOpeningTour || !btn.classList.contains('active')) return;
-                isOpeningTour = true;
-                highlightCard(i);
-                document.getElementById('gps-status').innerText = "MATCHED: " + s.name.toUpperCase();
-                document.getElementById('match-sound').play();
-                document.getElementById('tour-iframe').src = s.link;
-                document.getElementById('tour-modal').classList.remove('hidden');
-            });
-            container.appendChild(entity);
+            isOpeningTour = true;
+            highlightCard(i);
+            
+            // Restore Sound Feedback
+            if (matchSound) {
+                matchSound.currentTime = 0; // Reset to start
+                matchSound.play().catch(e => console.log("Audio play blocked:", e)); //
+            }
+
+            document.getElementById('gps-status').innerText = "MATCHED: " + s.name.toUpperCase();
+            document.getElementById('tour-iframe').src = s.link;
+            document.getElementById('tour-modal').classList.remove('hidden');
         });
-        initDraggable();
-    }
+        
+        container.appendChild(entity);
+    });
+    initDraggable();
+}
 
     function closeTour() { document.getElementById('tour-modal').classList.add('hidden'); document.getElementById('tour-iframe').src = ""; isOpeningTour = false; if(!document.getElementById('ui-layer').classList.contains('camera-off')) { document.getElementById('gps-status').innerText = "SCANNING..."; } }
     function openVideoPopup() { const modal = document.getElementById('video-overlay'); const video = document.getElementById('tutorial-full-video'); video.src = "Assets/BagView_Tutorial.mp4"; modal.classList.remove('hidden'); video.play(); }
