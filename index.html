@@ -646,14 +646,17 @@
         });
     }
 
-    window.addEventListener('load', () => {
+window.addEventListener('load', () => {
+        // Reduced from 2000ms (2s) to 800ms for a quicker first impression
         setTimeout(() => { 
             document.getElementById('splash-screen').style.opacity = '0';
+            
+            // Reduced from 600ms to 400ms for a faster fade-out
             setTimeout(() => {
                 document.getElementById('splash-screen').style.display = 'none';
                 startHeroRotation();
-            }, 600);
-        }, 2000);
+            }, 400);
+        }, 800); 
     });
 </script>
 </body>
