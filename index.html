@@ -58,67 +58,24 @@
         
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
 
-     /* --- UPDATED SPLASH SCREEN (MATCHES IMAGE_0) --- */
+        /* --- SPLASH SCREEN --- */
         #splash-screen {
             position: fixed; inset: 0; z-index: 9999; 
-            /* Forces the exact Teal background from your logo image */
-            background: #00A699 !important; 
-            display: flex; align-items: center; justify-content: center;
+            background: var(--accent); display: flex; align-items: center; justify-content: center;
             transition: opacity 0.6s ease;
         }
 
-        .splash-content { 
-            display: flex; flex-direction: column; align-items: center; 
-            /* Reduced gap to match tighter packing in the image */
-            gap: 5px; 
-            text-align: center;
-        }
+        .splash-content { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .splash-logo { width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; animation: logoEnter 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .splash-logo img { width: 100%; height: 100%; object-fit: contain; filter: brightness(0) invert(1); }
         
-        /* Ensures the tree icon matches the scale of the image */
-        .splash-logo { 
-            width: 140px; height: 140px; display: flex; 
-            align-items: center; justify-content: center; 
-            animation: logoEnter 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            margin-bottom: 5px;
-        }
-        
-        /* Forces the SVG/Image to be the correct color (Light Pink) */
-        .splash-logo img { 
-            width: 100%; height: 100%; object-fit: contain; 
-            filter: brightness(0) saturate(100%) invert(93%) sepia(10%) saturate(246%) hue-rotate(314deg) brightness(101%) contrast(93%) !important;
-        }
-        
-        /* Main BRANDING Text Block */
         .splash-text { 
-            /* Massive font size for "BAGVIEW" */
-            font-size: 80px; 
-            /* Reduced letter-spacing for 'Agrandir' boldness */
-            letter-spacing: -2px; 
-            margin: 0; padding: 0; 
-            opacity: 0; 
-            transform: translateY(10px); 
-            animation: textFadeUp 0.6s ease forwards 0.4s; 
-            display: flex; 
-            line-height: 1; /* Tight line height */
+            font-size: 52px; letter-spacing: 1px; margin: 0; opacity: 0; 
+            transform: translateY(10px); animation: textFadeUp 0.6s ease forwards 0.4s; display: flex;
         }
         
-        /* Forced Dark Green color for 'BAG' */
-        .splash-text .bag { color: #01211e !important; font-weight: 900; }
-        
-        /* Forced Light Pink color for 'VIEW' */
-        .splash-text .view { color: #f7eaea !important; font-weight: 900; }
-
-        /* The NEW Slogan Text Block */
-        .splash-slogan {
-            /* Forced Light Pink color */
-            color: #f7eaea !important;
-            font-weight: 400; /* Regular weight of Agrandir */
-            font-size: 16px; 
-            margin-top: 5px;
-            opacity: 0;
-            letter-spacing: 0.5px;
-            animation: textFadeUp 0.6s ease forwards 0.7s; /* Delayed animation */
-        }
+        .splash-text .bag { color: var(--color-bag); font-weight: 700; }
+        .splash-text .view { color: var(--color-view); font-weight: 700; }
 
         @keyframes logoEnter { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes textFadeUp { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
