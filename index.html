@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BAGVIEW | AR Eco-Tourism</title>
     
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
@@ -10,10 +10,33 @@
 
     <style>
         /* --- BRANDING & FONTS --- */
-        @font-face { font-family: 'Agrandir'; src: url('Assets/agrandir-thin.woff2') format('woff2'); font-weight: 100; font-style: normal; }
-        @font-face { font-family: 'Agrandir'; src: url('Assets/agrandir-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
-        @font-face { font-family: 'Agrandir'; src: url('Assets/agrandir-text-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
-        @font-face { font-family: 'Agrandir'; src: url('Assets/agrandir-grand-heavy.woff2') format('woff2'); font-weight: 900; font-style: normal; }
+        @font-face {
+            font-family: 'Agrandir';
+            src: url('Assets/agrandir-thin.woff2') format('woff2'); 
+            font-weight: 100;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Agrandir';
+            src: url('Assets/agrandir-regular.woff2') format('woff2'); 
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Agrandir';
+            src: url('Assets/agrandir-text-bold.woff2') format('woff2'); 
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Agrandir';
+            src: url('Assets/agrandir-grand-heavy.woff2') format('woff2'); 
+            font-weight: 900;
+            font-style: normal;
+        }
 
         :root { 
             --accent: #00A699; 
@@ -33,62 +56,79 @@
             font-family: 'Agrandir', sans-serif !important; 
         }
         
-        body, html { 
-            margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; 
-            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-        }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
 
-        /* --- UNIVERSAL MOBILE SPLASH --- */
+     /* --- UPDATED SPLASH SCREEN (MATCHES IMAGE_0) --- */
         #splash-screen {
             position: fixed; inset: 0; z-index: 9999; 
+            /* Forces the exact Teal background from your logo image */
             background: #00A699 !important; 
             display: flex; align-items: center; justify-content: center;
             transition: opacity 0.6s ease;
-            height: 100dvh; 
         }
 
         .splash-content { 
             display: flex; flex-direction: column; align-items: center; 
-            gap: 1vw; text-align: center; width: 100%;
+            /* Reduced gap to match tighter packing in the image */
+            gap: 5px; 
+            text-align: center;
         }
         
+        /* Ensures the tree icon matches the scale of the image */
         .splash-logo { 
-            width: 35vw; height: 35vw; max-width: 160px;
-            display: flex; align-items: center; justify-content: center; 
+            width: 140px; height: 140px; display: flex; 
+            align-items: center; justify-content: center; 
             animation: logoEnter 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            margin-bottom: 2vw;
+            margin-bottom: 5px;
         }
         
+        /* Forces the SVG/Image to be the correct color (Light Pink) */
         .splash-logo img { 
             width: 100%; height: 100%; object-fit: contain; 
             filter: brightness(0) saturate(100%) invert(93%) sepia(10%) saturate(246%) hue-rotate(314deg) brightness(101%) contrast(93%) !important;
         }
         
+        /* Main BRANDING Text Block */
         .splash-text { 
-            font-size: 20vw; 
-            letter-spacing: -0.5vw; 
+            /* Massive font size for "BAGVIEW" */
+            font-size: 80px; 
+            /* Reduced letter-spacing for 'Agrandir' boldness */
+            letter-spacing: -2px; 
             margin: 0; padding: 0; 
             opacity: 0; 
             transform: translateY(10px); 
             animation: textFadeUp 0.6s ease forwards 0.4s; 
-            display: flex; line-height: 0.9;
+            display: flex; 
+            line-height: 1; /* Tight line height */
         }
         
+        /* Forced Dark Green color for 'BAG' */
         .splash-text .bag { color: #01211e !important; font-weight: 900; }
+        
+        /* Forced Light Pink color for 'VIEW' */
         .splash-text .view { color: #f7eaea !important; font-weight: 900; }
 
+       /* --- UPDATED SLOGAN FOR EDGE-TO-EDGE ALIGNMENT --- */
         .splash-slogan {
             color: #f7eaea !important;
+            /* Using Weight 700 (Bold) to match the visual density of the reference */
             font-weight: 700; 
-            font-size: 3.8vw; 
-            margin-top: -1.5vw; 
+            font-size: 14.5px; /* Slightly adjusted for better scaling */
+            margin-top: -5px;
             opacity: 0;
+            
+            /* This property stretches the text to fill the width of the container */
             display: block;
-            width: 82vw; 
+            width: 100%;
             text-align: justify;
-            letter-spacing: 0.38vw; 
-            white-space: nowrap;
+            
+            /* Manual letter-spacing to force the "Y" in City to align with the "W" in VIEW */
+            letter-spacing: 0.17em; 
+            
+            /* Ensures it stays centered under the logo */
             text-transform: none;
+            white-space: nowrap;
+            
             animation: textFadeUp 0.6s ease forwards 0.7s;
         }
 
@@ -96,9 +136,9 @@
         @keyframes textFadeUp { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
 
         /* --- APP STYLES --- */
-        video.ar-video-bg { position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100dvh !important; object-fit: cover !important; z-index: -5 !important; }
+        video.ar-video-bg { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; object-fit: cover !important; z-index: -5 !important; }
 
-        .overlay-screen { position: fixed; inset: 0; z-index: 2000; background: var(--bg-page); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.8s ease; height: 100dvh; }
+        .overlay-screen { position: fixed; inset: 0; z-index: 2000; background: var(--bg-page); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.8s ease; }
         .hidden { display: none !important; opacity: 0; pointer-events: none; }
         
         #tour-modal, #video-overlay { z-index: 4000; background: white; } 
@@ -111,94 +151,274 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer;
         }
 
-        .main-card { width: 100%; height: 100dvh; background: #ffffff; display: flex; flex-direction: column; overflow: hidden; }
+        .main-card { width: 100%; height: 100%; background: #ffffff; display: flex; flex-direction: column; overflow: hidden; }
 
-        .carousel-viewport { width: 100%; height: 70%; position: relative; overflow: hidden; }
+        .carousel-viewport { width: 100%; height: 75%; position: relative; overflow: hidden; }
         .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1s ease-in-out; background-size: cover; background-position: center; }
         .slide.active { opacity: 1; }
         
-        .slide::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(255,255,255,0.7) 85%, #ffffff 100%); z-index: 2; }
+        .slide::after { 
+            content: ''; position: absolute; inset: 0; 
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(255,255,255,0.7) 85%, #ffffff 100%); 
+            z-index: 2; 
+        }
         
         #slide1 { background-image: url('Assets/Hero_Image_Map.png'); }
         #slide2 { background-image: url('Assets/Hero_Image_SC_tunnel.png'); }
         #slide3 { background-image: url('Assets/Cordillera%20Village.png'); }
 
-        .floating-badge { display: inline-block; background: var(--accent); color: white; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .floating-badge { 
+            display: inline-block;
+            background: var(--accent); 
+            color: white; 
+            padding: 4px 10px; 
+            border-radius: 6px; 
+            font-size: 10px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            margin-bottom: 8px; 
+        }
 
-        .hero-info-overlay { position: absolute; bottom: 8dvh; left: 8vw; z-index: 5; display: flex; flex-direction: column; align-items: flex-start; }
-        .hero-info-overlay h2 { font-size: 8vw; margin: 0; font-weight: 900; line-height: 1.1; color: var(--accent); text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .hero-info-overlay p { font-size: 3.5vw; margin: 1dvh 0 0; font-weight: 400; color: #444; }
+        .hero-info-overlay { 
+            position: absolute; 
+            bottom: 50px; 
+            left: 30px; 
+            z-index: 5; 
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .hero-info-overlay h2 { 
+            font-size: 24px; 
+            margin: 0; 
+            font-weight: 900; 
+            line-height: 1.1; 
+            color: var(--accent); 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+
+        .hero-info-overlay p { 
+            font-size: 13px; 
+            margin: 6px 0 0; 
+            font-weight: 400; 
+            color: #444; 
+        }
 
         .indicators { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
         .dot { width: 8px; height: 8px; background: rgba(0,0,0,0.1); border-radius: 50%; transition: 0.3s; }
         .dot.active { width: 22px; background: var(--accent); border-radius: 10px; }
 
-        .hero-text-area { flex: 1; padding: 0 8vw 5dvh; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; background: white; }
-        .hero-title { font-size: 7vw; font-weight: 900; color: #222; margin-bottom: 4dvh; line-height: 1.2; }
+        .hero-text-area { flex: 1; padding: 0 30px 40px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; background: white; }
+        .hero-title { font-size: 28px; font-weight: 900; color: #222; margin-bottom: 25px; line-height: 1.2; }
 
-        .get-started-btn { width: 85vw; max-width: 400px; height: 9dvh; background: var(--accent); color: white; border: none; border-radius: 50px; font-size: 5vw; font-weight: 700; display: flex; align-items: center; justify-content: center; padding-right: 15vw; position: relative; cursor: pointer; box-shadow: 0 10px 25px rgba(0,166,153,0.25); }
-        .btn-arrow-circle { position: absolute; right: 2vw; width: 14vw; height: 14vw; max-width: 60px; max-height: 60px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .get-started-btn { width: 100%; max-width: 350px; height: 75px; background: var(--accent); color: white; border: none; border-radius: 40px; font-size: 19px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding-right: 70px; position: relative; cursor: pointer; box-shadow: 0 10px 25px rgba(0,166,153,0.25); }
+        .btn-arrow-circle { position: absolute; right: 10px; width: 55px; height: 55px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
         /* --- DISCOVER PANEL --- */
-        #news-panel { position: fixed; top: 0; left: 0; bottom: 0; width: 100%; z-index: 3500; background: var(--soft-bg); transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; }
+        #news-panel {
+            position: fixed; top: 0; left: 0; bottom: 0; width: 100%; z-index: 3500; 
+            background: var(--soft-bg); transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column;
+        }
         #news-panel.show { transform: translateX(0); }
         .news-header { padding: 50px 25px 20px; display: flex; justify-content: space-between; align-items: center; background: white; border-bottom: 1px solid #eee; }
         .close-news { background: #f5f5f5; border: none; border-radius: 14px; cursor: pointer; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
+        
         .news-content { flex: 1; overflow-y: auto; padding: 20px 15px; }
-        .discover-card { background: #fff; border-radius: 28px; margin-bottom: 25px; overflow: hidden; box-shadow: var(--card-shadow); }
+        
+        .discover-card { 
+            background: #fff; 
+            border-radius: 28px; 
+            margin-bottom: 25px; 
+            overflow: hidden; 
+            box-shadow: var(--card-shadow);
+        }
         .discover-media { width: 100%; aspect-ratio: 1/1; background: #eee; position: relative; }
-        .discover-media video { width: 100%; height: 100%; object-fit: cover; }
+        .discover-media img, .discover-media video { width: 100%; height: 100%; object-fit: cover; }
+        
         .discover-info { padding: 20px; position: relative; }
-        .discover-tag { position: absolute; top: -15px; left: 20px; background: var(--accent); color: white; padding: 6px 14px; border-radius: 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,166,153,0.3); }
+        .discover-tag { 
+            position: absolute; top: -15px; left: 20px;
+            background: var(--accent); color: white;
+            padding: 6px 14px; border-radius: 12px;
+            font-size: 10px; font-weight: 700; 
+            text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0,166,153,0.3);
+        }
         .discover-title { font-size: 22px; font-weight: 900; color: #111; margin: 10px 0 8px; line-height: 1.2; letter-spacing: -0.5px; }
         .discover-desc { font-size: 15px; color: #555; line-height: 1.6; margin: 0; font-weight: 400; }
 
         /* --- SCANNER RETICLE --- */
-        #scan-reticle { position: fixed; top: 43%; left: 50%; transform: translate(-50%, -50%); width: 85vw; height: 65dvh; border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 30px; z-index: 10; pointer-events: none; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; }
-        #scan-reticle::before { content: ''; position: absolute; inset: -8px; border: 5px solid var(--accent); border-radius: 35px; z-index: 5; clip-path: polygon(0 0, 20% 0, 20% 8px, 8px 8px, 8px 20%, 0 20%, 0 0, 80% 0, 80% 8px, 92% 8px, 92% 20%, 100% 20%, 100% 0, 100% 80%, 92% 80%, 92% 92%, 80% 92%, 80% 100%, 100% 100%, 0 100%, 0 80%, 8px 80%, 8px 92%, 20% 92%, 20% 100%, 0 100%); transition: opacity 0.3s ease; }
-        .scanning-line { position: absolute; top: 0; left: 5%; width: 100%; height: 4px; background: linear-gradient(to right, transparent, var(--accent), transparent); box-shadow: 0 0 15px var(--accent), 0 0 25px var(--accent); border-radius: 50%; z-index: 2; opacity: 0; animation: scan-move 2.5s ease-in-out infinite; }
-        @keyframes scan-move { 0% { top: 5%; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { top: 95%; opacity: 0; } }
+        #scan-reticle {
+            position: fixed; top: 43%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px; height: 600px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            z-index: 10; pointer-events: none;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+        
+        #scan-reticle::before {
+            content: ''; position: absolute; inset: -8px;
+            border: 5px solid var(--accent);
+            border-radius: 35px;
+            z-index: 5;
+            clip-path: polygon(0 0, 20% 0, 20% 8px, 8px 8px, 8px 20%, 0 20%, 0 0, 80% 0, 80% 8px, 92% 8px, 92% 20%, 100% 20%, 100% 0, 75% 0, 100% 100%, 75% 100%, 75% 90%, 90% 90%, 90% 75%, 100% 75%, 100% 100%, 0 100%, 0 75%, 10% 75%, 10% 90%, 25% 90%, 25% 100%, 0 100%);
+            transition: opacity 0.3s ease;
+        }
 
-        #ui-layer { position: fixed; inset: 0; z-index: 100; background: transparent; transition: background 0.5s ease; }
+        .scanning-line {
+            position: absolute;
+            top: 0; left: 5%; width: 100%; height: 4px;
+            background: linear-gradient(to right, transparent, var(--accent), transparent);
+            box-shadow: 0 0 15px var(--accent), 0 0 25px var(--accent);
+            border-radius: 50%;
+            z-index: 2; opacity: 0;
+            animation: scan-move 2.5s ease-in-out infinite;
+        }
+
+        @keyframes scan-move {
+            0% { top: 5%; opacity: 0; }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { top: 95%; opacity: 0; }
+        }
+
+        /* --- UI LAYER BACKGROUND TOGGLE --- */
+        #ui-layer {
+            position: fixed; inset: 0; z-index: 100;
+            background: transparent;
+            transition: background 0.5s ease;
+        }
+        
         #ui-layer.camera-off { background: #000000; }
         #ui-layer.camera-off .scanning-line { display: none !important; }
+        #ui-layer.camera-off #scan-reticle::before { opacity: 0.3; }
 
         /* --- NAVIGATION --- */
-        .nav-bar { position: fixed; bottom: 4dvh; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 10vw; z-index: 3000; transition: 0.3s ease; pointer-events: none; }
-        .nav-bar.hidden-nav { opacity: 0; transform: translateY(20px); pointer-events: none; }
-        .nav-btn-secondary { width: 14vw; height: 14vw; max-width: 60px; max-height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: auto; }
-        .iphone-cam-btn { width: 22vw; height: 22vw; max-width: 90px; max-height: 90px; border-radius: 50%; background: var(--accent); border: 4px solid #ffffff; display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: auto; transition: 0.3s cubic-bezier(0.1, 0.5, 0.1, 1); box-shadow: 0 8px 25px rgba(0, 166, 153, 0.4); }
-        .iphone-cam-btn.off { border-color: rgba(255,255,255,0.4); background: rgba(0,0,0,0.4); box-shadow: none; }
+        .nav-bar { 
+            position: fixed; 
+            bottom: 30px; 
+            left: 0; 
+            right: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 35px; 
+            z-index: 3000;
+            pointer-events: none; 
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        
+        .nav-bar.hidden-nav {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+        
+        .nav-btn-secondary { 
+            width: 50px; height: 50px; border-radius: 50%; 
+            background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255,255,255,0.3); display: flex; 
+            align-items: center; justify-content: center; 
+            cursor: pointer; pointer-events: auto; 
+        }
+        
+        /* --- AR SCANNER BUTTON STYLE --- */
+        .iphone-cam-btn { 
+            width: 82px; height: 82px; border-radius: 50%; 
+            background: var(--accent); border: 4px solid #ffffff; 
+            display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; pointer-events: auto; position: relative;
+            transition: all 0.3s cubic-bezier(0.1, 0.5, 0.1, 1);
+            box-shadow: 0 8px 25px rgba(0, 166, 153, 0.4);
+        }
+
+        .iphone-cam-btn svg {
+            width: 38px; height: 38px;
+            stroke: white;
+            transition: transform 0.3s ease;
+        }
+        
+        .iphone-cam-btn.off { 
+            border-color: rgba(255,255,255,0.4); 
+            background: rgba(0,0,0,0.4);
+            box-shadow: none;
+        }
+
+        .iphone-cam-btn.off svg {
+            opacity: 0.5;
+            transform: scale(0.8) rotate(-45deg);
+        }
+
+        .iphone-cam-btn:active { transform: scale(0.92); }
         .nav-icon-light { width: 24px; height: 24px; fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 
         /* --- BOTTOM DOCK --- */
-        .bottom-dock { position: fixed; bottom: 0; width: 100%; height: 40dvh; z-index: 2500; transform: translateY(34dvh); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .bottom-dock { 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+            height: 320px; 
+            z-index: 2500; 
+            transform: translateY(285px); 
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
         .bottom-dock.expanded { background: white; transform: translateY(0); border-radius: 30px 30px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,0.1); }
-        .drag-handle { width: 100%; height: 6dvh; display: flex; justify-content: center; align-items: center; cursor: grab; }
+        
+        .drag-handle { width: 100%; height: 60px; display: flex; justify-content: center; align-items: center; cursor: grab; }
         .handle-bar { width: 50px; height: 5px; background: rgba(0, 0, 0, 0.2); border-radius: 10px; }
         .scroll-container { display: flex; gap: 12px; overflow-x: auto; padding: 10px 20px 30px; width: 100%; scrollbar-width: none; opacity: 0; transition: 0.3s; }
         .bottom-dock.expanded .scroll-container { opacity: 1; }
+        
         .station-card { min-width: 110px; height: 140px; background: #f9f9f9; border-radius: 16px; overflow: hidden; border: 1px solid #eee; flex-shrink: 0; transition: transform 0.2s; }
         .station-card.found { border: 3px solid var(--accent) !important; transform: scale(1.05); background: #fff; box-shadow: 0 8px 20px rgba(0,166,153,0.15); }
         
         .gps-display { position: absolute; top: 40px; left: 20px; background: var(--glass); backdrop-filter: var(--blur); padding: 10px 18px; border-radius: 12px; z-index: 100; display: flex; align-items: center; gap: 10px; }
         .pulse.live { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse-scanning 1.5s infinite; }
         .pulse.standby { background: #999 !important; animation: none !important; }
+        
         @keyframes pulse-scanning { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
 
-        .tutorial-video-box { width: 92%; height: 60dvh; background: #111; border-radius: 28px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.3); margin: 20px auto; }
-        .preview-video-element { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7); position: absolute; top: 0; left: 0; z-index: 1; }
+        .tutorial-video-box { 
+            width: 92%; height: 65vh; 
+            background: #111; 
+            border-radius: 28px; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            position: relative; overflow: hidden; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3); margin: 20px auto; 
+        }
+        .preview-video-element { 
+            width: 100%; height: 100%; object-fit: cover; 
+            filter: brightness(0.7); position: absolute; top: 0; left: 0; z-index: 1; 
+        }
+
         .action-row { display: flex; gap: 15px; width: 92%; margin-bottom: 20px; }
         .btn-outline { flex: 1; height: 60px; border-radius: 18px; border: 2px solid #ddd; background: white; color: #444; font-weight: 700; font-size: 16px; cursor: pointer; }
-        .btn-filled { flex: 1.2; height: 60px; border-radius: 18px; border: none; background: var(--accent); color: white; font-weight: 700; font-size: 16px; cursor: pointer; box-shadow: 0 6px 20px rgba(0,166,153,0.2); transition: 0.3s; }
+        
+        .btn-filled { 
+            flex: 1.2; height: 60px; border-radius: 18px; border: none; 
+            background: var(--accent); color: white; font-weight: 700; font-size: 16px; 
+            cursor: pointer; box-shadow: 0 6px 20px rgba(0,166,153,0.2); transition: 0.3s;
+        }
+        .btn-filled:active { transform: scale(0.96); opacity: 0.9; }
+
     </style>
 </head>
 <body>
 
-    <div id="splash-screen">
+   <div id="splash-screen">
         <div class="splash-content">
             <div class="splash-logo"><img src="Assets/Logo_Icon.png" alt="Logo"></div>
-            <h1 class="splash-text"><span class="bag">BAG</span><span class="view">VIEW</span></h1>
+            
+            <h1 class="splash-text">
+                <span class="bag">BAG</span><span class="view">VIEW</span>
+            </h1>
+            
             <div class="splash-slogan">Immersive Eco-Tourism in Baguio City</div>
         </div>
     </div>
@@ -215,7 +435,9 @@
         </div>
         <div class="news-content">
             <div class="discover-card">
-                <div class="discover-media"><video muted loop playsinline autoplay><source src="Assets/BagView_Tutorial.mp4" type="video/mp4"></video></div>
+                <div class="discover-media">
+                    <video muted loop playsinline autoplay><source src="Assets/BagView_Tutorial.mp4" type="video/mp4"></video>
+                </div>
                 <div class="discover-info">
                     <span class="discover-tag">AR Engine</span>
                     <h3 class="discover-title">Ecoverse Interactivity</h3>
@@ -261,6 +483,7 @@
                         <p>Explore the heritage of the highlands.</p>
                     </div>
                 </div>
+
                 <div class="indicators">
                     <div class="dot active"></div>
                     <div class="dot"></div>
@@ -274,19 +497,25 @@
         </div>
     </div>
 
-    <div id="tutorial-page" class="overlay-screen hidden" style="background: white; overflow-y: auto;">
+     <div id="tutorial-page" class="overlay-screen hidden" style="background: white; overflow-y: auto;">
         <div style="width: 100%; height: 100%; padding: 40px 0; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
             <div style="text-align: center; margin-top: 10px;">
                 <h2 style="font-weight: 900; margin: 0; color: var(--accent); font-size: 32px; letter-spacing: -1px; text-transform: uppercase;">Quick Guide</h2>
                 <p style="color: #666; font-size: 14px; margin-top: 5px; font-weight: 400;">Scan markers to unlock hidden stories</p>
             </div>
+            
             <div class="tutorial-video-box">
-                <video class="preview-video-element" autoplay loop muted playsinline><source src="Assets/BagView_Tutorial.mp4" type="video/mp4"></video>
+                <video class="preview-video-element" autoplay loop muted playsinline>
+                    <source src="Assets/BagView_Tutorial.mp4" type="video/mp4">
+                </video>
                 <div style="z-index: 5; display: flex; flex-direction: column; align-items: center; pointer-events: none;">
-                    <div style="width: 70px; height: 70px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; border: 2px solid rgba(255,255,255,0.6); backdrop-filter: blur(10px);"><svg width="28" height="28" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+                    <div style="width: 70px; height: 70px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; border: 2px solid rgba(255,255,255,0.6); backdrop-filter: blur(10px);">
+                        <svg width="28" height="28" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
                     <span style="font-size: 12px; font-weight: 900; letter-spacing: 3px; color: #fff; text-transform: uppercase; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">Preview Playing</span>
                 </div>
             </div>
+
             <div class="action-row">
                 <button class="btn-outline" onclick="startScanner()">Skip</button>
                 <button class="btn-filled" onclick="openVideoPopup()">Watch Full</button>
@@ -295,19 +524,40 @@
     </div>
 
     <div id="ui-layer" class="hidden">
-        <div id="scan-reticle"><div class="scanning-line" id="laser-line"></div></div>
+        <div id="scan-reticle">
+            <div class="scanning-line" id="laser-line"></div>
+        </div>
+        
         <div class="gps-display">
             <div id="gps-pulse" class="pulse live"></div>
             <div id="gps-status" style="font-size:11px; font-weight:700; color:#666;">SCANNING...</div>
         </div>
+        
         <div class="bottom-dock" id="dock">
             <div class="drag-handle" id="handle"><div class="handle-bar"></div></div>
             <div class="scroll-container" id="gallery-root"></div>
         </div>
+        
         <div class="nav-bar" id="main-nav">
-            <div class="nav-btn-secondary" onclick="toggleNews(true)"><svg class="nav-icon-light" viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8z"/></svg></div>
-            <div class="iphone-cam-btn active" id="cam-toggle" onclick="toggleScanner()"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><line x1="7" y1="12" x2="17" y2="12"></line><polyline points="10 9 7 12 10 15"></polyline><polyline points="14 15 17 12 14 9"></polyline></svg></div>
-            <div class="nav-btn-secondary" onclick="goBackHome()"><svg class="nav-icon-light" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg></div>
+            <div class="nav-btn-secondary" onclick="toggleNews(true)">
+                <svg class="nav-icon-light" viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8z"/></svg>
+            </div>
+            
+            <div class="iphone-cam-btn active" id="cam-toggle" onclick="toggleScanner()">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+                    <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+                    <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+                    <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+                    <line x1="7" y1="12" x2="17" y2="12"></line>
+                    <polyline points="10 9 7 12 10 15"></polyline>
+                    <polyline points="14 15 17 12 14 9"></polyline>
+                </svg>
+            </div>
+            
+            <div class="nav-btn-secondary" onclick="goBackHome()">
+                <svg class="nav-icon-light" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>
+            </div>
         </div>
     </div>
 
@@ -321,7 +571,7 @@
     let currentHeroSlide = 0;
 
     const stations = [
-        { name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/Interactive_Map/" },
+        { name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/Interactive_Map/?fbclid=IwY2xjawQ5cuRleHRuA2FlbQIxMQBzcnRjBmFwcF9pZAwzNTA2ODU1MzE3MjgAAR7UT4UEdwCr1d3KuaLUq62c9o2JTwBnj3EhsnoD0O7pO7le_d_CxBhKycPWPA_aem_2miHVbwjE4hZW_SVfa9M0g" },
         { name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://tour.panoee.net/mainentrance/1" },
         { name: "Arbor", thumb: "Assets/Arbor.png", link: "https://tour.panoee.net/arbor" },
         { name: "Asian Garden", thumb: "Assets/Asian Garden.png", link: "https://tour.panoee.net/asian-garden" },
@@ -340,7 +590,7 @@
         { name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.png", link: "https://tour.panoee.net/pmsea-garden" }
     ];
 
-    function goToTutorial() { renderPage('tutorial'); }
+    function goToTutorial() { history.pushState({ page: 'tutorial' }, "Tutorial", "#tutorial"); renderPage('tutorial'); }
 
     function startHeroRotation() {
         const slides = document.querySelectorAll('#home-page .slide');
@@ -374,7 +624,9 @@
         requestAnimationFrame(() => { if (arSystem && !arSystem.mainLoopId) arSystem.start(); });
     }
 
-    function goBackHome() { window.location.reload(); }
+    function goBackHome() {
+        window.location.reload();
+    }
 
     function initExperience() {
         const root = document.getElementById('gallery-root');
@@ -382,19 +634,29 @@
         if (root.children.length > 0) return;
         
         stations.forEach((s, i) => {
-            const card = document.createElement('div'); card.className = 'station-card'; card.id = `card-${i}`;
+            const card = document.createElement('div'); 
+            card.className = 'station-card'; card.id = `card-${i}`;
             card.innerHTML = `<div style="height:70%"><img src="${s.thumb}" style="width:100%; height:100%; object-fit:cover;"></div><div style="font-size:9px; text-align:center; padding:10px 5px; font-weight:700;">${s.name.toUpperCase()}</div>`;
-            card.onclick = () => { highlightCard(i); document.getElementById('gps-status').innerText = "SELECTED: " + s.name.toUpperCase(); };
+            
+            card.onclick = () => {
+                highlightCard(i);
+                document.getElementById('gps-status').innerText = "SELECTED: " + s.name.toUpperCase();
+            };
             root.appendChild(card);
             
-            const entity = document.createElement('a-entity'); entity.setAttribute('mindar-image-target', `targetIndex: ${i}`);
+            const entity = document.createElement('a-entity'); 
+            entity.setAttribute('mindar-image-target', `targetIndex: ${i}`);
+            
             entity.addEventListener("targetFound", () => {
                 const btn = document.getElementById('cam-toggle');
                 if (isOpeningTour || !btn.classList.contains('active')) return;
+                
                 isOpeningTour = true;
                 highlightCard(i);
+                
                 document.getElementById('gps-status').innerText = "MATCHED: " + s.name.toUpperCase();
                 document.getElementById('match-sound').play();
+
                 document.getElementById('tour-iframe').src = s.link;
                 document.getElementById('tour-modal').classList.remove('hidden');
             });
@@ -403,14 +665,38 @@
         initDraggable();
     }
 
-    function closeTour() { document.getElementById('tour-modal').classList.add('hidden'); document.getElementById('tour-iframe').src = ""; isOpeningTour = false; if(!document.getElementById('ui-layer').classList.contains('camera-off')) { document.getElementById('gps-status').innerText = "SCANNING..."; } }
-    function openVideoPopup() { const modal = document.getElementById('video-overlay'); const video = document.getElementById('tutorial-full-video'); video.src = "Assets/BagView_Tutorial.mp4"; modal.classList.remove('hidden'); video.play(); }
-    function closeVideoPopup() { const modal = document.getElementById('video-overlay'); const video = document.getElementById('tutorial-full-video'); video.pause(); video.src = ""; modal.classList.add('hidden'); }
+    function closeTour() {
+        document.getElementById('tour-modal').classList.add('hidden');
+        document.getElementById('tour-iframe').src = "";
+        isOpeningTour = false;
+        if(!document.getElementById('ui-layer').classList.contains('camera-off')) {
+            document.getElementById('gps-status').innerText = "SCANNING...";
+        }
+    }
+
+    function openVideoPopup() {
+        const modal = document.getElementById('video-overlay');
+        const video = document.getElementById('tutorial-full-video');
+        video.src = "Assets/BagView_Tutorial.mp4"; 
+        modal.classList.remove('hidden');
+        video.play();
+    }
+
+    function closeVideoPopup() {
+        const modal = document.getElementById('video-overlay');
+        const video = document.getElementById('tutorial-full-video');
+        video.pause();
+        video.src = ""; 
+        modal.classList.add('hidden');
+    }
 
     function highlightCard(index) {
         document.querySelectorAll('.station-card').forEach(c => c.classList.remove('found'));
         const card = document.getElementById(`card-${index}`);
-        if(card) { card.classList.add('found'); card.scrollIntoView({ behavior: 'smooth', inline: 'center' }); }
+        if(card) {
+            card.classList.add('found');
+            card.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+        }
         document.getElementById('dock').classList.add('expanded');
         document.getElementById('dock').style.transform = 'translateY(0)';
         document.getElementById('main-nav').classList.add('hidden-nav');
@@ -422,28 +708,72 @@
         const uiLayer = document.getElementById('ui-layer');
         const statusText = document.getElementById('gps-status');
         const statusPulse = document.getElementById('gps-pulse');
-        if(btn.classList.contains('active')) { if (arSystem) arSystem.stop(); btn.classList.replace('active', 'off'); uiLayer.classList.add('camera-off'); statusText.innerText = "CAMERA STANDBY"; statusPulse.classList.add('standby'); } else { if (arSystem) await arSystem.start(); btn.classList.replace('off', 'active'); uiLayer.classList.remove('camera-off'); statusText.innerText = "SCANNING..."; statusPulse.classList.remove('standby'); }
+        
+        if(btn.classList.contains('active')) {
+            if (arSystem) arSystem.stop();
+            btn.classList.replace('active', 'off');
+            uiLayer.classList.add('camera-off');
+            statusText.innerText = "CAMERA STANDBY";
+            statusPulse.classList.add('standby');
+        } else {
+            if (arSystem) await arSystem.start();
+            btn.classList.replace('off', 'active');
+            uiLayer.classList.remove('camera-off');
+            statusText.innerText = "SCANNING..."; 
+            statusPulse.classList.remove('standby');
+        }
     }
 
     function initDraggable() {
-        const dock = document.getElementById('dock'); const handle = document.getElementById('handle'); const nav = document.getElementById('main-nav');
+        const dock = document.getElementById('dock');
+        const handle = document.getElementById('handle');
+        const nav = document.getElementById('main-nav');
         let startY, isDragging = false;
-        handle.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; isDragging = true; dock.style.transition = 'none'; });
+        
+        handle.addEventListener('touchstart', (e) => { 
+            startY = e.touches[0].clientY; 
+            isDragging = true; 
+            dock.style.transition = 'none'; 
+        });
+
         window.addEventListener('touchmove', (e) => {
             if (!isDragging) return;
             let move = (dock.classList.contains('expanded') ? 0 : 285) + (e.touches[0].clientY - startY);
             if (move < 0) move = 0; if (move > 285) move = 285;
             dock.style.transform = `translateY(${move}px)`;
-            nav.style.opacity = move / 285;
+            let opacity = move / 285;
+            nav.style.opacity = opacity;
         });
+
         window.addEventListener('touchend', (e) => {
-            if (!isDragging) return; isDragging = false; dock.style.transition = '0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-            if (e.changedTouches[0].clientY < startY - 40) { dock.classList.add('expanded'); dock.style.transform = `translateY(0)`; nav.classList.add('hidden-nav'); nav.style.opacity = "0"; }
-            else { dock.classList.remove('expanded'); dock.style.transform = `translateY(285px)`; nav.classList.remove('hidden-nav'); nav.style.opacity = "1"; }
+            if (!isDragging) return; 
+            isDragging = false; 
+            dock.style.transition = '0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+            
+            if (e.changedTouches[0].clientY < startY - 40) { 
+                dock.classList.add('expanded'); 
+                dock.style.transform = `translateY(0)`; 
+                nav.classList.add('hidden-nav');
+                nav.style.opacity = "0";
+            }
+            else { 
+                dock.classList.remove('expanded'); 
+                dock.style.transform = `translateY(285px)`; 
+                nav.classList.remove('hidden-nav');
+                nav.style.opacity = "1";
+            }
         });
     }
 
-    window.addEventListener('load', () => { setTimeout(() => { document.getElementById('splash-screen').style.opacity = '0'; setTimeout(() => { document.getElementById('splash-screen').style.display = 'none'; startHeroRotation(); }, 400); }, 800); });
+    window.addEventListener('load', () => {
+        setTimeout(() => { 
+            document.getElementById('splash-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('splash-screen').style.display = 'none';
+                startHeroRotation();
+            }, 400);
+        }, 800); 
+    });
 </script>
 </body>
 </html>
