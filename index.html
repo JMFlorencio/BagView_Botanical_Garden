@@ -4,22 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>BAGVIEW | AR Eco-Tourism</title>
-   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <style>
-       @font-face { 
-    font-family: 'Agrandir'; 
-    src: url('./Assets/agrandir-thin.woff2') format('woff2'); 
-    font-weight: 100; 
-    font-style: normal; 
-}
-
-@font-face { 
-    font-family: 'Agrandir'; 
-    src: url('./Assets/agrandir-regular.woff2') format('woff2'); 
-    font-weight: 400; 
-    font-style: normal; 
-}
+        @font-face { 
+            font-family: 'Agrandir'; 
+            src: url('./Assets/agrandir-thin.woff2') format('woff2'); 
+            font-weight: 100; 
+            font-style: normal; 
+        }
+        @font-face { 
+            font-family: 'Agrandir'; 
+            src: url('./Assets/agrandir-regular.woff2') format('woff2'); 
+            font-weight: 400; 
+            font-style: normal; 
+        }
         :root { 
             --accent: #00A699; 
             --bg-page: #ffffff; 
@@ -29,7 +28,9 @@
             --card-shadow: 0 10px 30px rgba(0,0,0,0.08); 
         }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Agrandir', sans-serif !important; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: transparent !important; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000 !important; }
+        
+        /* A-Scene should be behind everything */
         a-scene { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
         
         @keyframes pulse-accent { 
@@ -45,12 +46,13 @@
         #ar-reticle::after { bottom: -2.5px; right: -2.5px; border-left: 0; border-top: 0; border-bottom-right-radius: 35px; }
         .laser-line { position: absolute; width: 100%; height: 5px; background: linear-gradient(to bottom, transparent, var(--accent), transparent); box-shadow: 0 0 20px var(--accent); top: 0; left: 0; opacity: 0.8; animation: scan 2.5s ease-in-out infinite; }
         
-        #gallery-dock-container { position: fixed; bottom: 0; left: 0; right: 0; z-index: 4600; background: rgba(255, 255, 255, 0); border-top-left-radius: 35px; border-top-right-radius: 35px; display: flex; flex-direction: column; align-items: center; padding-bottom: calc(30px + var(--safe-bottom)); transform: translateY(calc(100% - 80px)); transition: transform 0.4s var(--transition), background 0.3s ease; opacity: 0; pointer-events: none; touch-action: none; }
+        #gallery-dock-container { position: fixed; bottom: 0; left: 0; right: 0; z-index: 4600; background: rgba(255, 255, 255, 0); border-top-left-radius: 35px; border-top-right-radius: 35px; display: flex; flex-direction: column; align-items: center; padding-bottom: calc(30px + var(--safe-bottom)); transform: translateY(calc(100% - 80px)); transition: transform 0.4s var(--transition), background 0.3s ease; opacity: 0; pointer-events: none; }
         #gallery-dock-container.ar-active { opacity: 1; pointer-events: auto; }
         #gallery-dock-container.open { transform: translateY(0) !important; background: rgba(255, 255, 255, 1) !important; box-shadow: 0 -10px 40px rgba(0,0,0,0.15); }
         .dock-handle-area { width: 100%; padding: 25px 0 15px; display: flex; justify-content: center; cursor: grab; }
-        .dock-handle { width: 70px; height: 5px; background: #d1d1d1; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-        #gallery-dock { display: flex; gap: 15px; overflow-x: auto; padding: 10px 25px 20px; width: 100%; scrollbar-width: none; opacity: 0; transition: opacity 0.3s; pointer-events: auto; }
+        .dock-handle { width: 70px; height: 5px; background: #d1d1d1; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        #gallery-dock { display: flex; gap: 15px; overflow-x: auto; padding: 10px 25px 20px; width: 100%; scrollbar-width: none; opacity: 0; transition: opacity 0.3s; }
+        #gallery-dock::-webkit-scrollbar { display: none; }
         #gallery-dock-container.open #gallery-dock { opacity: 1; }
         
         .gallery-item { flex: 0 0 110px; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.3s; }
@@ -66,8 +68,6 @@
         
         .status-badge { display: flex; align-items: center; gap: 10px; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); padding: 8px 18px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.1); color: white; font-size: 11px; font-weight: 800; text-transform: uppercase; order: 1; transition: 0.3s; }
         .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); animation: pulse-accent 2s infinite; }
-        
-        /* Fixed: Match found is now ONLY Accent color */
         .status-badge.match-found { background: var(--accent); color: #fff; border: 1px solid rgba(255, 255, 255, 0.3); }
 
         .overlay-screen { position: fixed; inset: 0; z-index: 1000; background: #fff; transition: opacity 0.4s, transform 0.4s; overflow-y: auto; padding-bottom: 140px; }
@@ -81,12 +81,6 @@
         .search-category img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
         .search-category span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 14px; text-transform: uppercase; }
 
-        .notif-item { margin: 0 25px 15px; display: flex; gap: 15px; align-items: flex-start; padding-bottom: 15px; border-bottom: 1px solid #f0f0f0; }
-        .notif-icon { width: 45px; height: 45px; border-radius: 12px; background: #f0fdfa; color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .notif-text b { font-size: 14px; color: #222; display: block; margin-bottom: 4px; }
-        .notif-text p { margin: 0; font-size: 12px; color: #777; line-height: 1.4; }
-        .notif-text span { font-size: 10px; color: #ccc; display: block; margin-top: 5px; font-weight: 800; }
-
         .user-greeting { padding: 45px 25px 10px; background: white; }
         .user-greeting h3 { margin: 0; font-size: 14px; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;}
         .user-greeting h2 { margin: 0; font-size: 26px; font-weight: 900; color: #333; }
@@ -96,26 +90,19 @@
         .promo-banner { width: 25%; height: 100%; position: relative; padding: 30px; background: var(--accent); color: white; display: flex; flex-direction: column; justify-content: center; }
         .promo-banner h1 { margin: 0; font-size: 22px; width: 65%; font-weight: 900; z-index: 2; }
         .promo-banner button { background: white; color: var(--accent); border: none; padding: 8px 18px; border-radius: 50px; font-weight: 900; margin-top: 15px; width: fit-content; z-index: 2; }
-        .promo-banner img { position: absolute; right: -15px; bottom: -10px; height: 105%; z-index: 1; }
+        .promo-banner img { position: absolute; right: -15px; bottom: -10px; height: 105%; z-index: 1; pointer-events: none; }
         
         .section-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px 10px; }
         .section-header h4 { margin: 0; font-size: 18px; font-weight: 900; color: #222; }
-        .see-all { color: var(--accent); font-size: 12px; font-weight: 800; text-decoration: none; }
         
         #most-scanned-list { display: flex; gap: 15px; overflow-x: auto; padding: 0 25px 20px; scrollbar-width: none; }
+        #most-scanned-list::-webkit-scrollbar { display: none; }
         .popular-card { flex: 0 0 180px; background: white; border-radius: 25px; padding: 10px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--card-shadow); border: 1px solid #f0f0f0; }
         .pop-img { width: 100%; height: 110px; border-radius: 20px; object-fit: cover; }
         .scan-count { background: #f0fdfa; color: var(--accent); padding: 4px 10px; border-radius: 10px; font-size: 10px; font-weight: 900; margin-top: 5px; display: inline-block; }
         
-        .campaign-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 0 25px 30px; scrollbar-width: none; }
-        .campaign-card { flex: 0 0 280px; height: 170px; border-radius: 25px; overflow: hidden; position: relative; box-shadow: var(--card-shadow); }
-        .campaign-img-box { width: 100%; height: 100%; position: relative; background-size: cover; background-position: center; }
-        .campaign-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 10%, transparent 70%); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; }
-        .campaign-overlay h5 { color: white; margin: 0; font-size: 18px; font-weight: 100; line-height: 1.1; }
-        .campaign-overlay h5 strong { display: block; font-weight: 900; font-size: 22px; }
-        
         .main-navigation-bar { position: fixed; bottom: 0; left: 0; right: 0; height: calc(90px + var(--safe-bottom)); background: #fff; z-index: 5000; display: flex; justify-content: space-around; align-items: center; padding: 0 15px var(--safe-bottom); box-shadow: 0 -10px 30px rgba(0,0,0,0.05); transition: transform 0.4s; }
-        .nav-item { color: #ccc; flex: 1; display: flex; justify-content: center; padding: 10px; }
+        .nav-item { color: #ccc; flex: 1; display: flex; justify-content: center; padding: 10px; transition: 0.3s; }
         .nav-item.active { color: var(--accent); }
         .nav-item-center { width: 65px; height: 65px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -45px; border: 6px solid #fff; box-shadow: 0 10px 25px rgba(0,166,153,0.3); }
         
@@ -127,6 +114,7 @@
     <div id="splash-screen" style="position:fixed; inset:0; z-index:9999; background:#00A699; display:flex; align-items:center; justify-content:center; transition:0.6s;">
         <img src="Assets/Logo_Icon.png" width="100" style="filter:brightness(0) invert(1);">
     </div>
+
     <div id="ar-reticle"><div class="laser-line"></div></div>
     
     <div id="gallery-dock-container">
@@ -155,19 +143,6 @@
         </div>
         <div class="section-header"><h4>Most Scanned Station</h4></div>
         <div id="most-scanned-list"></div>
-        <div class="section-header"><h4>Did You Know?</h4><a href="#" class="see-all">Explore Articles</a></div>
-        <div class="campaign-scroll">
-            <div class="campaign-card">
-                <div class="campaign-img-box" style="background-image: url('Assets/Japanese Tunnel.png');">
-                    <div class="campaign-overlay"><h5>Hidden secrets of the <br><strong>Japanese Tunnel</strong></h5></div>
-                </div>
-            </div>
-            <div class="campaign-card">
-                <div class="campaign-img-box" style="background-image: url('Assets/Hero_Garden.png');">
-                    <div class="campaign-overlay"><h5>Why Baguio is called <br><strong>The City of Pines</strong></h5></div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div id="search-page" class="overlay-screen hidden">
@@ -184,20 +159,6 @@
             <div class="search-category"><img src="Assets/Cactus&Succulents.png"><span>Flora</span></div>
             <div class="search-category"><img src="Assets/Cordillera%20Village.png"><span>Culture</span></div>
             <div class="search-category"><img src="Assets/Hero_Garden.png"><span>Trails</span></div>
-        </div>
-    </div>
-
-    <div id="notifications-page" class="overlay-screen hidden">
-        <div class="user-greeting"><h2>Updates</h2></div>
-        <div id="notification-list">
-            <div class="notif-item">
-                <div class="notif-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
-                <div class="notif-text"><b>New AR Station Spotted!</b><p>The Korean Pavilion is now active. Scan the entrance sign for a new virtual experience.</p><span>2 HOURS AGO</span></div>
-            </div>
-            <div class="notif-item">
-                <div class="notif-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg></div>
-                <div class="notif-text"><b>Did you know?</b><p>The Japanese Tunnel was built during WWII.</p><span>5 HOURS AGO</span></div>
-            </div>
         </div>
     </div>
 
@@ -219,29 +180,30 @@
         <a-entity id="target-container"></a-entity>
     </a-scene>
 
-    <script>
+<script>
 const app = {
     currentHero: 0, 
     startY: 0, 
     isDragging: false,
+    sliderInterval: null,
     stations: [
-		{ id: 0, name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/Interactive_Map/", scans: 1240 },
-		{ id: 1, name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://tour.panoee.net/mainentrance/1", scans: 980 },
-		{ id: 2, name: "Arbor", thumb: "Assets/Arbor.png", link: "https://tour.panoee.net/arbor", scans: 340 },
-		{ id: 3, name: "Asian Garden", thumb: "Assets/Asian Garden.png", link: "https://tour.panoee.net/asian-garden", scans: 450 },
-		{ id: 4, name: "Cactus & Succulents", thumb: "Assets/Cactus&Succulents.png", link: "https://tour.panoee.net/cactus-succulent-garden/1-1", scans: 640 },
-		{ id: 5, name: "Centennial Garden", thumb: "Assets/Centennial Garden.png", link: "https://tour.panoee.net/centennial-garden/1", scans: 210 },
-		{ id: 6, name: "Chinese Garden", thumb: "Assets/Chinese%20Garden.png", link: "https://tour.panoee.net/chinese-garden/69cd28ffcd728200084a2654", scans: 520 },
-		{ id: 7, name: "City of Vaughan", thumb: "Assets/City%20of%20Vaughan%20Friendship%20Garden.png", link: "https://tour.panoee.net/city-of-vaughan", scans: 180 },
-		{ id: 8, name: "Cordillera Village", thumb: "Assets/Cordillera%20Village.png", link: "https://tour.panoee.net/cordillera-village/1", scans: 890 },
-		{ id: 9, name: "Dahlia Garden", thumb: "Assets/Dahlia Garden.png", link: "https://tour.panoee.net/69b74a8ccd5918bff013a943", scans: 310 },
-		{ id: 10, name: "Greenhouse", thumb: "Assets/Greenhouse.png", link: "https://tour.panoee.net/greenhouse/1", scans: 420 },
-		{ id: 11, name: "Japanese Garden", thumb: "Assets/Japanese%20Garden.png", link: "https://tour.panoee.net/japanese-garden", scans: 760 },
-		{ id: 12, name: "Japanese Tunnel", thumb: "Assets/Japanese%20Tunnel.png", link: "https://tour.panoee.net/japanese-tunnel/1", scans: 1120 },
-		{ id: 13, name: "Korea Garden", thumb: "Assets/Korea%20Garden.png", link: "https://tour.panoee.net/korea-garden/1", scans: 580 },
-		{ id: 14, name: "Orchidarium", thumb: "Assets/Orchidarium.png", link: "https://tour.panoee.net/orchidarium/1", scans: 390 },
-		{ id: 15, name: "Friendship Garden", thumb: "Assets/Philippine-Thailand Frienship Garden.png", link: "https://tour.panoee.net/philippine-thailand-friendship-garden/7-1", scans: 270 },
-		{ id: 16, name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.png", link: "https://tour.panoee.net/pmsea-garden", scans: 150 }
+        { id: 0, name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/Interactive_Map/", scans: 1240 },
+        { id: 1, name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://tour.panoee.net/mainentrance/1", scans: 980 },
+        { id: 2, name: "Arbor", thumb: "Assets/Arbor.png", link: "https://tour.panoee.net/arbor", scans: 340 },
+        { id: 3, name: "Asian Garden", thumb: "Assets/Asian Garden.png", link: "https://tour.panoee.net/asian-garden", scans: 450 },
+        { id: 4, name: "Cactus & Succulents", thumb: "Assets/Cactus&Succulents.png", link: "https://tour.panoee.net/cactus-succulent-garden/1-1", scans: 640 },
+        { id: 5, name: "Centennial Garden", thumb: "Assets/Centennial Garden.png", link: "https://tour.panoee.net/centennial-garden/1", scans: 210 },
+        { id: 6, name: "Chinese Garden", thumb: "Assets/Chinese%20Garden.png", link: "https://tour.panoee.net/chinese-garden/69cd28ffcd728200084a2654", scans: 520 },
+        { id: 7, name: "City of Vaughan", thumb: "Assets/City%20of%20Vaughan%20Friendship%20Garden.png", link: "https://tour.panoee.net/city-of-vaughan", scans: 180 },
+        { id: 8, name: "Cordillera Village", thumb: "Assets/Cordillera%20Village.png", link: "https://tour.panoee.net/cordillera-village/1", scans: 890 },
+        { id: 9, name: "Dahlia Garden", thumb: "Assets/Dahlia Garden.png", link: "https://tour.panoee.net/69b74a8ccd5918bff013a943", scans: 310 },
+        { id: 10, name: "Greenhouse", thumb: "Assets/Greenhouse.png", link: "https://tour.panoee.net/greenhouse/1", scans: 420 },
+        { id: 11, name: "Japanese Garden", thumb: "Assets/Japanese%20Garden.png", link: "https://tour.panoee.net/japanese-garden", scans: 760 },
+        { id: 12, name: "Japanese Tunnel", thumb: "Assets/Japanese%20Tunnel.png", link: "https://tour.panoee.net/japanese-tunnel/1", scans: 1120 },
+        { id: 13, name: "Korea Garden", thumb: "Assets/Korea%20Garden.png", link: "https://tour.panoee.net/korea-garden/1", scans: 580 },
+        { id: 14, name: "Orchidarium", thumb: "Assets/Orchidarium.png", link: "https://tour.panoee.net/orchidarium/1", scans: 390 },
+        { id: 15, name: "Friendship Garden", thumb: "Assets/Philippine-Thailand Frienship Garden.png", link: "https://tour.panoee.net/philippine-thailand-friendship-garden/7-1", scans: 270 },
+        { id: 16, name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.png", link: "https://tour.panoee.net/pmsea-garden", scans: 150 }
     ],
 
     init: function() {
@@ -250,9 +212,12 @@ const app = {
         this.initAR(); 
         this.initSwipeLogic(); 
         this.startHeroSlider();
+        
+        // Remove Splash
         setTimeout(() => { 
-            document.getElementById('splash-screen').style.opacity = '0'; 
-            setTimeout(() => document.getElementById('splash-screen').style.display='none', 600); 
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0'; 
+            setTimeout(() => splash.style.display='none', 600); 
         }, 1500);
     },
 
@@ -261,7 +226,7 @@ const app = {
         const top5 = [...this.stations].sort((a,b) => b.scans - a.scans).slice(0, 5);
         list.innerHTML = top5.map(s => `
             <div class="popular-card">
-                <img src="${s.thumb}" class="pop-img">
+                <img src="${s.thumb}" class="pop-img" loading="lazy">
                 <div class="pop-info"><b>${s.name}</b><br><span class="scan-count">${s.scans.toLocaleString()} SCANS</span></div>
             </div>
         `).join('');
@@ -271,7 +236,7 @@ const app = {
         const dock = document.getElementById('gallery-dock');
         dock.innerHTML = this.stations.map(s => `
             <div class="gallery-item" onclick="app.selectReference('${s.name}', this)">
-                <div class="gallery-img-wrap"><img src="${s.thumb}"></div>
+                <div class="gallery-img-wrap"><img src="${s.thumb}" loading="lazy"></div>
                 <span>${s.name}</span>
             </div>
         `).join('');
@@ -308,17 +273,16 @@ const app = {
 
             container.style.transform = `translateY(${newY}px)`;
             
-            const progress = 1 - (newY / closedPos);
+            const progress = 1 - (newY / (closedPos || 1));
             container.style.background = `rgba(255, 255, 255, ${progress})`;
             dock.style.opacity = progress;
-
             if (e.cancelable) e.preventDefault();
         };
 
         const onEnd = () => {
             if (!this.isDragging) return;
             this.isDragging = false; 
-            container.style.transition = 'transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), background 0.3s ease';
+            container.style.transition = 'transform 0.4s var(--transition), background 0.3s ease';
             
             const closedPos = container.offsetHeight - 80;
             const currentMatrix = new WebKitCSSMatrix(window.getComputedStyle(container).transform);
@@ -359,14 +323,21 @@ const app = {
         container.style.background = 'rgba(255, 255, 255, 1)';
         dock.style.opacity = 1;
         
-        document.querySelector('a-scene').systems['mindar-image-system'].start();
+        const scene = document.querySelector('a-scene');
+        if (scene.systems['mindar-image-system']) {
+            scene.systems['mindar-image-system'].start();
+        }
     },
 
     nav: function(page) {
         document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        document.getElementById(page + '-page').classList.remove('hidden');
-        if(document.getElementById('nav-'+page)) document.getElementById('nav-'+page).classList.add('active');
+        
+        const targetPage = document.getElementById(page + '-page');
+        if (targetPage) targetPage.classList.remove('hidden');
+        
+        const navItem = document.getElementById('nav-'+page);
+        if(navItem) navItem.classList.add('active');
         
         document.getElementById('main-nav').style.transform = "translateY(0)";
         document.getElementById('ar-top-layer').style.opacity = "0";
@@ -374,19 +345,25 @@ const app = {
         document.getElementById('gallery-dock-container').classList.remove('ar-active', 'open');
         
         const scene = document.querySelector('a-scene');
-        if (scene.systems['mindar-image-system']) scene.systems['mindar-image-system'].stop();
+        if (scene.systems['mindar-image-system']) {
+            scene.systems['mindar-image-system'].stop();
+        }
     },
 
     initAR: function() {
         const container = document.getElementById('target-container');
+        container.innerHTML = ""; // Clear existing to prevent duplicates
+        
         this.stations.forEach(s => {
             const entity = document.createElement('a-entity');
             entity.setAttribute('mindar-image-target', `targetIndex: ${s.id}`);
+            
             entity.addEventListener("targetFound", () => {
                 document.getElementById('status-text').innerText = "Match Found!";
                 document.getElementById('ar-status-badge').classList.add('match-found'); 
-                setTimeout(() => this.openInternalPage(s.link), 1500);
+                setTimeout(() => this.openInternalPage(s.link), 1200);
             });
+            
             entity.addEventListener("targetLost", () => { 
                 document.getElementById('ar-status-badge').classList.remove('match-found'); 
                 const selected = document.querySelector('.gallery-item.selected');
@@ -397,17 +374,22 @@ const app = {
     },
 
     openInternalPage: function(url) { 
-        document.getElementById('tour-iframe').src = url; 
+        if(!url) return;
+        const iframe = document.getElementById('tour-iframe');
+        iframe.src = url; 
         document.getElementById('tour-modal').classList.add('visible'); 
     },
 
     closeInternalPage: function() { 
         document.getElementById('tour-modal').classList.remove('visible'); 
-        document.getElementById('tour-iframe').src = ""; 
+        setTimeout(() => {
+            document.getElementById('tour-iframe').src = ""; 
+        }, 500);
     },
 
     startHeroSlider: function() { 
-        setInterval(() => { 
+        if(this.sliderInterval) clearInterval(this.sliderInterval);
+        this.sliderInterval = setInterval(() => { 
             this.currentHero = (this.currentHero + 1) % 4; 
             const wrap = document.getElementById('hero-wrapper'); 
             if(wrap) wrap.style.transform = `translateX(-${this.currentHero * 25}%)`; 
@@ -416,6 +398,7 @@ const app = {
 
     resetApp: function() { window.location.reload(); }
 };
+
 window.onload = () => app.init();
 </script>
 </body>
