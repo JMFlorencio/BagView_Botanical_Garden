@@ -216,8 +216,10 @@ const app = {
         // Remove Splash
         setTimeout(() => { 
             const splash = document.getElementById('splash-screen');
-            splash.style.opacity = '0'; 
-            setTimeout(() => splash.style.display='none', 600); 
+            if(splash) {
+                splash.style.opacity = '0'; 
+                setTimeout(() => splash.style.display='none', 600); 
+            }
         }, 1500);
     },
 
@@ -309,7 +311,8 @@ const app = {
         window.addEventListener('mouseup', onEnd);
     },
 
-    startScanner: function() {
+    startScanner: async function() {
+        // UI Updates
         document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
         document.getElementById('main-nav').style.transform = "translateY(150%)";
         document.getElementById('ar-top-layer').style.opacity = "1";
@@ -322,10 +325,22 @@ const app = {
         container.style.transform = 'translateY(0)';
         container.style.background = 'rgba(255, 255, 255, 1)';
         dock.style.opacity = 1;
+
+        // Force Scene Start
+        const sceneEl = document.querySelector('a-scene');
         
-        const scene = document.querySelector('a-scene');
-        if (scene.systems['mindar-image-system']) {
-            scene.systems['mindar-image-system'].start();
+        // Ensure scene is loaded before starting
+        if (sceneEl.hasLoaded) {
+            this.runARSystem(sceneEl);
+        } else {
+            sceneEl.addEventListener('loaded', () => this.runARSystem(sceneEl));
+        }
+    },
+
+    runARSystem: function(sceneEl) {
+        const arSystem = sceneEl.systems['mindar-image-system'];
+        if (arSystem) {
+            arSystem.start(); // This triggers the camera permission
         }
     },
 
@@ -345,14 +360,15 @@ const app = {
         document.getElementById('gallery-dock-container').classList.remove('ar-active', 'open');
         
         const scene = document.querySelector('a-scene');
-        if (scene.systems['mindar-image-system']) {
+        if (scene && scene.systems['mindar-image-system']) {
             scene.systems['mindar-image-system'].stop();
+            // Important: This stops the camera stream to save battery/privacy
         }
     },
 
     initAR: function() {
         const container = document.getElementById('target-container');
-        container.innerHTML = ""; // Clear existing to prevent duplicates
+        container.innerHTML = ""; 
         
         this.stations.forEach(s => {
             const entity = document.createElement('a-entity');
