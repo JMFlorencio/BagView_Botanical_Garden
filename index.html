@@ -4,509 +4,405 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>BAGVIEW | AR Eco-Tourism</title>
-    
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-
     <style>
-        /* --- BRANDING & FONTS --- */
-        @font-face { font-family: 'Agrandir'; src: url('Assets/agrandir-thin.woff2') format('woff2'); font-weight: 100; font-style: normal; }
-        @font-face { font-family: 'Agrandir'; src: url('Assets/agrandir-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
-        @font-face { font-family: 'Agrandir'; src: url('Assets/agrandir-text-bold.woff2') format('woff2'); font-weight: 200; font-style: normal; }
-        @font-face { font-family: 'Agrandir'; src: url('Assets/agrandir-grand-heavy.woff2') format('woff2'); font-weight: 100; font-style: normal; }
-
+        @font-face { font-family: 'Agrandir'; src: url('Assets/aggrandir-thin.woff2') format('woff2'); font-weight: 100; font-style: normal; }
+        @font-face { font-family: 'Agrandir'; src: url('Assets/aggrandir-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
         :root { 
             --accent: #00A699; 
-            --color-bag: #01211e;
-            --color-view: #f7eaea;
-            --glass: rgba(255, 255, 255, 0.9); 
-            --blur: blur(20px); 
-            --bg-page: #ffffff;
-            --dark-green: #004d47;
-            --soft-bg: #f2f4f7;
-            --card-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --match: #FFD700; 
+            --bg-page: #ffffff; 
+            --transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1); 
+            --nav-height: 80px; 
+            --safe-bottom: env(safe-area-inset-bottom); 
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.08); 
         }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Agrandir', sans-serif !important; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: transparent !important; }
+        a-scene { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
+        @keyframes pulse-accent { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 166, 153, 0.7); } 70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(0, 166, 153, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 166, 153, 0); } }
+        @keyframes scan { 0% { top: 0%; } 50% { top: 100%; } 100% { top: 0%; } }
         
-        * { 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent; 
-            font-family: 'Agrandir', sans-serif !important; 
-        }
+        #ar-reticle { position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%); width: 85vw; height: 55vh; border: 2.5px solid rgba(255,255,255,0.2); border-radius: 40px; z-index: 4000; pointer-events: none; opacity: 0; transition: 0.4s; overflow: hidden; }
+        #ar-reticle::before, #ar-reticle::after { content: ''; position: absolute; width: 60px; height: 60px; border: 6px solid var(--accent); z-index: 10; }
+        #ar-reticle::before { top: -2.5px; left: -2.5px; border-right: 0; border-bottom: 0; border-top-left-radius: 35px; }
+        #ar-reticle::after { bottom: -2.5px; right: -2.5px; border-left: 0; border-top: 0; border-bottom-right-radius: 35px; }
+        .laser-line { position: absolute; width: 100%; height: 5px; background: linear-gradient(to bottom, transparent, var(--accent), transparent); box-shadow: 0 0 20px var(--accent); top: 0; left: 0; opacity: 0.8; animation: scan 2.5s ease-in-out infinite; }
         
-        body, html { 
-            margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; 
-            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-        }
-
-        /* --- UNIVERSAL MOBILE SPLASH --- */
-        #splash-screen {
-            position: fixed; inset: 0; z-index: 9999; 
-            background: #00A699 !important; 
-            display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.6s ease;
-            height: 100dvh; 
-        }
-
-        .splash-content { 
-            display: flex; flex-direction: column; align-items: center; 
-            gap: 1vw; text-align: center; width: 100%;
-        }
+        #gallery-dock-container { position: fixed; bottom: 0; left: 0; right: 0; z-index: 4600; background: rgba(255, 255, 255, 0); border-top-left-radius: 35px; border-top-right-radius: 35px; display: flex; flex-direction: column; align-items: center; padding-bottom: calc(30px + var(--safe-bottom)); transform: translateY(calc(100% - 80px)); transition: transform 0.4s var(--transition), background 0.3s ease; opacity: 0; pointer-events: none; touch-action: none; }
+        #gallery-dock-container.ar-active { opacity: 1; pointer-events: auto; }
+        #gallery-dock-container.open { transform: translateY(0) !important; background: rgba(255, 255, 255, 1) !important; box-shadow: 0 -10px 40px rgba(0,0,0,0.15); }
+        .dock-handle-area { width: 100%; padding: 25px 0 15px; display: flex; justify-content: center; cursor: grab; }
+        .dock-handle { width: 70px; height: 5px; background: #d1d1d1; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        #gallery-dock { display: flex; gap: 15px; overflow-x: auto; padding: 10px 25px 20px; width: 100%; scrollbar-width: none; opacity: 0; transition: opacity 0.3s; pointer-events: auto; }
+        #gallery-dock-container.open #gallery-dock { opacity: 1; }
         
-        .splash-logo { 
-            width: 35vw; height: 35vw; max-width: 160px;
-            display: flex; align-items: center; justify-content: center; 
-            animation: logoEnter 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            margin-bottom: 2vw;
-        }
+        .gallery-item { flex: 0 0 110px; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.3s; }
+        .gallery-item.selected .gallery-img-wrap { border: 3px solid var(--accent); transform: scale(1.05); }
+        .gallery-item.selected span { color: var(--accent); font-weight: 900; }
         
-        .splash-logo img { 
-            width: 100%; height: 100%; object-fit: contain; 
-            filter: brightness(0) saturate(100%) invert(93%) sepia(10%) saturate(246%) hue-rotate(314deg) brightness(101%) contrast(93%) !important;
-        }
+        .gallery-img-wrap { width: 110px; height: 110px; border-radius: 20px; border: 1px solid #eee; overflow: hidden; background: #f9f9f9; transition: 0.3s; }
+        .gallery-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        .gallery-item span { color: #444; font-size: 10px; font-weight: 800; text-align: center; width: 100%; text-transform: uppercase; }
         
-        .splash-text { 
-            font-size: 20vw; 
-            letter-spacing: -0.5vw; 
-            margin: 0; padding: 0; 
-            opacity: 0; 
-            transform: translateY(10px); 
-            animation: textFadeUp 0.6s ease forwards 0.4s; 
-            display: flex; line-height: 0.9;
-        }
+        #ar-top-layer { position: fixed; top: 40px; left: 20px; right: 20px; z-index: 4500; display: flex; justify-content: space-between; align-items: center; pointer-events: none; transition: 0.3s; opacity: 0; }
+        .ar-home-btn { pointer-events: auto; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; border: 1px solid rgba(255, 255, 255, 0.1); order: 2; }
+        .status-badge { display: flex; align-items: center; gap: 10px; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); padding: 8px 18px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.1); color: white; font-size: 11px; font-weight: 800; text-transform: uppercase; order: 1; transition: 0.3s; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); animation: pulse-accent 2s infinite; }
+        .status-badge.match-found { background: rgba(255, 215, 0, 0.9); color: #000; }
         
-        .splash-text .bag { color: #01211e !important; font-weight: 350; }
-        .splash-text .view { color: #f7eaea !important; font-weight: 350; }
-
-        .splash-slogan {
-            color: #f7eaea !important;
-            font-weight: 700; 
-            font-size: 3.8vw; 
-            margin-top: -1.5vw; 
-            opacity: 0;
-            display: block;
-            width: 82vw; 
-            text-align: justify;
-            letter-spacing: 0.38vw; 
-            white-space: nowrap;
-            text-transform: none;
-            animation: textFadeUp 0.6s ease forwards 0.7s;
-        }
-
-        @keyframes logoEnter { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes textFadeUp { 0% { opacity: 0; transform: translateY(10px); } 100% { opacity: 1; transform: translateY(0); } }
-
-        /* --- APP STYLES --- */
-        video.ar-video-bg { position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100dvh !important; object-fit: cover !important; z-index: -5 !important; }
-
-        .overlay-screen { position: fixed; inset: 0; z-index: 2000; background: var(--bg-page); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.8s ease; height: 100dvh; }
-        .hidden { display: none !important; opacity: 0; pointer-events: none; }
+        .overlay-screen { position: fixed; inset: 0; z-index: 1000; background: #fff; transition: opacity 0.4s, transform 0.4s; overflow-y: auto; padding-bottom: 140px; }
+        .hidden { opacity: 0 !important; pointer-events: none !important; transform: translateY(20px); }
         
-        #tour-modal, #video-overlay { z-index: 4000; background: white; } 
-        #video-overlay { background: #000; }
+        .search-header { padding: 45px 25px 20px; }
+        .search-bar-wrap { background: #f4f4f4; border-radius: 15px; display: flex; align-items: center; padding: 12px 18px; gap: 12px; }
+        .search-bar-wrap input { border: none; background: transparent; flex: 1; outline: none; font-size: 16px; color: #333; }
+        .search-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 10px 25px; }
+        .search-category { height: 100px; border-radius: 20px; overflow: hidden; position: relative; background: #222; }
+        .search-category img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+        .search-category span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 14px; text-transform: uppercase; }
 
-        .close-tour-btn { 
-            position: absolute; top: 20px; right: 20px; z-index: 4100; 
-            padding: 12px 20px; background: var(--accent); color: white; 
-            border: none; border-radius: 50px; font-weight: 700; font-size: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer;
-        }
+        .notif-item { margin: 0 25px 15px; display: flex; gap: 15px; align-items: flex-start; padding-bottom: 15px; border-bottom: 1px solid #f0f0f0; }
+        .notif-icon { width: 45px; height: 45px; border-radius: 12px; background: #f0fdfa; color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .notif-text b { font-size: 14px; color: #222; display: block; margin-bottom: 4px; }
+        .notif-text p { margin: 0; font-size: 12px; color: #777; line-height: 1.4; }
+        .notif-text span { font-size: 10px; color: #ccc; display: block; margin-top: 5px; font-weight: 800; }
 
-        .main-card { width: 100%; height: 100dvh; background: #ffffff; display: flex; flex-direction: column; overflow: hidden; }
-
-        .carousel-viewport { width: 100%; height: 70%; position: relative; overflow: hidden; }
-        .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1s ease-in-out; background-size: cover; background-position: center; }
-        .slide.active { opacity: 1; }
+        .user-greeting { padding: 45px 25px 10px; background: white; }
+        .user-greeting h3 { margin: 0; font-size: 14px; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;}
+        .user-greeting h2 { margin: 0; font-size: 26px; font-weight: 900; color: #333; }
         
-        .slide::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(255,255,255,0.7) 85%, #ffffff 100%); z-index: 2; }
+        .hero-slider-container { margin: 15px 25px; height: 190px; border-radius: 30px; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,166,153,0.25); }
+        .hero-wrapper { display: flex; width: 400%; height: 100%; transition: transform 0.6s var(--transition); }
+        .promo-banner { width: 25%; height: 100%; position: relative; padding: 30px; background: var(--accent); color: white; display: flex; flex-direction: column; justify-content: center; }
+        .promo-banner h1 { margin: 0; font-size: 22px; width: 65%; font-weight: 900; z-index: 2; }
+        .promo-banner button { background: white; color: var(--accent); border: none; padding: 8px 18px; border-radius: 50px; font-weight: 900; margin-top: 15px; width: fit-content; z-index: 2; }
+        .promo-banner img { position: absolute; right: -15px; bottom: -10px; height: 105%; z-index: 1; }
         
-        #slide1 { background-image: url('Assets/Hero_Image_Map.png'); }
-        #slide2 { background-image: url('Assets/Hero_Image_SC_tunnel.png'); }
-        #slide3 { background-image: url('Assets/Cordillera%20Village.png'); }
-
-        .floating-badge { display: inline-block; background: var(--accent); color: white; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-
-        .hero-info-overlay { position: absolute; bottom: 8dvh; left: 8vw; z-index: 5; display: flex; flex-direction: column; align-items: flex-start; }
-        .hero-info-overlay h2 { font-size: 8vw; margin: 0; font-weight: 900; line-height: 1.1; color: var(--accent); text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .hero-info-overlay p { font-size: 3.5vw; margin: 1dvh 0 0; font-weight: 900; color: #444; }
-
-        .indicators { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
-        .dot { width: 8px; height: 8px; background: rgba(0,0,0,0.1); border-radius: 50%; transition: 0.3s; }
-        .dot.active { width: 22px; background: var(--accent); border-radius: 10px; }
-
-        .hero-text-area { flex: 1; padding: 0 8vw 5dvh; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; background: white; }
-        .hero-title { font-size: 7vw; font-weight: 900; color: #222; margin-bottom: 4dvh; line-height: 1.2; }
-
-        .get-started-btn { width: 85vw; max-width: 400px; height: 9dvh; background: var(--accent); color: white; border: none; border-radius: 50px; font-size: 5vw; font-weight: 700; display: flex; align-items: center; justify-content: center; padding-right: 15vw; position: relative; cursor: pointer; box-shadow: 0 10px 25px rgba(0,166,153,0.25); }
-        .btn-arrow-circle { position: absolute; right: 2vw; width: 14vw; height: 14vw; max-width: 60px; max-height: 60px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-
-        /* --- DISCOVER PANEL --- */
-        #news-panel { position: fixed; top: 0; left: 0; bottom: 0; width: 100%; z-index: 3500; background: var(--soft-bg); transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; }
-        #news-panel.show { transform: translateX(0); }
-        .news-header { padding: 50px 25px 20px; display: flex; justify-content: space-between; align-items: center; background: white; border-bottom: 1px solid #eee; }
-        .close-news { background: #f5f5f5; border: none; border-radius: 14px; cursor: pointer; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
-        .news-content { flex: 1; overflow-y: auto; padding: 20px 15px; }
-        .discover-card { background: #fff; border-radius: 28px; margin-bottom: 25px; overflow: hidden; box-shadow: var(--card-shadow); }
-        .discover-media { width: 100%; aspect-ratio: 1/1; background: #eee; position: relative; }
-        .discover-media video { width: 100%; height: 100%; object-fit: cover; }
-        .discover-info { padding: 20px; position: relative; }
-        .discover-tag { position: absolute; top: -15px; left: 20px; background: var(--accent); color: white; padding: 6px 14px; border-radius: 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,166,153,0.3); }
-        .discover-title { font-size: 22px; font-weight: 900; color: #111; margin: 10px 0 8px; line-height: 1.2; letter-spacing: -0.5px; }
-        .discover-desc { font-size: 15px; color: #555; line-height: 1.6; margin: 0; font-weight: 400; }
-
-        /* --- SCANNER RETICLE --- */
-        #scan-reticle { position: fixed; top: 43%; left: 50%; transform: translate(-50%, -50%); width: 91vw; height: 77dvh; border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 30px; z-index: 10; pointer-events: none; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; }
-        #scan-reticle::before { content: ''; position: absolute; inset: -8px; border: 5px solid var(--accent); border-radius: 35px; z-index: 5; clip-path: polygon(0 0, 20% 0, 20% 8px, 8px 8px, 8px 20%, 0 20%, 0 0, 80% 0, 80% 8px, 92% 8px, 92% 20%, 100% 20%, 100% 0, 100% 80%, 92% 80%, 92% 92%, 80% 92%, 80% 100%, 100% 100%, 0 100%, 0 80%, 8px 80%, 8px 92%, 20% 92%, 20% 100%, 0 100%); transition: opacity 0.3s ease; }
-        .scanning-line { position: absolute; top: 0; left: 5%; width: 100%; height: 4px; background: linear-gradient(to right, transparent, var(--accent), transparent); box-shadow: 0 0 15px var(--accent), 0 0 25px var(--accent); border-radius: 50%; z-index: 2; opacity: 0; animation: scan-move 2.5s ease-in-out infinite; }
-        @keyframes scan-move { 0% { top: 5%; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { top: 95%; opacity: 0; } }
-
-        #ui-layer { position: fixed; inset: 0; z-index: 100; background: transparent; transition: background 0.5s ease; }
-        #ui-layer.camera-off { background: #000000; }
-        #ui-layer.camera-off .scanning-line { display: none !important; }
-
-        /* --- NAVIGATION --- */
-        .nav-bar { position: fixed; bottom: 4dvh; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 10vw; z-index: 3000; transition: 0.3s ease; pointer-events: none; }
-        .nav-bar.hidden-nav { opacity: 0; transform: translateY(20px); pointer-events: none; }
-        .nav-btn-secondary { width: 14vw; height: 14vw; max-width: 60px; max-height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: auto; }
-        .iphone-cam-btn { width: 22vw; height: 22vw; max-width: 90px; max-height: 90px; border-radius: 50%; background: var(--accent); border: 4px solid #ffffff; display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: auto; transition: 0.3s cubic-bezier(0.1, 0.5, 0.1, 1); box-shadow: 0 8px 25px rgba(0, 166, 153, 0.4); }
-        .iphone-cam-btn.off { border-color: rgba(255,255,255,0.4); background: rgba(0,0,0,0.4); box-shadow: none; }
-        .nav-icon-light { width: 24px; height: 24px; fill: none; stroke: #fff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-
-        /* --- BOTTOM DOCK --- */
-        .bottom-dock { position: fixed; bottom: 0; width: 100%; height: 40dvh; z-index: 2500; transform: translateY(34dvh); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .bottom-dock.expanded { background: white; transform: translateY(0); border-radius: 30px 30px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,0.1); }
-        .drag-handle { width: 100%; height: 6dvh; display: flex; justify-content: center; align-items: center; cursor: grab; }
-        .handle-bar { width: 50px; height: 5px; background: rgba(0, 0, 0, 0.2); border-radius: 10px; }
-        .scroll-container { display: flex; gap: 12px; overflow-x: auto; padding: 10px 20px 30px; width: 100%; scrollbar-width: none; opacity: 0; transition: 0.3s; }
-        .bottom-dock.expanded .scroll-container { opacity: 1; }
-        .station-card { min-width: 110px; height: 140px; background: #f9f9f9; border-radius: 16px; overflow: hidden; border: 1px solid #eee; flex-shrink: 0; transition: transform 0.2s; }
-        .station-card.found { border: 3px solid var(--accent) !important; transform: scale(1.05); background: #fff; box-shadow: 0 8px 20px rgba(0,166,153,0.15); }
+        .section-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px 10px; }
+        .section-header h4 { margin: 0; font-size: 18px; font-weight: 900; color: #222; }
+        .see-all { color: var(--accent); font-size: 12px; font-weight: 800; text-decoration: none; }
         
-        .gps-display { position: absolute; top: 40px; left: 20px; background: var(--glass); backdrop-filter: var(--blur); padding: 10px 18px; border-radius: 12px; z-index: 100; display: flex; align-items: center; gap: 10px; }
-        .pulse.live { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse-scanning 1.5s infinite; }
-        .pulse.standby { background: #999 !important; animation: none !important; }
-        @keyframes pulse-scanning { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
-
-        .tutorial-video-box { width: 92%; height: 60dvh; background: #111; border-radius: 28px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.3); margin: 20px auto; }
-        .preview-video-element { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7); position: absolute; top: 0; left: 0; z-index: 1; }
-        .action-row { display: flex; gap: 15px; width: 92%; margin-bottom: 20px; }
-        .btn-outline { flex: 1; height: 60px; border-radius: 18px; border: 2px solid #ddd; background: white; color: #444; font-weight: 700; font-size: 16px; cursor: pointer; }
-        .btn-filled { flex: 1.2; height: 60px; border-radius: 18px; border: none; background: var(--accent); color: white; font-weight: 700; font-size: 16px; cursor: pointer; box-shadow: 0 6px 20px rgba(0,166,153,0.2); transition: 0.3s; }
+        #most-scanned-list { display: flex; gap: 15px; overflow-x: auto; padding: 0 25px 20px; scrollbar-width: none; }
+        .popular-card { flex: 0 0 180px; background: white; border-radius: 25px; padding: 10px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--card-shadow); border: 1px solid #f0f0f0; }
+        .pop-img { width: 100%; height: 110px; border-radius: 20px; object-fit: cover; }
+        .scan-count { background: #f0fdfa; color: var(--accent); padding: 4px 10px; border-radius: 10px; font-size: 10px; font-weight: 900; margin-top: 5px; display: inline-block; }
+        
+        .campaign-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 0 25px 30px; scrollbar-width: none; }
+        .campaign-card { flex: 0 0 280px; height: 170px; border-radius: 25px; overflow: hidden; position: relative; box-shadow: var(--card-shadow); }
+        .campaign-img-box { width: 100%; height: 100%; position: relative; background-size: cover; background-position: center; }
+        .campaign-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 10%, transparent 70%); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; }
+        .campaign-overlay h5 { color: white; margin: 0; font-size: 18px; font-weight: 100; line-height: 1.1; }
+        .campaign-overlay h5 strong { display: block; font-weight: 900; font-size: 22px; }
+        
+        .main-navigation-bar { position: fixed; bottom: 0; left: 0; right: 0; height: calc(90px + var(--safe-bottom)); background: #fff; z-index: 5000; display: flex; justify-content: space-around; align-items: center; padding: 0 15px var(--safe-bottom); box-shadow: 0 -10px 30px rgba(0,0,0,0.05); transition: transform 0.4s; }
+        .nav-item { color: #ccc; flex: 1; display: flex; justify-content: center; padding: 10px; }
+        .nav-item.active { color: var(--accent); }
+        .nav-item-center { width: 65px; height: 65px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -45px; border: 6px solid #fff; box-shadow: 0 10px 25px rgba(0,166,153,0.3); }
+        
+        #tour-modal { position: fixed; inset: 0; z-index: 9000; background: white; transform: translateY(100%); transition: 0.5s; }
+        #tour-modal.visible { transform: translateY(0); }
     </style>
 </head>
 <body>
-
-    <div id="splash-screen">
-        <div class="splash-content">
-            <div class="splash-logo"><img src="Assets/Logo_Icon.png" alt="Logo"></div>
-            <h1 class="splash-text"><span class="bag">BAG</span><span class="view">VIEW</span></h1>
-            <div class="splash-slogan">Immersive Eco-Tourism in Baguio City</div>
-        </div>
+    <div id="splash-screen" style="position:fixed; inset:0; z-index:9999; background:#00A699; display:flex; align-items:center; justify-content:center; transition:0.6s;">
+        <img src="Assets/Logo_Icon.png" width="100" style="filter:brightness(0) invert(1);">
+    </div>
+    <div id="ar-reticle"><div class="laser-line"></div></div>
+    
+    <div id="gallery-dock-container">
+        <div class="dock-handle-area" id="handle-area"><div class="dock-handle"></div></div>
+        <div id="gallery-dock"></div>
     </div>
 
-    <div id="news-panel">
-        <div class="news-header">
-            <div>
-                <span style="color: var(--accent); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 2px;">System</span>
-                <h2 style="margin:0; font-size: 32px; font-weight: 900; letter-spacing: -1px;">Updates</h2>
-            </div>
-            <button class="close-news" onclick="toggleNews(false)">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
-            </button>
+    <div id="ar-top-layer">
+        <div class="ar-home-btn" onclick="app.nav('home')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
         </div>
-        <div class="news-content">
-            <div class="discover-card">
-                <div class="discover-media"><video muted loop playsinline autoplay><source src="Assets/BagView_Tutorial.mp4" type="video/mp4"></video></div>
-                <div class="discover-info">
-                    <span class="discover-tag">AR Engine</span>
-                    <h3 class="discover-title">Ecoverse Interactivity</h3>
-                    <p class="discover-desc">We've enhanced tracking stability for print media scanning.</p>
-                </div>
-            </div>
+        <div class="status-badge" id="ar-status-badge">
+            <div id="status-dot" class="status-dot"></div><span id="status-text">Scanning...</span>
         </div>
-    </div>
-
-    <audio id="match-sound" src="https://cdn.pixabay.com/audio/2021/08/04/audio_bb630cc098.mp3" preload="auto"></audio>
-
-    <div id="tour-modal" class="overlay-screen hidden">
-        <button class="close-tour-btn" onclick="closeTour()">X</button>
-        <iframe id="tour-iframe" src="" style="width: 100%; height: 100%; border: none;"></iframe>
-    </div>
-
-    <div id="video-overlay" class="overlay-screen hidden">
-        <button class="close-tour-btn" onclick="closeVideoPopup()">X</button>
-        <video id="tutorial-full-video" controls style="width: 100%; max-height: 90vh; z-index: 5000; position: relative;"></video>
     </div>
 
     <div id="home-page" class="overlay-screen">
-        <div class="main-card">
-            <div class="carousel-viewport">
-                <div class="slide active" id="slide1">
-                    <div class="hero-info-overlay">
-                        <div class="floating-badge">Featured</div>
-                        <h2>Interactive Map</h2>
-                        <p>Navigate the blooms with digital precision.</p>
-                    </div>
-                </div>
-                <div class="slide" id="slide2">
-                    <div class="hero-info-overlay">
-                        <div class="floating-badge">Interactive</div>
-                        <h2>AR Navigation</h2>
-                        <p>Unlock stories using your camera lens.</p>
-                    </div>
-                </div>
-                <div class="slide" id="slide3">
-                    <div class="hero-info-overlay">
-                        <div class="floating-badge">Culture</div>
-                        <h2>Cordillera Village</h2>
-                        <p>Explore the heritage of the highlands.</p>
-                    </div>
-                </div>
-                <div class="indicators">
-                    <div class="dot active"></div>
-                    <div class="dot"></div>
-                    <div class="dot"></div>
+        <div class="user-greeting"><h3>Hi, Explorer!</h3><h2>Let’s Discover Baguio</h2></div>
+        <div class="hero-slider-container">
+            <div class="hero-wrapper" id="hero-wrapper">
+                <div class="promo-banner"><h1>Discover Hidden Eco-Trails</h1><button onclick="app.startScanner()">Explore Now</button><img src="Assets/Hero_Garden.png"></div>
+                <div class="promo-banner" style="background: #008f84"><h1>Unlock 3D Plant Models</h1><button onclick="app.startScanner()">Scan Marker</button><img src="Assets/Cactus&Succulents.png"></div>
+                <div class="promo-banner" style="background: #007a71"><h1>Virtual Heritage Tours</h1><button onclick="app.startScanner()">Find Marker</button><img src="Assets/Cordillera%20Village.png"></div>
+                <div class="promo-banner" style="background: #00665e"><h1>Interactive Botanical Map</h1><button onclick="app.startScanner()">Scan for Map</button><img src="Assets/A1_Map.jpg"></div>
+            </div>
+        </div>
+        <div class="section-header"><h4>Most Scanned Station</h4></div>
+        <div id="most-scanned-list"></div>
+        <div class="section-header"><h4>Did You Know?</h4><a href="#" class="see-all">Explore Articles</a></div>
+        <div class="campaign-scroll">
+            <div class="campaign-card">
+                <div class="campaign-img-box" style="background-image: url('Assets/Japanese Tunnel.png');">
+                    <div class="campaign-overlay"><h5>Hidden secrets of the <br><strong>Japanese Tunnel</strong></h5></div>
                 </div>
             </div>
-            <div class="hero-text-area">
-                <h1 class="hero-title">Explore Botanical in AR</h1>
-                <button class="get-started-btn" onclick="goToTutorial()">Get Started<div class="btn-arrow-circle"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></div></button>
+            <div class="campaign-card">
+                <div class="campaign-img-box" style="background-image: url('Assets/Hero_Garden.png');">
+                    <div class="campaign-overlay"><h5>Why Baguio is called <br><strong>The City of Pines</strong></h5></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="tutorial-page" class="overlay-screen hidden" style="background: white; overflow-y: auto;">
-        <div style="width: 100%; height: 100%; padding: 40px 0; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
-            <div style="text-align: center; margin-top: 10px;">
-                <h2 style="font-weight: 900; margin: 0; color: var(--accent); font-size: 32px; letter-spacing: -1px; text-transform: uppercase;">Quick Guide</h2>
-                <p style="color: #666; font-size: 14px; margin-top: 5px; font-weight: 400;">Scan markers to unlock hidden stories</p>
+    <div id="search-page" class="overlay-screen hidden">
+        <div class="search-header">
+            <div class="user-greeting" style="padding:0 0 20px;"><h2>Search Stations</h2></div>
+            <div class="search-bar-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" placeholder="Find flowers, tunnels, trails...">
             </div>
-            <div class="tutorial-video-box">
-                <video class="preview-video-element" autoplay loop muted playsinline><source src="Assets/BagView_Tutorial.mp4" type="video/mp4"></video>
-                <div style="z-index: 5; display: flex; flex-direction: column; align-items: center; pointer-events: none;">
-                    <div style="width: 70px; height: 70px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; border: 2px solid rgba(255,255,255,0.6); backdrop-filter: blur(10px);"><svg width="28" height="28" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-                    <span style="font-size: 12px; font-weight: 900; letter-spacing: 3px; color: #fff; text-transform: uppercase; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">Preview Playing</span>
-                </div>
+        </div>
+        <div class="section-header"><h4>Browse by Category</h4></div>
+        <div class="search-grid">
+            <div class="search-category"><img src="Assets/Asian Garden.png"><span>Historical</span></div>
+            <div class="search-category"><img src="Assets/Cactus&Succulents.png"><span>Flora</span></div>
+            <div class="search-category"><img src="Assets/Cordillera%20Village.png"><span>Culture</span></div>
+            <div class="search-category"><img src="Assets/Hero_Garden.png"><span>Trails</span></div>
+        </div>
+    </div>
+
+    <div id="notifications-page" class="overlay-screen hidden">
+        <div class="user-greeting"><h2>Updates</h2></div>
+        <div id="notification-list">
+            <div class="notif-item">
+                <div class="notif-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+                <div class="notif-text"><b>New AR Station Spotted!</b><p>The Korean Pavilion is now active. Scan the entrance sign for a new virtual experience.</p><span>2 HOURS AGO</span></div>
             </div>
-            <div class="action-row">
-                <button class="btn-outline" onclick="startScanner()">Skip</button>
-                <button class="btn-filled" onclick="openVideoPopup()">Watch Full</button>
+            <div class="notif-item">
+                <div class="notif-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg></div>
+                <div class="notif-text"><b>Did you know?</b><p>The Japanese Tunnel was built during WWII.</p><span>5 HOURS AGO</span></div>
             </div>
         </div>
     </div>
 
-    <div id="ui-layer" class="hidden">
-        <div id="scan-reticle"><div class="scanning-line" id="laser-line"></div></div>
-        <div class="gps-display">
-            <div id="gps-pulse" class="pulse live"></div>
-            <div id="gps-status" style="font-size:11px; font-weight:700; color:#666;">SCANNING...</div>
-        </div>
-        <div class="bottom-dock" id="dock">
-            <div class="drag-handle" id="handle"><div class="handle-bar"></div></div>
-            <div class="scroll-container" id="gallery-root"></div>
-        </div>
-        <div class="nav-bar" id="main-nav">
-            <div class="nav-btn-secondary" onclick="toggleNews(true)"><svg class="nav-icon-light" viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8z"/></svg></div>
-            <div class="iphone-cam-btn active" id="cam-toggle" onclick="toggleScanner()"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><line x1="7" y1="12" x2="17" y2="12"></line><polyline points="10 9 7 12 10 15"></polyline><polyline points="14 15 17 12 14 9"></polyline></svg></div>
-            <div class="nav-btn-secondary" onclick="goBackHome()"><svg class="nav-icon-light" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg></div>
-        </div>
+    <nav class="main-navigation-bar" id="main-nav">
+        <div class="nav-item active" id="nav-home" onclick="app.nav('home')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
+        <div class="nav-item" id="nav-search" onclick="app.nav('search')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
+        <div class="nav-item-center" onclick="app.startScanner()"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></div>
+        <div class="nav-item" id="nav-notifications" onclick="app.nav('notifications')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
+        <div class="nav-item" onclick="app.resetApp()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></div>
+    </nav>
+
+    <div id="tour-modal">
+        <button style="position:absolute; top:45px; left:20px; z-index:9001; background:var(--accent); color:white; border:none; padding:12px 25px; border-radius:50px; font-weight:900;" onclick="app.closeInternalPage()">BACK</button>
+        <iframe id="tour-iframe" style="width:100%; height:100%; border:none;"></iframe>
     </div>
 
-    <a-scene mindar-image="imageTargetSrc: targets.mind; autoStart: false; uiLoading: no; uiScanning: no;" embedded renderer="transparent: true; alpha: true; colorManagement: true;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+    <a-scene mindar-image="imageTargetSrc: targets.mind; autoStart: false; uiLoading: no; uiScanning: no;" embedded renderer="colorManagement: true;" vr-mode-ui="enabled: false">
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
         <a-entity id="target-container"></a-entity>
     </a-scene>
 
-<script>
-    let isOpeningTour = false;
-    let currentHeroSlide = 0;
+    <script>
+const app = {
+    currentHero: 0, 
+    startY: 0, 
+    isDragging: false,
+    stations: [
+		{ id: 0, name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/Interactive_Map/", scans: 1240 },
+		{ id: 1, name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://tour.panoee.net/mainentrance/1", scans: 980 },
+		{ id: 2, name: "Arbor", thumb: "Assets/Arbor.png", link: "https://tour.panoee.net/arbor", scans: 340 },
+		{ id: 3, name: "Asian Garden", thumb: "Assets/Asian Garden.png", link: "https://tour.panoee.net/asian-garden", scans: 450 },
+		{ id: 4, name: "Cactus & Succulents", thumb: "Assets/Cactus&Succulents.png", link: "https://tour.panoee.net/cactus-succulent-garden/1-1", scans: 640 },
+		{ id: 5, name: "Centennial Garden", thumb: "Assets/Centennial Garden.png", link: "https://tour.panoee.net/centennial-garden/1", scans: 210 },
+		{ id: 6, name: "Chinese Garden", thumb: "Assets/Chinese%20Garden.png", link: "https://tour.panoee.net/chinese-garden/69cd28ffcd728200084a2654", scans: 520 },
+		{ id: 7, name: "City of Vaughan", thumb: "Assets/City%20of%20Vaughan%20Friendship%20Garden.png", link: "https://tour.panoee.net/city-of-vaughan", scans: 180 },
+		{ id: 8, name: "Cordillera Village", thumb: "Assets/Cordillera%20Village.png", link: "https://tour.panoee.net/cordillera-village/1", scans: 890 },
+		{ id: 9, name: "Dahlia Garden", thumb: "Assets/Dahlia Garden.png", link: "https://tour.panoee.net/69b74a8ccd5918bff013a943", scans: 310 },
+		{ id: 10, name: "Greenhouse", thumb: "Assets/Greenhouse.png", link: "https://tour.panoee.net/greenhouse/1", scans: 420 },
+		{ id: 11, name: "Japanese Garden", thumb: "Assets/Japanese%20Garden.png", link: "https://tour.panoee.net/japanese-garden", scans: 760 },
+		{ id: 12, name: "Japanese Tunnel", thumb: "Assets/Japanese%20Tunnel.png", link: "https://tour.panoee.net/japanese-tunnel/1", scans: 1120 },
+		{ id: 13, name: "Korea Garden", thumb: "Assets/Korea%20Garden.png", link: "https://tour.panoee.net/korea-garden/1", scans: 580 },
+		{ id: 14, name: "Orchidarium", thumb: "Assets/Orchidarium.png", link: "https://tour.panoee.net/orchidarium/1", scans: 390 },
+		{ id: 15, name: "Friendship Garden", thumb: "Assets/Philippine-Thailand Frienship Garden.png", link: "https://tour.panoee.net/philippine-thailand-friendship-garden/7-1", scans: 270 },
+		{ id: 16, name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.png", link: "https://tour.panoee.net/pmsea-garden", scans: 150 }
+    ],
 
-    const stations = [
-        { name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/Interactive_Map/" },
-        { name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://tour.panoee.net/mainentrance/1" },
-        { name: "Arbor", thumb: "Assets/Arbor.png", link: "https://tour.panoee.net/arbor" },
-        { name: "Asian Garden", thumb: "Assets/Asian Garden.png", link: "https://tour.panoee.net/asian-garden" },
-        { name: "Cactus & Succulents", thumb: "Assets/Cactus&Succulents.png", link: "https://tour.panoee.net/cactus-succulent-garden/1-1" },
-        { name: "Centennial Garden", thumb: "Assets/Centennial Garden.png", link: "https://tour.panoee.net/centennial-garden/1" },
-        { name: "Chinese Garden", thumb: "Assets/Chinese%20Garden.png", link: "https://tour.panoee.net/chinese-garden/69cd28ffcd728200084a2654" },
-        { name: "City of Vaughan", thumb: "Assets/City%20of%20Vaughan%20Friendship%20Garden.png", link: "https://tour.panoee.net/city-of-vaughan" },
-        { name: "Cordillera Village", thumb: "Assets/Cordillera%20Village.png", link: "https://tour.panoee.net/cordillera-village/1" },
-        { name: "Dahlia Garden", thumb: "Assets/Dahlia Garden.png", link: "https://tour.panoee.net/69b74a8ccd5918bff013a943" },
-        { name: "Greenhouse", thumb: "Assets/Greenhouse.png", link: "https://tour.panoee.net/greenhouse/1" },
-        { name: "Japanese Garden", thumb: "Assets/Japanese%20Garden.png", link: "https://tour.panoee.net/japanese-garden" },
-        { name: "Japanese Tunnel", thumb: "Assets/Japanese%20Tunnel.png", link: "https://tour.panoee.net/japanese-tunnel/1" },
-        { name: "Korea Garden", thumb: "Assets/Korea%20Garden.png", link: "https://tour.panoee.net/korea-garden/1" },
-        { name: "Orchidarium", thumb: "Assets/Orchidarium.png", link: "https://tour.panoee.net/orchidarium/1" },
-        { name: "Friendship Garden", thumb: "Assets/Philippine-Thailand Frienship Garden.png", link: "https://tour.panoee.net/philippine-thailand-friendship-garden/7-1" },
-        { name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.png", link: "https://tour.panoee.net/pmsea-garden" }
-    ];
+    init: function() {
+        this.renderMostScanned(); 
+        this.renderDock(); 
+        this.initAR(); 
+        this.initSwipeLogic(); 
+        this.startHeroSlider();
+        setTimeout(() => { 
+            document.getElementById('splash-screen').style.opacity = '0'; 
+            setTimeout(() => document.getElementById('splash-screen').style.display='none', 600); 
+        }, 1500);
+    },
 
-    function goToTutorial() { renderPage('tutorial'); }
+    renderMostScanned: function() {
+        const list = document.getElementById('most-scanned-list');
+        const top5 = [...this.stations].sort((a,b) => b.scans - a.scans).slice(0, 5);
+        list.innerHTML = top5.map(s => `
+            <div class="popular-card">
+                <img src="${s.thumb}" class="pop-img">
+                <div class="pop-info"><b>${s.name}</b><br><span class="scan-count">${s.scans.toLocaleString()} SCANS</span></div>
+            </div>
+        `).join('');
+    },
 
-    function startHeroRotation() {
-        const slides = document.querySelectorAll('#home-page .slide');
-        const dots = document.querySelectorAll('#home-page .dot');
-        if (slides.length === 0) return;
-        setInterval(() => {
-            slides[currentHeroSlide].classList.remove('active');
-            dots[currentHeroSlide].classList.remove('active');
-            currentHeroSlide = (currentHeroSlide + 1) % slides.length;
-            slides[currentHeroSlide].classList.add('active');
-            dots[currentHeroSlide].classList.add('active');
-        }, 4000);
-    }
+    renderDock: function() {
+        const dock = document.getElementById('gallery-dock');
+        dock.innerHTML = this.stations.map(s => `
+            <div class="gallery-item" onclick="app.selectReference('${s.name}', this)">
+                <div class="gallery-img-wrap"><img src="${s.thumb}"></div>
+                <span>${s.name}</span>
+            </div>
+        `).join('');
+    },
 
-    function toggleNews(show) { document.getElementById('news-panel').classList.toggle('show', show); }
+    selectReference: function(name, element) {
+        document.querySelectorAll('.gallery-item').forEach(item => item.classList.remove('selected'));
+        element.classList.add('selected');
+        document.getElementById('status-text').innerText = `Selected: ${name}`;
+    },
 
-    function renderPage(pageId) {
-        document.getElementById('home-page').classList.add('hidden');
-        document.getElementById('tutorial-page').classList.add('hidden');
-        document.getElementById('ui-layer').classList.add('hidden');
-        if (pageId === 'home') document.getElementById('home-page').classList.remove('hidden');
-        if (pageId === 'tutorial') document.getElementById('tutorial-page').classList.remove('hidden');
-        if (pageId === 'scanner') document.getElementById('ui-layer').classList.remove('hidden');
-    }
+    initSwipeLogic: function() {
+        const container = document.getElementById('gallery-dock-container');
+        const handle = document.getElementById('handle-area');
+        const dock = document.getElementById('gallery-dock');
+        let initialTranslateY = 0;
 
-    function startScanner() {
-        renderPage('scanner');
-        initExperience();
-        const sceneEl = document.querySelector('a-scene');
-        const arSystem = sceneEl.systems['mindar-image-system'];
-        requestAnimationFrame(() => { if (arSystem && !arSystem.mainLoopId) arSystem.start(); });
-    }
-
-    function goBackHome() { window.location.reload(); }
-
-  function initExperience() {
-    const root = document.getElementById('gallery-root');
-    const container = document.getElementById('target-container');
-    const matchSound = document.getElementById('match-sound'); //
-    
-    if (root.children.length > 0) return;
-    
-    stations.forEach((s, i) => {
-        // Card Creation Logic
-        const card = document.createElement('div'); 
-        card.className = 'station-card'; 
-        card.id = `card-${i}`;
-        card.innerHTML = `<div style="height:70%"><img src="${s.thumb}" style="width:100%; height:100%; object-fit:cover;"></div>
-                          <div style="font-size:9px; text-align:center; padding:10px 5px; font-weight:700;">${s.name.toUpperCase()}</div>`;
-        
-        card.onclick = () => { 
-            highlightCard(i); 
-            document.getElementById('gps-status').innerText = "SELECTED: " + s.name.toUpperCase(); 
+        const onStart = (e) => { 
+            this.startY = e.touches ? e.touches[0].clientY : e.clientY; 
+            this.isDragging = true; 
+            container.style.transition = 'none'; 
+            const matrix = new WebKitCSSMatrix(window.getComputedStyle(container).transform);
+            initialTranslateY = matrix.m42;
         };
-        root.appendChild(card);
-        
-        // AR Entity Logic
-        const entity = document.createElement('a-entity'); 
-        entity.setAttribute('mindar-image-target', `targetIndex: ${i}`);
-        
-        entity.addEventListener("targetFound", () => {
-            const btn = document.getElementById('cam-toggle');
-            if (isOpeningTour || !btn.classList.contains('active')) return;
+
+        const onMove = (e) => {
+            if (!this.isDragging) return;
+            const currentY = e.touches ? e.touches[0].clientY : e.clientY;
+            const deltaY = currentY - this.startY;
+            let newY = initialTranslateY + deltaY;
             
-            isOpeningTour = true;
-            highlightCard(i);
+            const closedPos = container.offsetHeight - 80;
+            // Constrain movement between fully open (0) and minimized (closedPos)
+            newY = Math.max(0, Math.min(newY, closedPos));
+
+            container.style.transform = `translateY(${newY}px) text-rendering`;
             
-            // Restore Sound Feedback
-            if (matchSound) {
-                matchSound.currentTime = 0; // Reset to start
-                matchSound.play().catch(e => console.log("Audio play blocked:", e)); //
+            // Dynamic transparency and fade during drag
+            const progress = 1 - (newY / closedPos);
+            container.style.background = `rgba(255, 255, 255, ${progress})`;
+            dock.style.opacity = progress;
+
+            if (e.cancelable) e.preventDefault();
+        };
+
+        const onEnd = () => {
+            if (!this.isDragging) return;
+            this.isDragging = false; 
+            container.style.transition = 'transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), background 0.3s ease';
+            
+            const closedPos = container.offsetHeight - 80;
+            const currentMatrix = new WebKitCSSMatrix(window.getComputedStyle(container).transform);
+            const finalY = currentMatrix.m42;
+
+            // Snap Logic: If pulled down more than 40%, close it. Otherwise, snap back up.
+            if (finalY > closedPos * 0.4) { 
+                container.classList.remove('open'); 
+                container.style.transform = `translateY(${closedPos}px)`; 
+                container.style.background = 'rgba(255, 255, 255, 0)'; 
+                dock.style.opacity = 0;
+            } else { 
+                container.classList.add('open'); 
+                container.style.transform = 'translateY(0)'; 
+                container.style.background = 'rgba(255, 255, 255, 1)'; 
+                dock.style.opacity = 1;
             }
+        };
 
-            document.getElementById('gps-status').innerText = "MATCHED: " + s.name.toUpperCase();
-            document.getElementById('tour-iframe').src = s.link;
-            document.getElementById('tour-modal').classList.remove('hidden');
+        handle.addEventListener('touchstart', onStart, { passive: false });
+        handle.addEventListener('mousedown', onStart);
+        window.addEventListener('touchmove', onMove, { passive: false }); 
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('touchend', onEnd);
+        window.addEventListener('mouseup', onEnd);
+    },
+
+    startScanner: function() {
+        document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
+        document.getElementById('main-nav').style.transform = "translateY(150%)";
+        document.getElementById('ar-top-layer').style.opacity = "1";
+        document.getElementById('ar-reticle').style.opacity = "1";
+        
+        const container = document.getElementById('gallery-dock-container');
+        const dock = document.getElementById('gallery-dock');
+        
+        container.classList.add('ar-active', 'open');
+        // Start scanner with the dock FULLY OPEN (0px)
+        container.style.transform = 'translateY(0)';
+        container.style.background = 'rgba(255, 255, 255, 1)';
+        dock.style.opacity = 1;
+        
+        document.querySelector('a-scene').systems['mindar-image-system'].start();
+    },
+
+    nav: function(page) {
+        document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        document.getElementById(page + '-page').classList.remove('hidden');
+        if(document.getElementById('nav-'+page)) document.getElementById('nav-'+page).classList.add('active');
+        
+        document.getElementById('main-nav').style.transform = "translateY(0)";
+        document.getElementById('ar-top-layer').style.opacity = "0";
+        document.getElementById('ar-reticle').style.opacity = "0";
+        document.getElementById('gallery-dock-container').classList.remove('ar-active', 'open');
+        
+        const scene = document.querySelector('a-scene');
+        if (scene.systems['mindar-image-system']) scene.systems['mindar-image-system'].stop();
+    },
+
+    initAR: function() {
+        const container = document.getElementById('target-container');
+        this.stations.forEach(s => {
+            const entity = document.createElement('a-entity');
+            entity.setAttribute('mindar-image-target', `targetIndex: ${s.id}`);
+            entity.addEventListener("targetFound", () => {
+                document.getElementById('status-text').innerText = "Match Found!";
+                document.getElementById('ar-status-badge').classList.add('match-found'); 
+                setTimeout(() => this.openInternalPage(s.link), 1500);
+            });
+            entity.addEventListener("targetLost", () => { 
+                document.getElementById('ar-status-badge').classList.remove('match-found'); 
+                const selected = document.querySelector('.gallery-item.selected');
+                document.getElementById('status-text').innerText = selected ? `Selected: ${selected.querySelector('span').innerText}` : "Scanning..."; 
+            });
+            container.appendChild(entity);
         });
-        
-        container.appendChild(entity);
-    });
-    initDraggable();
-}
+    },
 
-    function closeTour() { document.getElementById('tour-modal').classList.add('hidden'); document.getElementById('tour-iframe').src = ""; isOpeningTour = false; if(!document.getElementById('ui-layer').classList.contains('camera-off')) { document.getElementById('gps-status').innerText = "SCANNING..."; } }
-    function openVideoPopup() { const modal = document.getElementById('video-overlay'); const video = document.getElementById('tutorial-full-video'); video.src = "Assets/BagView_Tutorial.mp4"; modal.classList.remove('hidden'); video.play(); }
-    function closeVideoPopup() { const modal = document.getElementById('video-overlay'); const video = document.getElementById('tutorial-full-video'); video.pause(); video.src = ""; modal.classList.add('hidden'); }
+    openInternalPage: function(url) { 
+        document.getElementById('tour-iframe').src = url; 
+        document.getElementById('tour-modal').classList.add('visible'); 
+    },
 
-    function highlightCard(index) {
-        document.querySelectorAll('.station-card').forEach(c => c.classList.remove('found'));
-        const card = document.getElementById(`card-${index}`);
-        if(card) { card.classList.add('found'); card.scrollIntoView({ behavior: 'smooth', inline: 'center' }); }
-        document.getElementById('dock').classList.add('expanded');
-        document.getElementById('dock').style.transform = 'translateY(0)';
-        document.getElementById('main-nav').classList.add('hidden-nav');
-    }
+    closeInternalPage: function() { 
+        document.getElementById('tour-modal').classList.remove('visible'); 
+        document.getElementById('tour-iframe').src = ""; 
+    },
 
-    async function toggleScanner() {
-        const arSystem = document.querySelector('a-scene').systems['mindar-image-system'];
-        const btn = document.getElementById('cam-toggle');
-        const uiLayer = document.getElementById('ui-layer');
-        const statusText = document.getElementById('gps-status');
-        const statusPulse = document.getElementById('gps-pulse');
-        if(btn.classList.contains('active')) { if (arSystem) arSystem.stop(); btn.classList.replace('active', 'off'); uiLayer.classList.add('camera-off'); statusText.innerText = "CAMERA STANDBY"; statusPulse.classList.add('standby'); } else { if (arSystem) await arSystem.start(); btn.classList.replace('off', 'active'); uiLayer.classList.remove('camera-off'); statusText.innerText = "SCANNING..."; statusPulse.classList.remove('standby'); }
-    }
+    startHeroSlider: function() { 
+        setInterval(() => { 
+            this.currentHero = (this.currentHero + 1) % 4; 
+            const wrap = document.getElementById('hero-wrapper'); 
+            if(wrap) wrap.style.transform = `translateX(-${this.currentHero * 25}%)`; 
+        }, 4000); 
+    },
 
-function initDraggable() {
-    const dock = document.getElementById('dock');
-    const handle = document.getElementById('handle');
-    const nav = document.getElementById('main-nav');
-    
-    let startY, initialTranslateY;
-    let isDragging = false;
-
-    handle.addEventListener('touchstart', (e) => {
-        startY = e.touches[0].clientY;
-        isDragging = true;
-        dock.style.transition = 'none';
-        
-        // Get the current actual position of the dock
-        const style = window.getComputedStyle(dock);
-        const matrix = new WebKitCSSMatrix(style.transform);
-        initialTranslateY = matrix.m42;
-    });
-
-    window.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        
-        const deltaY = e.touches[0].clientY - startY;
-        let newTranslateY = initialTranslateY + deltaY;
-
-        // Constraints: Don't let it go above 0 or below its "closed" position
-        const maxMove = window.innerHeight * 0.34; // Matches your 34dvh CSS
-        if (newTranslateY < 0) newTranslateY = 0;
-        if (newTranslateY > maxMove) newTranslateY = maxMove;
-
-        dock.style.transform = `translateY(${newTranslateY}px)`;
-        
-        // Fade the nav bar based on dock position
-        const opacity = newTranslateY / maxMove;
-        nav.style.opacity = opacity;
-    });
-
-    window.addEventListener('touchend', (e) => {
-        if (!isDragging) return;
-        isDragging = false;
-        dock.style.transition = '0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-
-        const currentY = e.changedTouches[0].clientY;
-        const maxMove = window.innerHeight * 0.34;
-
-        // Logic: If dragged up significantly, or currently high up, snap to top
-        if (currentY < startY - 20 || (currentY === startY && initialTranslateY === 0)) {
-            dock.classList.add('expanded');
-            dock.style.transform = `translateY(0)`;
-            nav.classList.add('hidden-nav');
-            nav.style.opacity = "0";
-        } else {
-            // Snap to bottom
-            dock.classList.remove('expanded');
-            dock.style.transform = `translateY(${maxMove}px)`;
-            nav.classList.remove('hidden-nav');
-            nav.style.opacity = "1";
-        }
-    });
-}
-    window.addEventListener('load', () => { setTimeout(() => { document.getElementById('splash-screen').style.opacity = '0'; setTimeout(() => { document.getElementById('splash-screen').style.display = 'none'; startHeroRotation(); }, 400); }, 800); });
+    resetApp: function() { window.location.reload(); }
+};
+window.onload = () => app.init();
 </script>
 </body>
 </html>
