@@ -67,7 +67,6 @@
         .status-badge { display: flex; align-items: center; gap: 10px; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); padding: 8px 18px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.1); color: white; font-size: 11px; font-weight: 800; text-transform: uppercase; order: 1; transition: 0.3s; }
         .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); animation: pulse-accent 2s infinite; }
         
-        /* Fixed: Match found is now ONLY Accent color */
         .status-badge.match-found { background: var(--accent); color: #fff; border: 1px solid rgba(255, 255, 255, 0.3); }
 
         .overlay-screen { position: fixed; inset: 0; z-index: 1000; background: #fff; transition: opacity 0.4s, transform 0.4s; overflow-y: auto; padding-bottom: 140px; }
@@ -124,6 +123,8 @@
     </style>
 </head>
 <body>
+    <audio id="match-sound" src="https://cdn.pixabay.com/audio/2021/08/04/audio_bb630cc098.mp3" preload="auto"></audio>
+
     <div id="splash-screen" style="position:fixed; inset:0; z-index:9999; background:#00A699; display:flex; align-items:center; justify-content:center; transition:0.6s;">
         <img src="Assets/Logo_Icon.png" width="100" style="filter:brightness(0) invert(1);">
     </div>
@@ -379,10 +380,19 @@ const app = {
 
     initAR: function() {
         const container = document.getElementById('target-container');
+        // Play sound when target matched
+        const matchSound = document.getElementById('match-sound');
+
         this.stations.forEach(s => {
             const entity = document.createElement('a-entity');
             entity.setAttribute('mindar-image-target', `targetIndex: ${s.id}`);
             entity.addEventListener("targetFound", () => {
+                // Play sound immediately when the AR target is matched
+                if (matchSound) {
+                    matchSound.currentTime = 0; 
+                    matchSound.play().catch(e => console.log("Audio play blocked:", e));
+                }
+
                 document.getElementById('status-text').innerText = "Match Found!";
                 document.getElementById('ar-status-badge').classList.add('match-found'); 
                 setTimeout(() => this.openInternalPage(s.link), 1500);
