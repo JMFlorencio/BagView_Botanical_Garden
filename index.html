@@ -270,8 +270,8 @@ const app = {
 
     renderDock: function() {
         const dock = document.getElementById('gallery-dock');
-        dock.innerHTML = this.stations.map(s => `
-            <div class="gallery-item" onclick="app.selectReference('${s.name}', this)">
+        dock.innerHTML = this.stations.map((s, index) => `
+            <div class="gallery-item" data-station-id="${s.id}" onclick="app.selectReference('${s.name}', this)">
                 <div class="gallery-img-wrap"><img src="${s.thumb}"></div>
                 <span>${s.name}</span>
             </div>
@@ -282,6 +282,7 @@ const app = {
         document.querySelectorAll('.gallery-item').forEach(item => item.classList.remove('selected'));
         element.classList.add('selected');
         document.getElementById('status-text').innerText = `Selected: ${name}`;
+        element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     },
 
     initSwipeLogic: function() {
@@ -380,7 +381,6 @@ const app = {
 
     initAR: function() {
         const container = document.getElementById('target-container');
-        // Play sound when target matched
         const matchSound = document.getElementById('match-sound');
 
         this.stations.forEach(s => {
@@ -391,6 +391,12 @@ const app = {
                 if (matchSound) {
                     matchSound.currentTime = 0; 
                     matchSound.play().catch(e => console.log("Audio play blocked:", e));
+                }
+
+                // Automatic Selection in the Gallery Dock
+                const galleryItem = document.querySelector(`.gallery-item[data-station-id="${s.id}"]`);
+                if (galleryItem) {
+                    this.selectReference(s.name, galleryItem);
                 }
 
                 document.getElementById('status-text').innerText = "Match Found!";
