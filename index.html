@@ -16,7 +16,7 @@
 
 @font-face { 
     font-family: 'Agrandir'; 
-    src: url('./Assets/agrandir-regular.woff2') format('woff2'); 
+    src: url('./Assets/aggrandir-regular.woff2') format('woff2'); 
     font-weight: 400; 
     font-style: normal; 
 }
@@ -306,20 +306,18 @@ const app = {
             let newY = initialTranslateY + deltaY;
             
             const closedPos = container.offsetHeight - 80;
-            // Prevent dragging too far up, but allow dragging down past closedPos slightly for bounce effect
-            newY = Math.max(0, newY);
+            newY = Math.max(0, Math.min(newY, closedPos));
 
             container.style.transform = `translateY(${newY}px)`;
             
-            // Update opacity based on drag position
-            const progress = 1 - (Math.min(newY, closedPos) / closedPos);
+            const progress = 1 - (newY / closedPos);
             container.style.background = `rgba(255, 255, 255, ${progress})`;
             dock.style.opacity = progress;
 
             if (e.cancelable) e.preventDefault();
         };
 
-        const onEnd = (e) => {
+        const onEnd = () => {
             if (!this.isDragging) return;
             this.isDragging = false; 
             container.style.transition = 'transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), background 0.3s ease';
@@ -328,19 +326,16 @@ const app = {
             const currentMatrix = new WebKitCSSMatrix(window.getComputedStyle(container).transform);
             const finalY = currentMatrix.m42;
 
-            // Snap logic: if dragged more than 30% down or up, toggle state
-            if (container.classList.contains('open')) {
-                if (finalY > closedPos * 0.3) { 
-                    this.closeDock();
-                } else { 
-                    this.openDock();
-                }
-            } else {
-                if (finalY < closedPos * 0.7) {
-                    this.openDock();
-                } else {
-                    this.closeDock();
-                }
+            if (finalY > closedPos * 0.4) { 
+                container.classList.remove('open'); 
+                container.style.transform = `translateY(${closedPos}px)`; 
+                container.style.background = 'rgba(255, 255, 255, 0)'; 
+                dock.style.opacity = 0;
+            } else { 
+                container.classList.add('open'); 
+                container.style.transform = 'translateY(0)'; 
+                container.style.background = 'rgba(255, 255, 255, 1)'; 
+                dock.style.opacity = 1;
             }
         };
 
@@ -352,33 +347,19 @@ const app = {
         window.addEventListener('mouseup', onEnd);
     },
 
-    openDock: function() {
-        const container = document.getElementById('gallery-dock-container');
-        const dock = document.getElementById('gallery-dock');
-        container.classList.add('open'); 
-        container.style.transform = 'translateY(0)'; 
-        container.style.background = 'rgba(255, 255, 255, 1)'; 
-        dock.style.opacity = 1;
-    },
-
-    closeDock: function() {
-        const container = document.getElementById('gallery-dock-container');
-        const dock = document.getElementById('gallery-dock');
-        const closedPos = container.offsetHeight - 80;
-        container.classList.remove('open'); 
-        container.style.transform = `translateY(${closedPos}px)`; 
-        container.style.background = 'rgba(255, 255, 255, 0)'; 
-        dock.style.opacity = 0;
-    },
-
     startScanner: function() {
         document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
         document.getElementById('main-nav').style.transform = "translateY(150%)";
         document.getElementById('ar-top-layer').style.opacity = "1";
         document.getElementById('ar-reticle').style.opacity = "1";
         
-        document.getElementById('gallery-dock-container').classList.add('ar-active');
-        this.openDock();
+        const container = document.getElementById('gallery-dock-container');
+        const dock = document.getElementById('gallery-dock');
+        
+        container.classList.add('ar-active', 'open');
+        container.style.transform = 'translateY(0)';
+        container.style.background = 'rgba(255, 255, 255, 1)';
+        dock.style.opacity = 1;
         
         document.querySelector('a-scene').systems['mindar-image-system'].start();
     },
@@ -392,8 +373,7 @@ const app = {
         document.getElementById('main-nav').style.transform = "translateY(0)";
         document.getElementById('ar-top-layer').style.opacity = "0";
         document.getElementById('ar-reticle').style.opacity = "0";
-        document.getElementById('gallery-dock-container').classList.remove('ar-active');
-        this.closeDock();
+        document.getElementById('gallery-dock-container').classList.remove('ar-active', 'open');
         
         const scene = document.querySelector('a-scene');
         if (scene.systems['mindar-image-system']) scene.systems['mindar-image-system'].stop();
@@ -407,11 +387,13 @@ const app = {
             const entity = document.createElement('a-entity');
             entity.setAttribute('mindar-image-target', `targetIndex: ${s.id}`);
             entity.addEventListener("targetFound", () => {
+                // Play sound immediately when the AR target is matched
                 if (matchSound) {
                     matchSound.currentTime = 0; 
                     matchSound.play().catch(e => console.log("Audio play blocked:", e));
                 }
 
+                // Automatic Selection in the Gallery Dock
                 const galleryItem = document.querySelector(`.gallery-item[data-station-id="${s.id}"]`);
                 if (galleryItem) {
                     this.selectReference(s.name, galleryItem);
