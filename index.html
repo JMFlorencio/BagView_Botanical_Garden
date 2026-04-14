@@ -263,4 +263,164 @@ const app = {
         list.innerHTML = top5.map(s => `
             <div class="popular-card">
                 <img src="${s.thumb}" class="pop-img">
-                <div class="pop-info"><b>${s.name}</b><br><span class
+                <div class="pop-info"><b>${s.name}</b><br><span class="scan-count">${s.scans.toLocaleString()} SCANS</span></div>
+            </div>
+        `).join('');
+    },
+
+    renderDock: function() {
+        const dock = document.getElementById('gallery-dock');
+        dock.innerHTML = this.stations.map((s, index) => `
+            <div class="gallery-item" data-station-id="${s.id}" onclick="app.selectReference('${s.name}', this)">
+                <div class="gallery-img-wrap"><img src="${s.thumb}"></div>
+                <span>${s.name}</span>
+            </div>
+        `).join('');
+    },
+
+    selectReference: function(name, element) {
+        document.querySelectorAll('.gallery-item').forEach(item => item.classList.remove('selected'));
+        element.classList.add('selected');
+        document.getElementById('status-text').innerText = `Selected: ${name}`;
+        element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    },
+
+    initSwipeLogic: function() {
+        const container = document.getElementById('gallery-dock-container');
+        const handle = document.getElementById('handle-area');
+        const dock = document.getElementById('gallery-dock');
+        let initialTranslateY = 0;
+
+        const onStart = (e) => { 
+            this.startY = e.touches ? e.touches[0].clientY : e.clientY; 
+            this.isDragging = true; 
+            container.style.transition = 'none'; 
+            const matrix = new WebKitCSSMatrix(window.getComputedStyle(container).transform);
+            initialTranslateY = matrix.m42;
+        };
+
+        const onMove = (e) => {
+            if (!this.isDragging) return;
+            const currentY = e.touches ? e.touches[0].clientY : e.clientY;
+            const deltaY = currentY - this.startY;
+            let newY = initialTranslateY + deltaY;
+            const closedPos = container.offsetHeight - 80;
+            newY = Math.max(0, Math.min(newY, closedPos));
+            container.style.transform = `translateY(${newY}px)`;
+            const progress = 1 - (newY / closedPos);
+            container.style.background = `rgba(255, 255, 255, ${progress})`;
+            dock.style.opacity = progress;
+            if (e.cancelable) e.preventDefault();
+        };
+
+        const onEnd = () => {
+            if (!this.isDragging) return;
+            this.isDragging = false; 
+            container.style.transition = 'transform 0.4s var(--transition), background 0.3s ease';
+            const closedPos = container.offsetHeight - 80;
+            const currentMatrix = new WebKitCSSMatrix(window.getComputedStyle(container).transform);
+            if (currentMatrix.m42 > closedPos * 0.4) { 
+                container.classList.remove('open'); 
+                container.style.transform = `translateY(${closedPos}px)`; 
+                container.style.background = 'rgba(255, 255, 255, 0)'; 
+                dock.style.opacity = 0;
+            } else { 
+                container.classList.add('open'); 
+                container.style.transform = 'translateY(0)'; 
+                container.style.background = 'rgba(255, 255, 255, 1)'; 
+                dock.style.opacity = 1;
+            }
+        };
+
+        handle.addEventListener('touchstart', onStart, { passive: false });
+        handle.addEventListener('mousedown', onStart);
+        window.addEventListener('touchmove', onMove, { passive: false }); 
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('touchend', onEnd);
+        window.addEventListener('mouseup', onEnd);
+    },
+
+    startScanner: function() {
+        document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
+        document.getElementById('main-nav').style.transform = "translateY(150%)";
+        document.getElementById('ar-top-layer').style.opacity = "1";
+        document.getElementById('ar-reticle').style.opacity = "1";
+        const container = document.getElementById('gallery-dock-container');
+        container.classList.add('ar-active', 'open');
+        container.style.transform = 'translateY(0)';
+        container.style.background = 'rgba(255, 255, 255, 1)';
+        document.getElementById('gallery-dock').style.opacity = 1;
+        document.querySelector('a-scene').systems['mindar-image-system'].start();
+    },
+
+    nav: function(page) {
+        document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        document.getElementById(page + '-page').classList.remove('hidden');
+        if(document.getElementById('nav-'+page)) document.getElementById('nav-'+page).classList.add('active');
+        document.getElementById('main-nav').style.transform = "translateY(0)";
+        document.getElementById('ar-top-layer').style.opacity = "0";
+        document.getElementById('ar-reticle').style.opacity = "0";
+        document.getElementById('gallery-dock-container').classList.remove('ar-active', 'open');
+        const scene = document.querySelector('a-scene');
+        if (scene.systems['mindar-image-system']) scene.systems['mindar-image-system'].stop();
+    },
+
+    initAR: function() {
+        const container = document.getElementById('target-container');
+        const matchSound = document.getElementById('match-sound');
+        this.stations.forEach(s => {
+            const entity = document.createElement('a-entity');
+            entity.setAttribute('mindar-image-target', `targetIndex: ${s.id}`);
+            entity.addEventListener("targetFound", () => {
+                if (matchSound) {
+                    matchSound.currentTime = 0; 
+                    matchSound.play().catch(e => console.log(e));
+                }
+                const galleryItem = document.querySelector(`.gallery-item[data-station-id="${s.id}"]`);
+                if (galleryItem) this.selectReference(s.name, galleryItem);
+                document.getElementById('status-text').innerText = "Match Found!";
+                document.getElementById('ar-status-badge').classList.add('match-found'); 
+                setTimeout(() => this.openInternalPage(s.link), 1500);
+            });
+            entity.addEventListener("targetLost", () => { 
+                document.getElementById('ar-status-badge').classList.remove('match-found'); 
+                const selected = document.querySelector('.gallery-item.selected');
+                document.getElementById('status-text').innerText = selected ? `Selected: ${selected.querySelector('span').innerText}` : "Scanning..."; 
+            });
+            container.appendChild(entity);
+        });
+    },
+
+    openInternalPage: function(url) { 
+        // Logic to show/hide the BACK button based on the URL
+        const backBtn = document.getElementById('ar-back-button');
+        if (url.includes('Interactive_Map')) {
+            backBtn.style.display = 'block';
+        } else {
+            backBtn.style.display = 'none';
+        }
+        
+        document.getElementById('tour-iframe').src = url; 
+        document.getElementById('tour-modal').classList.add('visible'); 
+    },
+
+    closeInternalPage: function() { 
+        document.getElementById('tour-modal').classList.remove('visible'); 
+        document.getElementById('tour-iframe').src = ""; 
+    },
+
+    startHeroSlider: function() { 
+        setInterval(() => { 
+            this.currentHero = (this.currentHero + 1) % 4; 
+            const wrap = document.getElementById('hero-wrapper'); 
+            if(wrap) wrap.style.transform = `translateX(-${this.currentHero * 25}%)`; 
+        }, 4000); 
+    },
+
+    resetApp: function() { window.location.reload(); }
+};
+window.onload = () => app.init();
+</script>
+</body>
+</html>
