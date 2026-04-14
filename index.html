@@ -103,7 +103,9 @@
         .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .scans-info { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
+        .scans-info { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--accent); font-weight: 800; text-transform: uppercase; margin-top: 6px; }
+        .scans-info svg { flex-shrink: 0; }
+        
         a-scene { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
         
         /* EXIT BUTTON - TOP RIGHT POSITION */
@@ -250,17 +252,13 @@ const app = {
             setTimeout(() => { loader.style.display = 'none'; }, 300);
         };
 
-        // --- HARDWARE BACK BUTTON LOGIC ---
         window.addEventListener('popstate', (event) => {
-            // Check if we are currently looking at a modal or a sub-page
             const isModalOpen = document.getElementById('tour-modal').classList.contains('visible');
             const isARActive = document.getElementById('gallery-dock-container').classList.contains('ar-active');
             
             if (isModalOpen) {
-                // If the tour modal is open, close it
                 this.closeInternalPage(true); 
             } else if (isARActive) {
-                // If user is in AR mode, return to Home
                 this.nav('home', true);
             }
         });
@@ -293,7 +291,18 @@ const app = {
     renderMostScanned: function() {
         const list = document.getElementById('most-scanned-list');
         const top = [...this.stations].sort((a,b) => b.scans - a.scans).slice(0, 5);
-        list.innerHTML = top.map((s) => `<div style="flex:0 0 200px; background:white; border-radius:25px; padding:12px; box-shadow:var(--card-shadow);"><img src="${s.thumb}" style="width:100%; height:120px; border-radius:18px; object-fit:cover;"><b style="font-size:14px; display:block; margin-top:10px;">${s.name}</b><div class="scans-info"><span>${s.scans} SCANS</span></div></div>`).join('');
+        list.innerHTML = top.map((s) => `
+            <div style="flex:0 0 200px; background:white; border-radius:25px; padding:12px; box-shadow:var(--card-shadow);">
+                <img src="${s.thumb}" style="width:100%; height:120px; border-radius:18px; object-fit:cover;">
+                <b style="font-size:14px; display:block; margin-top:10px;">${s.name}</b>
+                <div class="scans-info">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <span>${s.scans} SCANS</span>
+                </div>
+            </div>`).join('');
     },
 
     renderDock: function() {
@@ -313,10 +322,7 @@ const app = {
         document.getElementById('ar-top-layer').style.opacity = "1";
         document.getElementById('ar-reticle').style.opacity = "1";
         document.getElementById('gallery-dock-container').classList.add('ar-active');
-        
-        // Push state for Android back button to handle "Exit AR"
         history.pushState({ ar: true }, "");
-
         const sceneEl = document.querySelector('a-scene');
         if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].start(); }
     },
@@ -332,11 +338,6 @@ const app = {
         document.getElementById('gallery-dock-container').classList.remove('ar-active');
         const sceneEl = document.querySelector('a-scene');
         if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
-        
-        // Clean up history state if navigating via UI buttons
-        if (!isHardwareBack && page === 'home') {
-            // No specific action needed, but ensures flow is clean
-        }
     },
 
     initAR: function() {
@@ -364,18 +365,13 @@ const app = {
     openInternalPage: function(url, stationId) { 
         const sceneEl = document.querySelector('a-scene');
         if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
-        
         const loader = document.getElementById('tour-loader');
         loader.style.display = 'flex';
         loader.style.opacity = '1';
-        
         document.getElementById('tour-iframe').src = url; 
         document.getElementById('tour-modal').classList.add('visible'); 
-
         const backBtn = document.getElementById('tour-back-btn');
         backBtn.style.display = (stationId !== 0) ? 'block' : 'none';
-
-        // Add a history entry so the hardware back button closes this modal
         history.pushState({ modal: true }, "");
     },
 
@@ -385,8 +381,6 @@ const app = {
         document.getElementById('tour-iframe').src = ""; 
         const sceneEl = document.querySelector('a-scene');
         if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].start(); }
-        
-        // If the user clicked the UI "Exit" button, we manually go back in history to remove the modal state
         if (!isHardwareBack) {
             history.back();
         }
