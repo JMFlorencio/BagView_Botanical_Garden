@@ -21,98 +21,80 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Agrandir', sans-serif !important; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: transparent !important; }
         
-        /* --- AR UI ELEMENTS --- */
+        /* --- AR SCANNER UI --- */
         #ar-reticle { position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%); width: 80vw; height: 45vh; z-index: 4000; pointer-events: none; opacity: 0; transition: 0.5s var(--transition); }
-        .leaf-corner { position: absolute; width: 60px; height: 60px; border: 4px solid var(--accent); animation: leafPulse 2.5s ease-in-out infinite; }
-        @keyframes leafPulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; border-width: 5px; } }
+        .leaf-corner { position: absolute; width: 60px; height: 60px; border: 4px solid var(--accent); }
         .top-left { top: 0; left: 0; border-right: 0; border-bottom: 0; border-radius: 40px 0 0 0; }
         .top-right { top: 0; right: 0; border-left: 0; border-bottom: 0; border-radius: 0 40px 0 0; }
         .bottom-left { bottom: 0; left: 0; border-right: 0; border-top: 0; border-radius: 0 0 0 40px; }
         .bottom-right { bottom: 0; right: 0; border-left: 0; border-top: 0; border-radius: 0 0 40px 0; }
-        .scan-vignette { position: absolute; inset: -20px; border: 1px solid var(--accent-soft); border-radius: 50px; background: radial-gradient(circle, transparent 60%, var(--accent-soft) 150%); }
-        .laser-line { position: absolute; width: 100%; height: 2px; background: linear-gradient(to right, transparent, var(--accent), transparent); box-shadow: 0 0 20px var(--accent); top: 0; animation: scanMove 4s linear infinite; }
-        @keyframes scanMove { 0% { top: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+        .laser-line { position: absolute; width: 100%; height: 2px; background: linear-gradient(to right, transparent, var(--accent), transparent); top: 0; animation: scanMove 4s linear infinite; }
+        @keyframes scanMove { 0% { top: 0%; opacity: 0; } 50% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
 
         #ar-top-layer { position: fixed; top: 40px; left: 20px; right: 20px; z-index: 4500; display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center; pointer-events: none; transition: 0.3s; opacity: 0; }
         .ar-home-btn { pointer-events: auto; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; border: 1px solid rgba(255,255,255,0.1); }
-        .status-badge { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); padding: 8px 18px; border-radius: 50px; color: white; font-size: 11px; font-weight: 800; text-transform: uppercase; transition: 0.3s; pointer-events: auto; }
-        .status-badge.match-found { background: var(--accent); }
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(0.9); opacity: 1; } 70% { transform: scale(1.5); opacity: 0; } 100% { transform: scale(0.9); opacity: 0; } }
+        .status-badge { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); padding: 8px 18px; border-radius: 50px; color: white; font-size: 11px; font-weight: 800; text-transform: uppercase; pointer-events: auto; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
 
         /* --- GALLERY DOCK --- */
-        #gallery-dock-container { position: fixed; bottom: 0; left: 0; right: 0; z-index: 4600; background: rgba(255,255,255,0.95); border-top-left-radius: 35px; border-top-right-radius: 35px; display: flex; flex-direction: column; align-items: center; padding-bottom: calc(20px + var(--safe-bottom)); transform: translateY(100%); transition: transform 0.6s var(--transition), opacity 0.4s ease; opacity: 0; pointer-events: none; }
+        #gallery-dock-container { position: fixed; bottom: 0; left: 0; right: 0; z-index: 4600; background: rgba(255,255,255,0.95); border-top-left-radius: 35px; border-top-right-radius: 35px; display: flex; flex-direction: column; align-items: center; padding-bottom: calc(20px + var(--safe-bottom)); transform: translateY(100%); transition: transform 0.6s var(--transition), opacity 0.4s ease; opacity: 0; }
         #gallery-dock-container.ar-active { opacity: 1; transform: translateY(0); pointer-events: auto; }
-        .dock-handle-area { width: 100%; padding: 15px 0 15px; display: flex; justify-content: center; touch-action: none; cursor: grab; }
+        .dock-handle-area { width: 100%; padding: 15px 0; display: flex; justify-content: center; touch-action: none; }
         .dock-handle { width: 50px; height: 4px; background: #e0e0e0; border-radius: 10px; }
-        #gallery-dock { display: flex; gap: 15px; overflow-x: auto; padding: 10px 25px 15px; width: 100%; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-        #gallery-dock::-webkit-scrollbar { display: none; }
-        .gallery-item { flex: 0 0 100px; text-align: center; transition: 0.3s; }
-        .gallery-item.selected .gallery-img-wrap { border: 3px solid var(--accent); transform: scale(1.05); }
-        .gallery-img-wrap { width: 100px; height: 100px; border-radius: 20px; overflow: hidden; border: 1px solid #eee; margin-bottom: 8px; position: relative; background: #f9f9f9; }
+        #gallery-dock { display: flex; gap: 15px; overflow-x: auto; padding: 10px 25px 15px; width: 100%; scrollbar-width: none; }
+        .gallery-item { flex: 0 0 100px; text-align: center; }
+        .gallery-img-wrap { width: 100px; height: 100px; border-radius: 20px; overflow: hidden; border: 1px solid #eee; margin-bottom: 8px; background: #f9f9f9; }
         .gallery-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
-        .gallery-item span { font-size: 9px; font-weight: 800; text-transform: uppercase; color: #444; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .dock-view-tag { position: absolute; bottom: 5px; right: 5px; background: rgba(0,0,0,0.6); color: white; font-size: 8px; padding: 3px 6px; border-radius: 10px; backdrop-filter: blur(4px); font-weight: 900; }
+        .gallery-item span { font-size: 9px; font-weight: 800; text-transform: uppercase; color: #444; }
 
-        /* --- OVERLAYS & PAGES --- */
-        .overlay-screen { position: fixed; inset: 0; z-index: 1000; background: #fff; transition: 0.4s; overflow-y: auto; padding-bottom: 140px; }
+        /* --- PAGES & OVERLAYS --- */
+        .overlay-screen { position: fixed; inset: 0; z-index: 1000; background: #fff; transition: 0.4s; overflow-y: auto; padding-bottom: 120px; }
         .hidden { opacity: 0 !important; pointer-events: none !important; transform: translateY(20px); }
         .user-greeting { padding: 45px 25px 10px; }
         .user-greeting h3 { margin: 0; font-size: 14px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
         .user-greeting h2 { margin: 0; font-size: 26px; font-weight: 900; color: #333; }
 
         /* --- HERO SLIDER --- */
-        .hero-slider-container { margin: 15px 25px; height: 190px; border-radius: 30px; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,166,153,0.25); }
+        .hero-slider-container { margin: 15px 25px; height: 190px; border-radius: 30px; position: relative; overflow: hidden; }
         .hero-wrapper { width: 100%; height: 100%; position: relative; }
-        .promo-banner { position: absolute; inset: 0; width: 100%; height: 100%; background: var(--accent); color: white; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; padding: 30px; opacity: 0; transition: opacity 0.8s ease-in-out; z-index: 1; }
-        .promo-banner.active { opacity: 1; z-index: 2; }
-        .promo-banner h1 { margin: 0; font-size: 18px; font-weight: 900; line-height: 1.2; max-width: 80%; }
-        .promo-banner button { background: white; color: var(--accent); border: none; padding: 10px 20px; border-radius: 50px; font-weight: 900; margin-top: 15px; width: fit-content; font-size: 10px; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .hero-dots { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.4); transition: 0.3s; }
-        .dot.active { background: #fff; width: 20px; border-radius: 10px; }
+        .promo-banner { position: absolute; inset: 0; padding: 30px; display: flex; flex-direction: column; justify-content: center; opacity: 0; transition: 0.8s; color: white; background: var(--accent); }
+        .promo-banner.active { opacity: 1; }
+        .promo-banner h1 { margin: 0; font-size: 18px; font-weight: 900; line-height: 1.2; }
+        .promo-banner button { background: white; color: var(--accent); border: none; padding: 10px 20px; border-radius: 50px; font-weight: 900; margin-top: 15px; width: fit-content; font-size: 10px; }
 
-        /* --- NAVIGATION --- */
-        .main-navigation-bar { position: fixed; bottom: 0; left: 0; right: 0; height: calc(90px + var(--safe-bottom)); background: #fff; z-index: 5000; display: flex; justify-content: space-around; align-items: center; padding: 0 15px var(--safe-bottom); box-shadow: 0 -10px 30px rgba(0,0,0,0.05); transition: 0.4s; }
-        .nav-item { color: #ccc; flex: 1; display: flex; justify-content: center; padding: 10px; }
+        /* --- BOTTOM NAV --- */
+        .main-navigation-bar { position: fixed; bottom: 0; left: 0; right: 0; height: calc(90px + var(--safe-bottom)); background: #fff; z-index: 5000; display: flex; justify-content: space-around; align-items: center; padding: 0 15px var(--safe-bottom); box-shadow: 0 -10px 30px rgba(0,0,0,0.05); }
+        .nav-item { color: #ccc; flex: 1; display: flex; justify-content: center; }
         .nav-item.active { color: var(--accent); }
-        .nav-item-center { width: 65px; height: 65px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -45px; border: 6px solid #fff; box-shadow: 0 10px 25px rgba(0,166,153,0.3); }
+        .nav-item-center { width: 65px; height: 65px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -45px; border: 6px solid #fff; }
 
-        /* --- INTERNAL MODAL & LOADER --- */
-        #tour-modal { position: fixed; inset: 0; z-index: 9000; background: #111; transform: translateY(100%); transition: 0.5s; overflow: hidden; }
+        /* --- TOUR MODAL & LOADER --- */
+        #tour-modal { position: fixed; inset: 0; z-index: 9000; background: #111; transform: translateY(100%); transition: 0.5s; }
         #tour-modal.visible { transform: translateY(0); }
-        
-        #tour-loader { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; background: #111; z-index: 9001; transition: 0.5s; }
+        #tour-loader { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; background: #111; z-index: 9001; }
         .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* FLOATING BACK BUTTON - MOVED TO TOP RIGHT */
-        #tour-back-btn { position: fixed; top: 30px; right: 20px; z-index: 9999; display: none; pointer-events: auto; }
-        #tour-back-btn button { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 12px 20px; border-radius: 50px; font-weight: 900; font-size: 11px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-transform: uppercase; flex-direction: row-reverse; }
-
+        /* EXIT BUTTON - POSITIONED ON THE RIGHT */
+        #tour-back-btn { position: fixed; top: 30px; right: 20px; z-index: 9999; display: none; }
+        #tour-back-btn button { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 12px 20px; border-radius: 50px; font-weight: 900; font-size: 11px; display: flex; align-items: center; gap: 8px; flex-direction: row-reverse; }
+        
         a-scene { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
     </style>
 </head>
 <body>
     <audio id="match-sound" src="https://cdn.pixabay.com/audio/2021/08/04/audio_bb630cc098.mp3" preload="auto"></audio>
 
-    <div id="splash-screen" style="position:fixed; inset:0; z-index:9999; background:#00A699; display:flex; align-items:center; justify-content:center; transition:0.6s;">
-        <img src="Assets/Logo_Icon.png" width="100" style="filter:brightness(0) invert(1);">
-    </div>
-
     <div id="tour-back-btn">
         <button onclick="app.closeInternalPage()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            Exit Experience
+            Back to Scanner
         </button>
     </div>
 
     <div id="ar-reticle">
-        <div class="scan-vignette"></div>
-        <div class="leaf-corner top-left"></div>
-        <div class="leaf-corner top-right"></div>
-        <div class="leaf-corner bottom-left"></div>
-        <div class="leaf-corner bottom-right"></div>
+        <div class="leaf-corner top-left"></div><div class="leaf-corner top-right"></div>
+        <div class="leaf-corner bottom-left"></div><div class="leaf-corner bottom-right"></div>
         <div class="laser-line"></div>
     </div>
     
@@ -120,13 +102,13 @@
         <div class="ar-home-btn" onclick="app.nav('home')">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
         </div>
-        <div class="status-badge" id="ar-status-badge">
+        <div class="status-badge">
             <div class="status-dot"></div><span id="status-text">Scanning...</span>
         </div>
     </div>
 
     <div id="gallery-dock-container">
-        <div class="dock-handle-area" id="dock-drag-handle"><div class="dock-handle"></div></div>
+        <div class="dock-handle-area"><div class="dock-handle"></div></div>
         <div id="gallery-dock"></div>
     </div>
 
@@ -137,22 +119,20 @@
             <div class="hero-wrapper" id="hero-wrapper">
                 <div class="promo-banner active"><h1>Discover Hidden Eco-Trails</h1><button onclick="app.startScanner()">Explore Now</button></div>
                 <div class="promo-banner" style="background: #008f84"><h1>Unlock 3D Plant Models</h1><button onclick="app.startScanner()">Scan Marker</button></div>
-                <div class="promo-banner" style="background: #007a71"><h1>Virtual Heritage Tours</h1><button onclick="app.startScanner()">Find Marker</button></div>
-                <div class="promo-banner" style="background: #00665e"><h1>Interactive Botanical Map</h1><button onclick="app.startScanner()">Scan for Map</button></div>
             </div>
-            <div class="hero-dots" id="hero-dots">
-                <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
-            </div>
-        </div>
         </div>
 
+        <div style="padding: 20px 25px;">
+            <h3 style="font-size: 14px; font-weight: 900; text-transform: uppercase; color: #333;">Featured Stations</h3>
+            <p style="font-size: 12px; color: #777;">Interactive tours of the Botanical Garden.</p>
+        </div>
+    </div>
+
     <nav class="main-navigation-bar" id="main-nav">
-        <div class="nav-item active" id="nav-home" onclick="app.nav('home')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
-        <div class="nav-item" id="nav-search" onclick="app.nav('search')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
+        <div class="nav-item active" onclick="app.nav('home')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
         <div class="nav-item-center" onclick="app.startScanner()">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="9" y="9" width="6" height="6"></rect></svg>
         </div>
-        <div class="nav-item" id="nav-notifications" onclick="app.nav('notifications')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
         <div class="nav-item" onclick="app.resetApp()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></div>
     </nav>
 
@@ -171,33 +151,29 @@
 
 <script>
 const app = {
-    currentHero: 0, 
-    dockState: { startY: 0, currentY: 0, isDragging: false, isOpen: true },
     stations: [
-        { id: 0, name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/Interactive_Map/", scans: 1240 },
-        { id: 1, name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://tour.panoee.net/mainentrance/1", scans: 980 },
-        { id: 12, name: "Japanese Tunnel", thumb: "Assets/Japanese%20Tunnel.png", link: "https://tour.panoee.net/japanese-tunnel/1", scans: 1120 }
-        // (Add other stations as needed)
+        { id: 0, name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/Interactive_Map/" },
+        { id: 1, name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://tour.panoee.net/mainentrance/1" },
+        { id: 12, name: "Japanese Tunnel", thumb: "Assets/Japanese%20Tunnel.png", link: "https://tour.panoee.net/japanese-tunnel/1" }
     ],
 
     init: function() {
-        this.renderDock(); this.initAR(); this.initDockDraggable(); this.startHeroSlider();
+        this.renderDock();
+        this.initAR();
         
-        // Hide loader when iframe finishes loading
         document.getElementById('tour-iframe').onload = () => {
             document.getElementById('tour-loader').style.opacity = '0';
             setTimeout(() => { document.getElementById('tour-loader').style.display = 'none'; }, 500);
-        };
-
-        window.onload = () => {
-            const splash = document.getElementById('splash-screen');
-            setTimeout(() => { splash.style.opacity = '0'; setTimeout(() => splash.style.display='none', 600); }, 1500);
         };
     },
 
     renderDock: function() {
         const dock = document.getElementById('gallery-dock');
-        dock.innerHTML = this.stations.map(s => `<div class="gallery-item" onclick="app.selectReference(${s.id}, '${s.name}', this)"><div class="gallery-img-wrap"><img src="${s.thumb}"></div><span>${s.name}</span></div>`).join('');
+        dock.innerHTML = this.stations.map(s => `
+            <div class="gallery-item" onclick="app.openInternalPage('${s.link}', ${s.id})">
+                <div class="gallery-img-wrap"><img src="${s.thumb}"></div>
+                <span>${s.name}</span>
+            </div>`).join('');
     },
 
     startScanner: function() {
@@ -218,7 +194,6 @@ const app = {
             entity.setAttribute('mindar-image-target', `targetIndex: ${s.id}`);
             entity.addEventListener("targetFound", () => {
                 matchSound.play();
-                document.getElementById('ar-status-badge').classList.add('match-found');
                 document.getElementById('status-text').innerText = "Match Found!";
                 setTimeout(() => this.openInternalPage(s.link, s.id), 1000);
             });
@@ -230,16 +205,13 @@ const app = {
         const sceneEl = document.querySelector('a-scene');
         if (sceneEl.systems['mindar-image-system']) sceneEl.systems['mindar-image-system'].stop();
         
-        // Reset and Show Loader
         document.getElementById('tour-loader').style.display = 'flex';
         document.getElementById('tour-loader').style.opacity = '1';
-        
         document.getElementById('tour-iframe').src = url; 
         document.getElementById('tour-modal').classList.add('visible'); 
 
-        // Show back button only if not Station 0 (Map)
-        document.getElementById('tour-back-btn').style.display = (stationId !== 0) ? 'block' : 'none';
-        history.pushState({ modal: true }, "");
+        // Hide back button only if station 0 (Map)
+        document.getElementById('tour-back-btn').style.display = (stationId === 0) ? 'none' : 'block';
     },
 
     closeInternalPage: function() { 
@@ -259,8 +231,6 @@ const app = {
         document.getElementById('gallery-dock-container').classList.remove('ar-active');
     },
 
-    initDockDraggable: function() { /* Drag logic same as previous version */ },
-    startHeroSlider: function() { /* Slider logic same as previous version */ },
     resetApp: function() { window.location.reload(); }
 };
 
