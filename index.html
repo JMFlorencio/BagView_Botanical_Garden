@@ -9,14 +9,14 @@
     <style>
        @font-face { 
     font-family: 'Agrandir'; 
-    src: url('./Assets/aggrandir-thin.woff2') format('woff2'); 
+    src: url('./Assets/agrandir-thin.woff2') format('woff2'); 
     font-weight: 100; 
     font-style: normal; 
 }
 
 @font-face { 
     font-family: 'Agrandir'; 
-    src: url('./Assets/aggrandir-regular.woff2') format('woff2'); 
+    src: url('./Assets/agrandir-regular.woff2') format('woff2'); 
     font-weight: 400; 
     font-style: normal; 
 }
@@ -120,9 +120,6 @@
         
         #tour-modal { position: fixed; inset: 0; z-index: 9000; background: white; transform: translateY(100%); transition: 0.5s; }
         #tour-modal.visible { transform: translateY(0); }
-        
-        /* Added an ID to the button for easy control */
-        #ar-manual-back { display: none; position:absolute; top:45px; right:20px; z-index:9001; background:var(--accent); color:white; border:none; padding:12px 25px; border-radius:50px; font-weight:900; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
@@ -213,8 +210,8 @@
         <div class="nav-item" onclick="app.resetApp()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></div>
     </nav>
 
-  <div id="tour-modal">
-        <button id="ar-manual-back" onclick="app.closeInternalPage()">BACK</button>
+    <div id="tour-modal">
+        <button id="ar-back-button" style="position:absolute; top:45px; right:20px; z-index:9001; background:var(--accent); color:white; border:none; padding:12px 25px; border-radius:50px; font-weight:900; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" onclick="app.closeInternalPage()">BACK</button>
         <iframe id="tour-iframe" style="width:100%; height:100%; border:none;"></iframe>
     </div>
 
@@ -254,16 +251,6 @@ const app = {
         this.initAR(); 
         this.initSwipeLogic(); 
         this.startHeroSlider();
-        
-        // Listen for messages from the map iframe to hide/show button
-        window.addEventListener("message", (event) => {
-            if (event.data === 'hideAppButton') {
-                document.getElementById('ar-manual-back').style.display = 'none';
-            } else if (event.data === 'showAppButton') {
-                document.getElementById('ar-manual-back').style.display = 'block';
-            }
-        }, false);
-
         setTimeout(() => { 
             document.getElementById('splash-screen').style.opacity = '0'; 
             setTimeout(() => document.getElementById('splash-screen').style.display='none', 600); 
@@ -276,186 +263,4 @@ const app = {
         list.innerHTML = top5.map(s => `
             <div class="popular-card">
                 <img src="${s.thumb}" class="pop-img">
-                <div class="pop-info"><b>${s.name}</b><br><span class="scan-count">${s.scans.toLocaleString()} SCANS</span></div>
-            </div>
-        `).join('');
-    },
-
-    renderDock: function() {
-        const dock = document.getElementById('gallery-dock');
-        dock.innerHTML = this.stations.map((s, index) => `
-            <div class="gallery-item" data-station-id="${s.id}" onclick="app.selectReference('${s.name}', this)">
-                <div class="gallery-img-wrap"><img src="${s.thumb}"></div>
-                <span>${s.name}</span>
-            </div>
-        `).join('');
-    },
-
-    selectReference: function(name, element) {
-        document.querySelectorAll('.gallery-item').forEach(item => item.classList.remove('selected'));
-        element.classList.add('selected');
-        document.getElementById('status-text').innerText = `Selected: ${name}`;
-        element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-    },
-
-    initSwipeLogic: function() {
-        const container = document.getElementById('gallery-dock-container');
-        const handle = document.getElementById('handle-area');
-        const dock = document.getElementById('gallery-dock');
-        let initialTranslateY = 0;
-
-        const onStart = (e) => { 
-            this.startY = e.touches ? e.touches[0].clientY : e.clientY; 
-            this.isDragging = true; 
-            container.style.transition = 'none'; 
-            const matrix = new WebKitCSSMatrix(window.getComputedStyle(container).transform);
-            initialTranslateY = matrix.m42;
-        };
-
-        const onMove = (e) => {
-            if (!this.isDragging) return;
-            const currentY = e.touches ? e.touches[0].clientY : e.clientY;
-            const deltaY = currentY - this.startY;
-            let newY = initialTranslateY + deltaY;
-            
-            const closedPos = container.offsetHeight - 80;
-            newY = Math.max(0, Math.min(newY, closedPos));
-
-            container.style.transform = `translateY(${newY}px)`;
-            
-            const progress = 1 - (newY / closedPos);
-            container.style.background = `rgba(255, 255, 255, ${progress})`;
-            dock.style.opacity = progress;
-
-            if (e.cancelable) e.preventDefault();
-        };
-
-        const onEnd = () => {
-            if (!this.isDragging) return;
-            this.isDragging = false; 
-            container.style.transition = 'transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), background 0.3s ease';
-            
-            const closedPos = container.offsetHeight - 80;
-            const currentMatrix = new WebKitCSSMatrix(window.getComputedStyle(container).transform);
-            const finalY = currentMatrix.m42;
-
-            if (finalY > closedPos * 0.4) { 
-                container.classList.remove('open'); 
-                container.style.transform = `translateY(${closedPos}px)`; 
-                container.style.background = 'rgba(255, 255, 255, 0)'; 
-                dock.style.opacity = 0;
-            } else { 
-                container.classList.add('open'); 
-                container.style.transform = 'translateY(0)'; 
-                container.style.background = 'rgba(255, 255, 255, 1)'; 
-                dock.style.opacity = 1;
-            }
-        };
-
-        handle.addEventListener('touchstart', onStart, { passive: false });
-        handle.addEventListener('mousedown', onStart);
-        window.addEventListener('touchmove', onMove, { passive: false }); 
-        window.addEventListener('mousemove', onMove);
-        window.addEventListener('touchend', onEnd);
-        window.addEventListener('mouseup', onEnd);
-    },
-
-    startScanner: function() {
-        document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
-        document.getElementById('main-nav').style.transform = "translateY(150%)";
-        document.getElementById('ar-top-layer').style.opacity = "1";
-        document.getElementById('ar-reticle').style.opacity = "1";
-        
-        const container = document.getElementById('gallery-dock-container');
-        const dock = document.getElementById('gallery-dock');
-        
-        container.classList.add('ar-active', 'open');
-        container.style.transform = 'translateY(0)';
-        container.style.background = 'rgba(255, 255, 255, 1)';
-        dock.style.opacity = 1;
-        
-        document.querySelector('a-scene').systems['mindar-image-system'].start();
-    },
-
-    nav: function(page) {
-        document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        document.getElementById(page + '-page').classList.remove('hidden');
-        if(document.getElementById('nav-'+page)) document.getElementById('nav-'+page).classList.add('active');
-        
-        document.getElementById('main-nav').style.transform = "translateY(0)";
-        document.getElementById('ar-top-layer').style.opacity = "0";
-        document.getElementById('ar-reticle').style.opacity = "0";
-        document.getElementById('gallery-dock-container').classList.remove('ar-active', 'open');
-        
-        const scene = document.querySelector('a-scene');
-        if (scene.systems['mindar-image-system']) scene.systems['mindar-image-system'].stop();
-    },
-
-    initAR: function() {
-        const container = document.getElementById('target-container');
-        const matchSound = document.getElementById('match-sound');
-
-        this.stations.forEach(s => {
-            const entity = document.createElement('a-entity');
-            entity.setAttribute('mindar-image-target', `targetIndex: ${s.id}`);
-            entity.addEventListener("targetFound", () => {
-                if (matchSound) {
-                    matchSound.currentTime = 0; 
-                    matchSound.play().catch(e => console.log("Audio play blocked:", e));
-                }
-
-                const galleryItem = document.querySelector(`.gallery-item[data-station-id="${s.id}"]`);
-                if (galleryItem) {
-                    this.selectReference(s.name, galleryItem);
-                }
-
-                document.getElementById('status-text').innerText = "Match Found!";
-                document.getElementById('ar-status-badge').classList.add('match-found'); 
-                
-                // Now passing the full station object so we know if it's the map
-                setTimeout(() => this.openInternalPage(s.link, s), 1500);
-            });
-            entity.addEventListener("targetLost", () => { 
-                document.getElementById('ar-status-badge').classList.remove('match-found'); 
-                const selected = document.querySelector('.gallery-item.selected');
-                document.getElementById('status-text').innerText = selected ? `Selected: ${selected.querySelector('span').innerText}` : "Scanning..."; 
-            });
-            container.appendChild(entity);
-        });
-    },
-
-    openInternalPage: function(url, station) { 
-        const btn = document.getElementById('ar-manual-back');
-        
-        // Logical Check: Only show the AR BACK button if the station name is "Map"
-        // If it's a Panoee tour (any other station), the button stays hidden
-        if(station && station.name === "Map") {
-            btn.style.display = 'block';
-        } else {
-            btn.style.display = 'none';
-        }
-
-        document.getElementById('tour-iframe').src = url; 
-        document.getElementById('tour-modal').classList.add('visible'); 
-    },
-
-    closeInternalPage: function() { 
-        document.getElementById('tour-modal').classList.remove('visible'); 
-        document.getElementById('tour-iframe').src = ""; 
-    },
-
-    startHeroSlider: function() { 
-        setInterval(() => { 
-            this.currentHero = (this.currentHero + 1) % 4; 
-            const wrap = document.getElementById('hero-wrapper'); 
-            if(wrap) wrap.style.transform = `translateX(-${this.currentHero * 25}%)`; 
-        }, 4000); 
-    },
-
-    resetApp: function() { window.location.reload(); }
-};
-window.onload = () => app.init();
-</script>
-</body>
-</html>
+                <div class="pop-info"><b>${s.name}</b><br><span class
