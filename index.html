@@ -63,7 +63,7 @@
         .user-greeting h3 { margin: 0; font-size: 14px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
         .user-greeting h2 { margin: 0; font-size: 26px; font-weight: 900; color: #333; }
 
-        /* --- LEFT-ALIGNED HERO --- */
+        /* --- HERO SLIDER --- */
         .hero-slider-container { margin: 15px 25px; height: 190px; border-radius: 30px; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,166,153,0.25); }
         .hero-wrapper { width: 100%; height: 100%; position: relative; }
         
@@ -114,6 +114,7 @@
         .nav-item.active { color: var(--accent); }
         .nav-item-center { width: 65px; height: 65px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -45px; border: 6px solid #fff; box-shadow: 0 10px 25px rgba(0,166,153,0.3); }
 
+        /* --- TOUR MODAL (Updated) --- */
         #tour-modal { position: fixed; inset: 0; z-index: 9000; background: white; transform: translateY(100%); transition: 0.5s; }
         #tour-modal.visible { transform: translateY(0); }
         a-scene { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
@@ -222,7 +223,6 @@
     </nav>
 
     <div id="tour-modal">
-        <button style="position:absolute; top:45px; right:20px; z-index:9001; background:var(--accent); color:white; border:none; padding:12px 25px; border-radius:50px; font-weight:900;" onclick="app.closeInternalPage()">BACK</button>
         <iframe id="tour-iframe" style="width:100%; height:100%; border:none;"></iframe>
     </div>
 
@@ -302,137 +302,4 @@ const app = {
     renderMostScanned: function() {
         const list = document.getElementById('most-scanned-list');
         const top = [...this.stations].sort((a,b) => b.scans - a.scans).slice(0, 5);
-        list.innerHTML = top.map((s) => `
-            <div style="flex:0 0 200px; background:white; border-radius:25px; padding:12px; box-shadow:var(--card-shadow); position:relative;">
-                <img src="${s.thumb}" style="width:100%; height:120px; border-radius:18px; object-fit:cover;">
-                <div style="margin-top:10px;">
-                    <b style="font-size:14px; display:block; color:#222;">${s.name}</b>
-                    <div class="scans-info">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                        <span>${s.scans} SCANS</span>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    },
-
-    renderDock: function() {
-        const dock = document.getElementById('gallery-dock');
-        dock.innerHTML = this.stations.map(s => `
-            <div class="gallery-item" data-station-id="${s.id}" onclick="app.selectReference('${s.name}', this)">
-                <div class="gallery-img-wrap">
-                    <img src="${s.thumb}">
-                    <div class="dock-view-tag">👁 ${s.scans}</div>
-                </div>
-                <span>${s.name}</span>
-            </div>
-        `).join('');
-    },
-
-    selectReference: function(name, el) {
-        document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('selected'));
-        el.classList.add('selected');
-        document.getElementById('status-text').innerText = `Selected: ${name}`;
-        el.scrollIntoView({ behavior: 'smooth', inline: 'center' });
-    },
-
-    startScanner: function() {
-        document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
-        document.getElementById('main-nav').style.transform = "translateY(150%)";
-        document.getElementById('ar-top-layer').style.opacity = "1";
-        document.getElementById('ar-reticle').style.opacity = "1";
-        const dockContainer = document.getElementById('gallery-dock-container');
-        dockContainer.classList.add('ar-active');
-        dockContainer.style.transform = 'translateY(0)';
-        this.dockState.isOpen = true;
-        const sceneEl = document.querySelector('a-scene');
-        if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].start(); }
-    },
-
-    nav: function(page) {
-        document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        document.getElementById(page + '-page').classList.remove('hidden');
-        if(document.getElementById('nav-'+page)) document.getElementById('nav-'+page).classList.add('active');
-        document.getElementById('main-nav').style.transform = "translateY(0)";
-        document.getElementById('ar-top-layer').style.opacity = "0";
-        document.getElementById('ar-reticle').style.opacity = "0";
-        document.getElementById('gallery-dock-container').classList.remove('ar-active');
-        const sceneEl = document.querySelector('a-scene');
-        if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
-    },
-
-    initAR: function() {
-        const container = document.getElementById('target-container');
-        const matchSound = document.getElementById('match-sound');
-        
-        this.stations.forEach(s => {
-            const entity = document.createElement('a-entity');
-            entity.setAttribute('mindar-image-target', `targetIndex: ${s.id}`);
-            
-            entity.addEventListener("targetFound", () => {
-                // Play Audio
-                matchSound.play().catch(e => console.log("Audio block:", e));
-                
-                // Update Badge UI
-                const badge = document.getElementById('ar-status-badge');
-                const text = document.getElementById('status-text');
-                badge.classList.add('match-found');
-                text.innerText = "Match Found!";
-                
-                // Logic Updates
-                s.scans++;
-                this.renderMostScanned();
-                this.renderDock();
-                
-                // Visual feedback in dock
-                const item = document.querySelector(`.gallery-item[data-station-id="${s.id}"]`);
-                if (item) this.selectReference(s.name, item);
-                
-                // Open content
-                setTimeout(() => this.openInternalPage(s.link), 1500);
-            });
-            
-            entity.addEventListener("targetLost", () => {
-                const badge = document.getElementById('ar-status-badge');
-                const text = document.getElementById('status-text');
-                badge.classList.remove('match-found');
-                const selected = document.querySelector('.gallery-item.selected');
-                text.innerText = selected ? `Selected: ${selected.querySelector('span').innerText}` : "Scanning...";
-            });
-            
-            container.appendChild(entity);
-        });
-    },
-
-    openInternalPage: function(url) { 
-        const frame = document.getElementById('tour-iframe');
-        const modal = document.getElementById('tour-modal');
-        frame.src = url; 
-        modal.classList.add('visible'); 
-    },
-
-    closeInternalPage: function() { 
-        document.getElementById('tour-modal').classList.remove('visible'); 
-        document.getElementById('tour-iframe').src = ""; 
-    },
-
-    startHeroSlider: function() { 
-        setInterval(() => { 
-            const banners = document.querySelectorAll('.promo-banner');
-            const dots = document.querySelectorAll('.dot');
-            banners[this.currentHero].classList.remove('active');
-            dots[this.currentHero].classList.remove('active');
-            this.currentHero = (this.currentHero + 1) % banners.length; 
-            banners[this.currentHero].classList.add('active');
-            dots[this.currentHero].classList.add('active');
-        }, 4000); 
-    },
-
-    resetApp: function() { window.location.reload(); }
-};
-
-window.onload = () => app.init();
-</script>
-</body>
-</html>
+        list.innerHTML
