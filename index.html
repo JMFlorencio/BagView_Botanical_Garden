@@ -86,50 +86,12 @@
         }
         
         .promo-banner.active { opacity: 1; z-index: 2; }
-        
-        .promo-banner h1 { 
-            margin: 0; 
-            font-size: 18px; 
-            font-weight: 900; 
-            line-height: 1.2; 
-            max-width: 80%; 
-        }
-        
-        .promo-banner button { 
-            background: white; 
-            color: var(--accent); 
-            border: none; 
-            padding: 10px 20px; 
-            border-radius: 50px; 
-            font-weight: 900; 
-            margin-top: 15px; 
-            width: fit-content; 
-            font-size: 10px; 
-            text-transform: uppercase; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
+        .promo-banner h1 { margin: 0; font-size: 18px; font-weight: 900; line-height: 1.2; max-width: 80%; }
+        .promo-banner button { background: white; color: var(--accent); border: none; padding: 10px 20px; border-radius: 50px; font-weight: 900; margin-top: 15px; width: fit-content; font-size: 10px; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
-        .hero-dots {
-            position: absolute;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 8px;
-            z-index: 10;
-        }
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.4);
-            transition: 0.3s;
-        }
-        .dot.active {
-            background: #fff;
-            width: 20px;
-            border-radius: 10px;
-        }
+        .hero-dots { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.4); transition: 0.3s; }
+        .dot.active { background: #fff; width: 20px; border-radius: 10px; }
 
         /* --- SECTIONS --- */
         .section-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; }
@@ -260,7 +222,7 @@
     </nav>
 
     <div id="tour-modal">
-        <button id="main-back-btn" style="position:absolute; top:45px; right:20px; z-index:9001; background:var(--accent); color:white; border:none; padding:12px 25px; border-radius:50px; font-weight:900;" onclick="app.closeInternalPage()">BACK</button>
+        <button id="modal-back-btn" style="position:absolute; top:45px; right:20px; z-index:9001; background:var(--accent); color:white; border:none; padding:12px 25px; border-radius:50px; font-weight:900;" onclick="app.closeInternalPage()">BACK</button>
         <iframe id="tour-iframe" style="width:100%; height:100%; border:none;"></iframe>
     </div>
 
@@ -428,25 +390,29 @@ const app = {
     openInternalPage: function(url) { 
         const frame = document.getElementById('tour-iframe');
         const modal = document.getElementById('tour-modal');
-        const backBtn = document.getElementById('main-back-btn');
+        const backBtn = document.getElementById('modal-back-btn');
         
+        // Reset: Ensure button is visible when first opening the window
+        backBtn.style.display = "block";
         frame.src = url; 
-        
-        // Hide back button if loading the interactive map
-        if (url.includes("Interactive_Map")) {
-            backBtn.style.display = "none";
-        } else {
-            backBtn.style.display = "block";
-        }
-        
         modal.classList.add('visible'); 
+
+        // Tracking how many times the frame loads
+        let loadCount = 0;
+        frame.onload = function() {
+            loadCount++;
+            // If loadCount is > 1, it means the user clicked a link INSIDE the iframe
+            if (loadCount > 1) {
+                backBtn.style.display = "none";
+            }
+        };
     },
 
     closeInternalPage: function() { 
+        const frame = document.getElementById('tour-iframe');
         document.getElementById('tour-modal').classList.remove('visible'); 
-        document.getElementById('tour-iframe').src = ""; 
-        // Reset button visibility when closing
-        document.getElementById('main-back-btn').style.display = "block";
+        frame.src = ""; 
+        frame.onload = null; // Clear the tracking for the next use
     },
 
     startHeroSlider: function() { 
