@@ -7,156 +7,122 @@
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <style>
-        @font-face { font-family: 'Agrandir'; src: url('./Assets/agrandir-thin.woff2') format('woff2'); font-weight: 100; font-style: normal; }
-        @font-face { font-family: 'Agrandir'; src: url('./Assets/agrandir-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
-        
+       @font-face { 
+    font-family: 'Agrandir'; 
+    src: url('./Assets/aggrandir-thin.woff2') format('woff2'); 
+    font-weight: 100; 
+    font-style: normal; 
+}
+
+@font-face { 
+    font-family: 'Agrandir'; 
+    src: url('./Assets/aggrandir-regular.woff2') format('woff2'); 
+    font-weight: 400; 
+    font-style: normal; 
+}
         :root { 
             --accent: #00A699; 
-            --accent-soft: rgba(0, 166, 153, 0.2);
             --bg-page: #ffffff; 
             --transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1); 
             --nav-height: 80px; 
-            --safe-bottom: env(safe-area-inset-bottom, 0px); 
+            --safe-bottom: env(safe-area-inset-bottom); 
             --card-shadow: 0 10px 30px rgba(0,0,0,0.08); 
         }
-
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Agrandir', sans-serif !important; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: transparent !important; }
+        a-scene { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
         
-        /* --- AR UI ELEMENTS --- */
-        #ar-reticle { position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%); width: 80vw; height: 45vh; z-index: 4000; pointer-events: none; opacity: 0; transition: 0.5s var(--transition); }
-        .leaf-corner { position: absolute; width: 60px; height: 60px; border: 4px solid var(--accent); animation: leafPulse 2.5s ease-in-out infinite; }
-        @keyframes leafPulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; border-width: 5px; } }
-        .top-left { top: 0; left: 0; border-right: 0; border-bottom: 0; border-radius: 40px 0 0 0; }
-        .top-right { top: 0; right: 0; border-left: 0; border-bottom: 0; border-radius: 0 40px 0 0; }
-        .bottom-left { bottom: 0; left: 0; border-right: 0; border-top: 0; border-radius: 0 0 0 40px; }
-        .bottom-right { bottom: 0; right: 0; border-left: 0; border-top: 0; border-radius: 0 0 40px 0; }
-        .scan-vignette { position: absolute; inset: -20px; border: 1px solid var(--accent-soft); border-radius: 50px; background: radial-gradient(circle, transparent 60%, var(--accent-soft) 150%); }
-        .laser-line { position: absolute; width: 100%; height: 2px; background: linear-gradient(to right, transparent, var(--accent), transparent); box-shadow: 0 0 20px var(--accent); top: 0; animation: scanMove 4s linear infinite; }
-        @keyframes scanMove { 0% { top: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
-
-        #ar-top-layer { position: fixed; top: 40px; left: 20px; right: 20px; z-index: 4500; display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center; pointer-events: none; transition: 0.3s; opacity: 0; }
-        .ar-home-btn { pointer-events: auto; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; border: 1px solid rgba(255,255,255,0.1); }
-        .status-badge { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); padding: 8px 18px; border-radius: 50px; color: white; font-size: 11px; font-weight: 800; text-transform: uppercase; transition: 0.3s; pointer-events: auto; }
-        .status-badge.match-found { background: var(--accent); }
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(0.9); opacity: 1; } 70% { transform: scale(1.5); opacity: 0; } 100% { transform: scale(0.9); opacity: 0; } }
-
-        /* --- GALLERY DOCK --- */
-        #gallery-dock-container { position: fixed; bottom: 0; left: 0; right: 0; z-index: 4600; background: rgba(255,255,255,0.95); border-top-left-radius: 35px; border-top-right-radius: 35px; display: flex; flex-direction: column; align-items: center; padding-bottom: calc(20px + var(--safe-bottom)); transform: translateY(100%); transition: transform 0.6s var(--transition), opacity 0.4s ease; opacity: 0; pointer-events: none; }
-        #gallery-dock-container.ar-active { opacity: 1; transform: translateY(0); pointer-events: auto; }
-        .dock-handle-area { width: 100%; padding: 15px 0 15px; display: flex; justify-content: center; touch-action: none; cursor: grab; }
-        .dock-handle { width: 50px; height: 4px; background: #e0e0e0; border-radius: 10px; }
-        #gallery-dock { display: flex; gap: 15px; overflow-x: auto; padding: 10px 25px 15px; width: 100%; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-        #gallery-dock::-webkit-scrollbar { display: none; }
-        .gallery-item { flex: 0 0 100px; text-align: center; transition: 0.3s; }
+        @keyframes pulse-accent { 
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 166, 153, 0.7); } 
+            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(0, 166, 153, 0); } 
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 166, 153, 0); } 
+        }
+        @keyframes scan { 0% { top: 0%; } 50% { top: 100%; } 100% { top: 0%; } }
+        
+        #ar-reticle { position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%); width: 85vw; height: 55vh; border: 2.5px solid rgba(255,255,255,0.2); border-radius: 40px; z-index: 4000; pointer-events: none; opacity: 0; transition: 0.4s; overflow: hidden; }
+        #ar-reticle::before, #ar-reticle::after { content: ''; position: absolute; width: 60px; height: 60px; border: 6px solid var(--accent); z-index: 10; }
+        #ar-reticle::before { top: -2.5px; left: -2.5px; border-right: 0; border-bottom: 0; border-top-left-radius: 35px; }
+        #ar-reticle::after { bottom: -2.5px; right: -2.5px; border-left: 0; border-top: 0; border-bottom-right-radius: 35px; }
+        .laser-line { position: absolute; width: 100%; height: 5px; background: linear-gradient(to bottom, transparent, var(--accent), transparent); box-shadow: 0 0 20px var(--accent); top: 0; left: 0; opacity: 0.8; animation: scan 2.5s ease-in-out infinite; }
+        
+        #gallery-dock-container { position: fixed; bottom: 0; left: 0; right: 0; z-index: 4600; background: rgba(255, 255, 255, 0); border-top-left-radius: 35px; border-top-right-radius: 35px; display: flex; flex-direction: column; align-items: center; padding-bottom: calc(30px + var(--safe-bottom)); transform: translateY(calc(100% - 80px)); transition: transform 0.4s var(--transition), background 0.3s ease; opacity: 0; pointer-events: none; touch-action: none; }
+        #gallery-dock-container.ar-active { opacity: 1; pointer-events: auto; }
+        #gallery-dock-container.open { transform: translateY(0) !important; background: rgba(255, 255, 255, 1) !important; box-shadow: 0 -10px 40px rgba(0,0,0,0.15); }
+        .dock-handle-area { width: 100%; padding: 25px 0 15px; display: flex; justify-content: center; cursor: grab; }
+        .dock-handle { width: 70px; height: 5px; background: #d1d1d1; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        #gallery-dock { display: flex; gap: 15px; overflow-x: auto; padding: 10px 25px 20px; width: 100%; scrollbar-width: none; opacity: 0; transition: opacity 0.3s; pointer-events: auto; }
+        #gallery-dock-container.open #gallery-dock { opacity: 1; }
+        
+        .gallery-item { flex: 0 0 110px; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.3s; }
         .gallery-item.selected .gallery-img-wrap { border: 3px solid var(--accent); transform: scale(1.05); }
-        .gallery-img-wrap { width: 100px; height: 100px; border-radius: 20px; overflow: hidden; border: 1px solid #eee; margin-bottom: 8px; position: relative; background: #f9f9f9; }
+        .gallery-item.selected span { color: var(--accent); font-weight: 900; }
+        
+        .gallery-img-wrap { width: 110px; height: 110px; border-radius: 20px; border: 1px solid #eee; overflow: hidden; background: #f9f9f9; transition: 0.3s; }
         .gallery-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
-        .gallery-item span { font-size: 9px; font-weight: 800; text-transform: uppercase; color: #444; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .dock-view-tag { position: absolute; bottom: 5px; right: 5px; background: rgba(0,0,0,0.6); color: white; font-size: 8px; padding: 3px 6px; border-radius: 10px; backdrop-filter: blur(4px); font-weight: 900; }
+        .gallery-item span { color: #444; font-size: 10px; font-weight: 800; text-align: center; width: 100%; text-transform: uppercase; }
+        
+        #ar-top-layer { position: fixed; top: 40px; left: 20px; right: 20px; z-index: 4500; display: flex; justify-content: space-between; align-items: center; pointer-events: none; transition: 0.3s; opacity: 0; }
+        .ar-home-btn { pointer-events: auto; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; border: 1px solid rgba(255, 255, 255, 0.1); order: 2; }
+        
+        .status-badge { display: flex; align-items: center; gap: 10px; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); padding: 8px 18px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.1); color: white; font-size: 11px; font-weight: 800; text-transform: uppercase; order: 1; transition: 0.3s; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); animation: pulse-accent 2s infinite; }
+        
+        .status-badge.match-found { background: var(--accent); color: #fff; border: 1px solid rgba(255, 255, 255, 0.3); }
 
-        /* --- OVERLAYS & PAGES --- */
-        .overlay-screen { position: fixed; inset: 0; z-index: 1000; background: #fff; transition: 0.4s; overflow-y: auto; padding-bottom: 140px; }
+        .overlay-screen { position: fixed; inset: 0; z-index: 1000; background: #fff; transition: opacity 0.4s, transform 0.4s; overflow-y: auto; padding-bottom: 140px; }
         .hidden { opacity: 0 !important; pointer-events: none !important; transform: translateY(20px); }
-        .user-greeting { padding: 45px 25px 10px; }
-        .user-greeting h3 { margin: 0; font-size: 14px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
+        
+        .search-header { padding: 45px 25px 20px; }
+        .search-bar-wrap { background: #f4f4f4; border-radius: 15px; display: flex; align-items: center; padding: 12px 18px; gap: 12px; }
+        .search-bar-wrap input { border: none; background: transparent; flex: 1; outline: none; font-size: 16px; color: #333; }
+        .search-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 10px 25px; }
+        .search-category { height: 100px; border-radius: 20px; overflow: hidden; position: relative; background: #222; }
+        .search-category img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+        .search-category span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 14px; text-transform: uppercase; }
+
+        .notif-item { margin: 0 25px 15px; display: flex; gap: 15px; align-items: flex-start; padding-bottom: 15px; border-bottom: 1px solid #f0f0f0; }
+        .notif-icon { width: 45px; height: 45px; border-radius: 12px; background: #f0fdfa; color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .notif-text b { font-size: 14px; color: #222; display: block; margin-bottom: 4px; }
+        .notif-text p { margin: 0; font-size: 12px; color: #777; line-height: 1.4; }
+        .notif-text span { font-size: 10px; color: #ccc; display: block; margin-top: 5px; font-weight: 800; }
+
+        .user-greeting { padding: 45px 25px 10px; background: white; }
+        .user-greeting h3 { margin: 0; font-size: 14px; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;}
         .user-greeting h2 { margin: 0; font-size: 26px; font-weight: 900; color: #333; }
-
-        /* --- UPDATED LEFT-ALIGNED HERO --- */
+        
         .hero-slider-container { margin: 15px 25px; height: 190px; border-radius: 30px; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,166,153,0.25); }
-        .hero-wrapper { width: 100%; height: 100%; position: relative; }
+        .hero-wrapper { display: flex; width: 400%; height: 100%; transition: transform 0.6s var(--transition); }
+        .promo-banner { width: 25%; height: 100%; position: relative; padding: 30px; background: var(--accent); color: white; display: flex; flex-direction: column; justify-content: center; }
+        .promo-banner h1 { margin: 0; font-size: 22px; width: 65%; font-weight: 900; z-index: 2; }
+        .promo-banner button { background: white; color: var(--accent); border: none; padding: 8px 18px; border-radius: 50px; font-weight: 900; margin-top: 15px; width: fit-content; z-index: 2; }
+        .promo-banner img { position: absolute; right: -15px; bottom: -10px; height: 105%; z-index: 1; }
         
-        .promo-banner { 
-            position: absolute;
-            inset: 0;
-            width: 100%; 
-            height: 100%; 
-            background: var(--accent); 
-            color: white; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: flex-start; /* Aligned items to the left */
-            text-align: left;        /* Aligned text to the left */
-            padding: 30px;           /* Increased padding for breathable look */
-            opacity: 0;
-            transition: opacity 0.8s ease-in-out;
-            z-index: 1;
-        }
+        .section-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px 10px; }
+        .section-header h4 { margin: 0; font-size: 18px; font-weight: 900; color: #222; }
+        .see-all { color: var(--accent); font-size: 12px; font-weight: 800; text-decoration: none; }
         
-        .promo-banner.active { opacity: 1; z-index: 2; }
+        #most-scanned-list { display: flex; gap: 15px; overflow-x: auto; padding: 0 25px 20px; scrollbar-width: none; }
+        .popular-card { flex: 0 0 180px; background: white; border-radius: 25px; padding: 10px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--card-shadow); border: 1px solid #f0f0f0; }
+        .pop-img { width: 100%; height: 110px; border-radius: 20px; object-fit: cover; }
+        .scan-count { background: #f0fdfa; color: var(--accent); padding: 4px 10px; border-radius: 10px; font-size: 10px; font-weight: 900; margin-top: 5px; display: inline-block; }
         
-        .promo-banner h1 { 
-            margin: 0; 
-            font-size: 18px; /* Slightly adjusted size for better fit */
-            font-weight: 900; 
-            line-height: 1.2; 
-            max-width: 80%; /* Prevents text from hitting the edges */
-        }
+        .campaign-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 0 25px 30px; scrollbar-width: none; }
+        .campaign-card { flex: 0 0 280px; height: 170px; border-radius: 25px; overflow: hidden; position: relative; box-shadow: var(--card-shadow); }
+        .campaign-img-box { width: 100%; height: 100%; position: relative; background-size: cover; background-position: center; }
+        .campaign-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 10%, transparent 70%); display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; }
+        .campaign-overlay h5 { color: white; margin: 0; font-size: 18px; font-weight: 100; line-height: 1.1; }
+        .campaign-overlay h5 strong { display: block; font-weight: 900; font-size: 22px; }
         
-        .promo-banner button { 
-            background: white; 
-            color: var(--accent); 
-            border: none; 
-            padding: 10px 20px; 
-            border-radius: 50px; 
-            font-weight: 900; 
-            margin-top: 15px; 
-            width: fit-content; 
-            font-size: 10px; 
-            text-transform: uppercase; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        /* Dot Indicators */
-        .hero-dots {
-            position: absolute;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 8px;
-            z-index: 10;
-        }
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.4);
-            transition: 0.3s;
-        }
-        .dot.active {
-            background: #fff;
-            width: 20px;
-            border-radius: 10px;
-        }
-
-        /* --- SECTIONS --- */
-        .section-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; }
-        .section-header h4 { margin: 0; font-size: 16px; font-weight: 900; color: #222; }
-        .section-header .explore-link { font-size: 11px; color: var(--accent); font-weight: 800; text-transform: uppercase; text-decoration: none; }
-        .did-you-know-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 5px 25px 25px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-        .fact-card { flex: 0 0 260px; height: 150px; border-radius: 25px; position: relative; overflow: hidden; color: white; padding: 20px; display: flex; align-items: flex-end; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .fact-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; filter: brightness(0.65); }
-        .fact-card span { position: relative; z-index: 2; font-size: 14px; font-weight: 800; line-height: 1.3; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-
-        .update-item { display: flex; gap: 15px; padding: 20px 25px; border-bottom: 1px solid #f0f0f0; }
-        .update-icon { width: 45px; height: 45px; border-radius: 12px; background: #f0faf9; display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0; }
-        .update-info h5 { margin: 0 0 4px; font-size: 15px; font-weight: 900; color: #222; }
-        .update-info p { margin: 0 0 6px; font-size: 13px; color: #666; line-height: 1.4; }
-        .update-info span { font-size: 10px; font-weight: 800; color: #bbb; text-transform: uppercase; }
-
-        /* --- NAVIGATION --- */
-        .main-navigation-bar { position: fixed; bottom: 0; left: 0; right: 0; height: calc(90px + var(--safe-bottom)); background: #fff; z-index: 5000; display: flex; justify-content: space-around; align-items: center; padding: 0 15px var(--safe-bottom); box-shadow: 0 -10px 30px rgba(0,0,0,0.05); transition: 0.4s; }
+        .main-navigation-bar { position: fixed; bottom: 0; left: 0; right: 0; height: calc(90px + var(--safe-bottom)); background: #fff; z-index: 5000; display: flex; justify-content: space-around; align-items: center; padding: 0 15px var(--safe-bottom); box-shadow: 0 -10px 30px rgba(0,0,0,0.05); transition: transform 0.4s; }
         .nav-item { color: #ccc; flex: 1; display: flex; justify-content: center; padding: 10px; }
         .nav-item.active { color: var(--accent); }
         .nav-item-center { width: 65px; height: 65px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -45px; border: 6px solid #fff; box-shadow: 0 10px 25px rgba(0,166,153,0.3); }
-
+        
         #tour-modal { position: fixed; inset: 0; z-index: 9000; background: white; transform: translateY(100%); transition: 0.5s; }
         #tour-modal.visible { transform: translateY(0); }
-        a-scene { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
-        .scans-info { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
+        
+        /* Added an ID to the button for easy control */
+        #ar-manual-back { display: none; position:absolute; top:45px; right:20px; z-index:9001; background:var(--accent); color:white; border:none; padding:12px 25px; border-radius:50px; font-weight:900; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
@@ -165,214 +131,233 @@
     <div id="splash-screen" style="position:fixed; inset:0; z-index:9999; background:#00A699; display:flex; align-items:center; justify-content:center; transition:0.6s;">
         <img src="Assets/Logo_Icon.png" width="100" style="filter:brightness(0) invert(1);">
     </div>
-
-    <div id="ar-reticle">
-        <div class="scan-vignette"></div>
-        <div class="leaf-corner top-left"></div>
-        <div class="leaf-corner top-right"></div>
-        <div class="leaf-corner bottom-left"></div>
-        <div class="leaf-corner bottom-right"></div>
-        <div class="laser-line"></div>
-    </div>
+    <div id="ar-reticle"><div class="laser-line"></div></div>
     
+    <div id="gallery-dock-container">
+        <div class="dock-handle-area" id="handle-area"><div class="dock-handle"></div></div>
+        <div id="gallery-dock"></div>
+    </div>
+
     <div id="ar-top-layer">
         <div class="ar-home-btn" onclick="app.nav('home')">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
         </div>
         <div class="status-badge" id="ar-status-badge">
-            <div class="status-dot"></div><span id="status-text">Scanning...</span>
+            <div id="status-dot" class="status-dot"></div><span id="status-text">Scanning...</span>
         </div>
-    </div>
-
-    <div id="gallery-dock-container">
-        <div class="dock-handle-area" id="dock-drag-handle"><div class="dock-handle"></div></div>
-        <div id="gallery-dock"></div>
     </div>
 
     <div id="home-page" class="overlay-screen">
         <div class="user-greeting"><h3>Hi, Explorer!</h3><h2>Let’s Discover Baguio</h2></div>
-        
         <div class="hero-slider-container">
             <div class="hero-wrapper" id="hero-wrapper">
-                <div class="promo-banner active">
-                    <h1>Discover Hidden Eco-Trails</h1>
-                    <button onclick="app.startScanner()">Explore Now</button>
-                </div>
-                <div class="promo-banner" style="background: #008f84">
-                    <h1>Unlock 3D Plant Models</h1>
-                    <button onclick="app.startScanner()">Scan Marker</button>
-                </div>
-                <div class="promo-banner" style="background: #007a71">
-                    <h1>Virtual Heritage Tours</h1>
-                    <button onclick="app.startScanner()">Find Marker</button>
-                </div>
-                <div class="promo-banner" style="background: #00665e">
-                    <h1>Interactive Botanical Map</h1>
-                    <button onclick="app.startScanner()">Scan for Map</button>
-                </div>
-            </div>
-            <div class="hero-dots" id="hero-dots">
-                <div class="dot active"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
+                <div class="promo-banner"><h1>Discover Hidden Eco-Trails</h1><button onclick="app.startScanner()">Explore Now</button><img src="Assets/Hero_Garden.png"></div>
+                <div class="promo-banner" style="background: #008f84"><h1>Unlock 3D Plant Models</h1><button onclick="app.startScanner()">Scan Marker</button><img src="Assets/Cactus&Succulents.png"></div>
+                <div class="promo-banner" style="background: #007a71"><h1>Virtual Heritage Tours</h1><button onclick="app.startScanner()">Find Marker</button><img src="Assets/Cordillera%20Village.png"></div>
+                <div class="promo-banner" style="background: #00665e"><h1>Interactive Botanical Map</h1><button onclick="app.startScanner()">Scan for Map</button><img src="Assets/A1_Map.jpg"></div>
             </div>
         </div>
-
         <div class="section-header"><h4>Most Scanned Station</h4></div>
-        <div id="most-scanned-list" style="display:flex; gap:15px; overflow-x:auto; padding:0 25px 30px; scrollbar-width:none;"></div>
-
-        <div class="section-header">
-            <h4>Did You Know?</h4>
-            <a href="#" class="explore-link">Explore Articles</a>
-        </div>
-        <div class="did-you-know-scroll">
-            <div class="fact-card"><img src="Assets/Japanese%20Tunnel.png"><span>Hidden secrets of the Japanese Tunnel</span></div>
-            <div class="fact-card"><img src="Assets/Asian%20Garden.png"><span>Baguio's Botanical Garden covers over 10 hectares.</span></div>
-            <div class="fact-card"><img src="Assets/Cordillera%20Village.png"><span>The Cordillera Village showcases traditional hut architecture.</span></div>
-        </div>
-    </div>
-
-    <div id="notifications-page" class="overlay-screen hidden">
-        <div class="user-greeting"><h2>Updates</h2></div>
-        <div class="update-item">
-            <div class="update-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
-            <div class="update-info">
-                <h5>New AR Station Spotted!</h5>
-                <p>The Korean Pavilion is now active. Scan the entrance sign for a new virtual experience.</p>
-                <span>2 HOURS AGO</span>
+        <div id="most-scanned-list"></div>
+        <div class="section-header"><h4>Did You Know?</h4><a href="#" class="see-all">Explore Articles</a></div>
+        <div class="campaign-scroll">
+            <div class="campaign-card">
+                <div class="campaign-img-box" style="background-image: url('Assets/Japanese Tunnel.png');">
+                    <div class="campaign-overlay"><h5>Hidden secrets of the <br><strong>Japanese Tunnel</strong></h5></div>
+                </div>
+            </div>
+            <div class="campaign-card">
+                <div class="campaign-img-box" style="background-image: url('Assets/Hero_Garden.png');">
+                    <div class="campaign-overlay"><h5>Why Baguio is called <br><strong>The City of Pines</strong></h5></div>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="search-page" class="overlay-screen hidden">
-        <div class="user-greeting"><h2>Search Stations</h2></div>
-        <div style="padding:0 25px"><input type="text" placeholder="Find flowers, tunnels..." style="width:100%; padding:15px; border-radius:15px; border:none; background:#f4f4f4;"></div>
+        <div class="search-header">
+            <div class="user-greeting" style="padding:0 0 20px;"><h2>Search Stations</h2></div>
+            <div class="search-bar-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" placeholder="Find flowers, tunnels, trails...">
+            </div>
+        </div>
+        <div class="section-header"><h4>Browse by Category</h4></div>
+        <div class="search-grid">
+            <div class="search-category"><img src="Assets/Asian Garden.png"><span>Historical</span></div>
+            <div class="search-category"><img src="Assets/Cactus&Succulents.png"><span>Flora</span></div>
+            <div class="search-category"><img src="Assets/Cordillera%20Village.png"><span>Culture</span></div>
+            <div class="search-category"><img src="Assets/Hero_Garden.png"><span>Trails</span></div>
+        </div>
+    </div>
+
+    <div id="notifications-page" class="overlay-screen hidden">
+        <div class="user-greeting"><h2>Updates</h2></div>
+        <div id="notification-list">
+            <div class="notif-item">
+                <div class="notif-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+                <div class="notif-text"><b>New AR Station Spotted!</b><p>The Korean Pavilion is now active. Scan the entrance sign for a new virtual experience.</p><span>2 HOURS AGO</span></div>
+            </div>
+            <div class="notif-item">
+                <div class="notif-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg></div>
+                <div class="notif-text"><b>Did you know?</b><p>The Japanese Tunnel was built during WWII.</p><span>5 HOURS AGO</span></div>
+            </div>
+        </div>
     </div>
 
     <nav class="main-navigation-bar" id="main-nav">
         <div class="nav-item active" id="nav-home" onclick="app.nav('home')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
         <div class="nav-item" id="nav-search" onclick="app.nav('search')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
-        <div class="nav-item-center" onclick="app.startScanner()">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="9" y="9" width="6" height="6"></rect></svg>
-        </div>
+        <div class="nav-item-center" onclick="app.startScanner()"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></div>
         <div class="nav-item" id="nav-notifications" onclick="app.nav('notifications')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
         <div class="nav-item" onclick="app.resetApp()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></div>
     </nav>
 
-    <div id="tour-modal">
-        <button style="position:absolute; top:45px; right:20px; z-index:9001; background:var(--accent); color:white; border:none; padding:12px 25px; border-radius:50px; font-weight:900;" onclick="app.closeInternalPage()">BACK</button>
+  <div id="tour-modal">
+        <button id="ar-manual-back" onclick="app.closeInternalPage()">BACK</button>
         <iframe id="tour-iframe" style="width:100%; height:100%; border:none;"></iframe>
     </div>
 
-    <a-scene id="ar-scene" mindar-image="imageTargetSrc: targets.mind; autoStart: false; uiLoading: no; uiScanning: no;" embedded vr-mode-ui="enabled: false">
+    <a-scene mindar-image="imageTargetSrc: targets.mind; autoStart: false; uiLoading: no; uiScanning: no;" embedded renderer="colorManagement: true;" vr-mode-ui="enabled: false">
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
         <a-entity id="target-container"></a-entity>
     </a-scene>
 
-<script>
+    <script>
 const app = {
     currentHero: 0, 
-    dockState: { startY: 0, currentY: 0, isDragging: false, isOpen: true },
+    startY: 0, 
+    isDragging: false,
     stations: [
-        { id: 0, name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/Interactive_Map/", scans: 1240 },
-        { id: 1, name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://tour.panoee.net/mainentrance/1", scans: 980 },
-        { id: 2, name: "Arbor", thumb: "Assets/Arbor.png", link: "https://tour.panoee.net/arbor", scans: 340 },
-        { id: 3, name: "Asian Garden", thumb: "Assets/Asian Garden.png", link: "https://tour.panoee.net/asian-garden", scans: 450 },
-        { id: 4, name: "Cactus & Succulents", thumb: "Assets/Cactus&Succulents.png", link: "https://tour.panoee.net/cactus-succulent-garden/1-1", scans: 640 },
-        { id: 5, name: "Centennial Garden", thumb: "Assets/Centennial Garden.png", link: "https://tour.panoee.net/centennial-garden/1", scans: 210 },
-        { id: 6, name: "Chinese Garden", thumb: "Assets/Chinese%20Garden.png", link: "https://tour.panoee.net/chinese-garden/69cd28ffcd728200084a2654", scans: 520 },
-        { id: 7, name: "City of Vaughan", thumb: "Assets/City%20of%20Vaughan%20Friendship%20Garden.png", link: "https://tour.panoee.net/city-of-vaughan", scans: 180 },
-        { id: 8, name: "Cordillera Village", thumb: "Assets/Cordillera%20Village.png", link: "https://tour.panoee.net/cordillera-village/1", scans: 890 },
-        { id: 9, name: "Dahlia Garden", thumb: "Assets/Dahlia Garden.png", link: "https://tour.panoee.net/69b74a8ccd5918bff013a943", scans: 310 },
-        { id: 10, name: "Greenhouse", thumb: "Assets/Greenhouse.png", link: "https://tour.panoee.net/greenhouse/1", scans: 420 },
-        { id: 11, name: "Japanese Garden", thumb: "Assets/Japanese%20Garden.png", link: "https://tour.panoee.net/japanese-garden", scans: 760 },
-        { id: 12, name: "Japanese Tunnel", thumb: "Assets/Japanese%20Tunnel.png", link: "https://tour.panoee.net/japanese-tunnel/1", scans: 1120 },
-        { id: 13, name: "Korea Garden", thumb: "Assets/Korea%20Garden.png", link: "https://tour.panoee.net/korea-garden/1", scans: 580 },
-        { id: 14, name: "Orchidarium", thumb: "Assets/Orchidarium.png", link: "https://tour.panoee.net/orchidarium/1", scans: 390 },
-        { id: 15, name: "Friendship Garden", thumb: "Assets/Philippine-Thailand Frienship Garden.png", link: "https://tour.panoee.net/philippine-thailand-friendship-garden/7-1", scans: 270 },
-        { id: 16, name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.png", link: "https://tour.panoee.net/pmsea-garden", scans: 150 }
+		{ id: 0, name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/Interactive_Map/", scans: 1240 },
+		{ id: 1, name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://tour.panoee.net/mainentrance/1", scans: 980 },
+		{ id: 2, name: "Arbor", thumb: "Assets/Arbor.png", link: "https://tour.panoee.net/arbor", scans: 340 },
+		{ id: 3, name: "Asian Garden", thumb: "Assets/Asian Garden.png", link: "https://tour.panoee.net/asian-garden", scans: 450 },
+		{ id: 4, name: "Cactus & Succulents", thumb: "Assets/Cactus&Succulents.png", link: "https://tour.panoee.net/cactus-succulent-garden/1-1", scans: 640 },
+		{ id: 5, name: "Centennial Garden", thumb: "Assets/Centennial Garden.png", link: "https://tour.panoee.net/centennial-garden/1", scans: 210 },
+		{ id: 6, name: "Chinese Garden", thumb: "Assets/Chinese%20Garden.png", link: "https://tour.panoee.net/chinese-garden/69cd28ffcd728200084a2654", scans: 520 },
+		{ id: 7, name: "City of Vaughan", thumb: "Assets/City%20of%20Vaughan%20Friendship%20Garden.png", link: "https://tour.panoee.net/city-of-vaughan", scans: 180 },
+		{ id: 8, name: "Cordillera Village", thumb: "Assets/Cordillera%20Village.png", link: "https://tour.panoee.net/cordillera-village/1", scans: 890 },
+		{ id: 9, name: "Dahlia Garden", thumb: "Assets/Dahlia Garden.png", link: "https://tour.panoee.net/69b74a8ccd5918bff013a943", scans: 310 },
+		{ id: 10, name: "Greenhouse", thumb: "Assets/Greenhouse.png", link: "https://tour.panoee.net/greenhouse/1", scans: 420 },
+		{ id: 11, name: "Japanese Garden", thumb: "Assets/Japanese%20Garden.png", link: "https://tour.panoee.net/japanese-garden", scans: 760 },
+		{ id: 12, name: "Japanese Tunnel", thumb: "Assets/Japanese%20Tunnel.png", link: "https://tour.panoee.net/japanese-tunnel/1", scans: 1120 },
+		{ id: 13, name: "Korea Garden", thumb: "Assets/Korea%20Garden.png", link: "https://tour.panoee.net/korea-garden/1", scans: 580 },
+		{ id: 14, name: "Orchidarium", thumb: "Assets/Orchidarium.png", link: "https://tour.panoee.net/orchidarium/1", scans: 390 },
+		{ id: 15, name: "Friendship Garden", thumb: "Assets/Philippine-Thailand Frienship Garden.png", link: "https://tour.panoee.net/philippine-thailand-friendship-garden/7-1", scans: 270 },
+		{ id: 16, name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.png", link: "https://tour.panoee.net/pmsea-garden", scans: 150 }
     ],
 
     init: function() {
         this.renderMostScanned(); 
         this.renderDock(); 
         this.initAR(); 
-        this.initDockDraggable();
+        this.initSwipeLogic(); 
         this.startHeroSlider();
-        setTimeout(() => { 
-            const splash = document.getElementById('splash-screen');
-            if(splash) { splash.style.opacity = '0'; setTimeout(() => splash.style.display='none', 600); }
-        }, 1500);
-    },
+        
+        // Listen for messages from the map iframe to hide/show button
+        window.addEventListener("message", (event) => {
+            if (event.data === 'hideAppButton') {
+                document.getElementById('ar-manual-back').style.display = 'none';
+            } else if (event.data === 'showAppButton') {
+                document.getElementById('ar-manual-back').style.display = 'block';
+            }
+        }, false);
 
-    initDockDraggable: function() {
-        const dock = document.getElementById('gallery-dock-container');
-        const handle = document.getElementById('dock-drag-handle');
-        const threshold = 60;
-        handle.addEventListener('touchstart', (e) => { this.dockState.startY = e.touches[0].clientY; this.dockState.isDragging = true; dock.style.transition = 'none'; });
-        window.addEventListener('touchmove', (e) => {
-            if (!this.dockState.isDragging) return;
-            let moveY = e.touches[0].clientY - this.dockState.startY;
-            if (this.dockState.isOpen && moveY > 0) { this.dockState.currentY = moveY; dock.style.transform = `translateY(${moveY}px)`; } 
-            else if (!this.dockState.isOpen && moveY < 0) {
-                let hiddenOffset = dock.offsetHeight - 45;
-                let newPos = hiddenOffset + moveY;
-                this.dockState.currentY = newPos;
-                dock.style.transform = `translateY(${Math.max(0, newPos)}px)`;
-            }
-        });
-        window.addEventListener('touchend', () => {
-            if (!this.dockState.isDragging) return;
-            this.dockState.isDragging = false;
-            dock.style.transition = 'transform 0.5s cubic-bezier(0.19, 1, 0.22, 1)';
-            if (this.dockState.isOpen) {
-                if (this.dockState.currentY > threshold) { dock.style.transform = 'translateY(calc(100% - 45px))'; this.dockState.isOpen = false; } 
-                else { dock.style.transform = 'translateY(0)'; }
-            } else {
-                let hiddenOffset = dock.offsetHeight - 45;
-                if (this.dockState.currentY < hiddenOffset - threshold) { dock.style.transform = 'translateY(0)'; this.dockState.isOpen = true; } 
-                else { dock.style.transform = 'translateY(calc(100% - 45px))'; }
-            }
-            this.dockState.currentY = 0;
-        });
+        setTimeout(() => { 
+            document.getElementById('splash-screen').style.opacity = '0'; 
+            setTimeout(() => document.getElementById('splash-screen').style.display='none', 600); 
+        }, 1500);
     },
 
     renderMostScanned: function() {
         const list = document.getElementById('most-scanned-list');
-        const top = [...this.stations].sort((a,b) => b.scans - a.scans).slice(0, 5);
-        list.innerHTML = top.map((s) => `
-            <div style="flex:0 0 200px; background:white; border-radius:25px; padding:12px; box-shadow:var(--card-shadow); position:relative;">
-                <img src="${s.thumb}" style="width:100%; height:120px; border-radius:18px; object-fit:cover;">
-                <div style="margin-top:10px;">
-                    <b style="font-size:14px; display:block; color:#222;">${s.name}</b>
-                    <div class="scans-info">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                        <span>${s.scans} SCANS</span>
-                    </div>
-                </div>
+        const top5 = [...this.stations].sort((a,b) => b.scans - a.scans).slice(0, 5);
+        list.innerHTML = top5.map(s => `
+            <div class="popular-card">
+                <img src="${s.thumb}" class="pop-img">
+                <div class="pop-info"><b>${s.name}</b><br><span class="scan-count">${s.scans.toLocaleString()} SCANS</span></div>
             </div>
         `).join('');
     },
 
     renderDock: function() {
         const dock = document.getElementById('gallery-dock');
-        dock.innerHTML = this.stations.map(s => `
+        dock.innerHTML = this.stations.map((s, index) => `
             <div class="gallery-item" data-station-id="${s.id}" onclick="app.selectReference('${s.name}', this)">
-                <div class="gallery-img-wrap">
-                    <img src="${s.thumb}">
-                    <div class="dock-view-tag">👁 ${s.scans}</div>
-                </div>
+                <div class="gallery-img-wrap"><img src="${s.thumb}"></div>
                 <span>${s.name}</span>
             </div>
         `).join('');
     },
 
-    selectReference: function(name, el) {
-        document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('selected'));
-        el.classList.add('selected');
+    selectReference: function(name, element) {
+        document.querySelectorAll('.gallery-item').forEach(item => item.classList.remove('selected'));
+        element.classList.add('selected');
         document.getElementById('status-text').innerText = `Selected: ${name}`;
-        el.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+        element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    },
+
+    initSwipeLogic: function() {
+        const container = document.getElementById('gallery-dock-container');
+        const handle = document.getElementById('handle-area');
+        const dock = document.getElementById('gallery-dock');
+        let initialTranslateY = 0;
+
+        const onStart = (e) => { 
+            this.startY = e.touches ? e.touches[0].clientY : e.clientY; 
+            this.isDragging = true; 
+            container.style.transition = 'none'; 
+            const matrix = new WebKitCSSMatrix(window.getComputedStyle(container).transform);
+            initialTranslateY = matrix.m42;
+        };
+
+        const onMove = (e) => {
+            if (!this.isDragging) return;
+            const currentY = e.touches ? e.touches[0].clientY : e.clientY;
+            const deltaY = currentY - this.startY;
+            let newY = initialTranslateY + deltaY;
+            
+            const closedPos = container.offsetHeight - 80;
+            newY = Math.max(0, Math.min(newY, closedPos));
+
+            container.style.transform = `translateY(${newY}px)`;
+            
+            const progress = 1 - (newY / closedPos);
+            container.style.background = `rgba(255, 255, 255, ${progress})`;
+            dock.style.opacity = progress;
+
+            if (e.cancelable) e.preventDefault();
+        };
+
+        const onEnd = () => {
+            if (!this.isDragging) return;
+            this.isDragging = false; 
+            container.style.transition = 'transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), background 0.3s ease';
+            
+            const closedPos = container.offsetHeight - 80;
+            const currentMatrix = new WebKitCSSMatrix(window.getComputedStyle(container).transform);
+            const finalY = currentMatrix.m42;
+
+            if (finalY > closedPos * 0.4) { 
+                container.classList.remove('open'); 
+                container.style.transform = `translateY(${closedPos}px)`; 
+                container.style.background = 'rgba(255, 255, 255, 0)'; 
+                dock.style.opacity = 0;
+            } else { 
+                container.classList.add('open'); 
+                container.style.transform = 'translateY(0)'; 
+                container.style.background = 'rgba(255, 255, 255, 1)'; 
+                dock.style.opacity = 1;
+            }
+        };
+
+        handle.addEventListener('touchstart', onStart, { passive: false });
+        handle.addEventListener('mousedown', onStart);
+        window.addEventListener('touchmove', onMove, { passive: false }); 
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('touchend', onEnd);
+        window.addEventListener('mouseup', onEnd);
     },
 
     startScanner: function() {
@@ -380,12 +365,16 @@ const app = {
         document.getElementById('main-nav').style.transform = "translateY(150%)";
         document.getElementById('ar-top-layer').style.opacity = "1";
         document.getElementById('ar-reticle').style.opacity = "1";
-        const dockContainer = document.getElementById('gallery-dock-container');
-        dockContainer.classList.add('ar-active');
-        dockContainer.style.transform = 'translateY(0)';
-        this.dockState.isOpen = true;
-        const sceneEl = document.querySelector('a-scene');
-        if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].start(); }
+        
+        const container = document.getElementById('gallery-dock-container');
+        const dock = document.getElementById('gallery-dock');
+        
+        container.classList.add('ar-active', 'open');
+        container.style.transform = 'translateY(0)';
+        container.style.background = 'rgba(255, 255, 255, 1)';
+        dock.style.opacity = 1;
+        
+        document.querySelector('a-scene').systems['mindar-image-system'].start();
     },
 
     nav: function(page) {
@@ -393,44 +382,62 @@ const app = {
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         document.getElementById(page + '-page').classList.remove('hidden');
         if(document.getElementById('nav-'+page)) document.getElementById('nav-'+page).classList.add('active');
+        
         document.getElementById('main-nav').style.transform = "translateY(0)";
         document.getElementById('ar-top-layer').style.opacity = "0";
         document.getElementById('ar-reticle').style.opacity = "0";
-        document.getElementById('gallery-dock-container').classList.remove('ar-active');
-        const sceneEl = document.querySelector('a-scene');
-        if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
+        document.getElementById('gallery-dock-container').classList.remove('ar-active', 'open');
+        
+        const scene = document.querySelector('a-scene');
+        if (scene.systems['mindar-image-system']) scene.systems['mindar-image-system'].stop();
     },
 
     initAR: function() {
         const container = document.getElementById('target-container');
         const matchSound = document.getElementById('match-sound');
+
         this.stations.forEach(s => {
             const entity = document.createElement('a-entity');
             entity.setAttribute('mindar-image-target', `targetIndex: ${s.id}`);
             entity.addEventListener("targetFound", () => {
-                matchSound.play();
-                s.scans++;
-                this.renderMostScanned();
-                this.renderDock();
-                const item = document.querySelector(`.gallery-item[data-station-id="${s.id}"]`);
-                if (item) this.selectReference(s.name, item);
-                document.getElementById('ar-status-badge').classList.add('match-found');
+                if (matchSound) {
+                    matchSound.currentTime = 0; 
+                    matchSound.play().catch(e => console.log("Audio play blocked:", e));
+                }
+
+                const galleryItem = document.querySelector(`.gallery-item[data-station-id="${s.id}"]`);
+                if (galleryItem) {
+                    this.selectReference(s.name, galleryItem);
+                }
+
                 document.getElementById('status-text').innerText = "Match Found!";
-                setTimeout(() => this.openInternalPage(s.link), 1500);
+                document.getElementById('ar-status-badge').classList.add('match-found'); 
+                
+                // Now passing the full station object so we know if it's the map
+                setTimeout(() => this.openInternalPage(s.link, s), 1500);
             });
-            entity.addEventListener("targetLost", () => {
-                document.getElementById('ar-status-badge').classList.remove('match-found');
-                document.getElementById('status-text').innerText = "Scanning...";
+            entity.addEventListener("targetLost", () => { 
+                document.getElementById('ar-status-badge').classList.remove('match-found'); 
+                const selected = document.querySelector('.gallery-item.selected');
+                document.getElementById('status-text').innerText = selected ? `Selected: ${selected.querySelector('span').innerText}` : "Scanning..."; 
             });
             container.appendChild(entity);
         });
     },
 
-    openInternalPage: function(url) { 
-        const frame = document.getElementById('tour-iframe');
-        const modal = document.getElementById('tour-modal');
-        frame.src = url; 
-        modal.classList.add('visible'); 
+    openInternalPage: function(url, station) { 
+        const btn = document.getElementById('ar-manual-back');
+        
+        // Logical Check: Only show the AR BACK button if the station name is "Map"
+        // If it's a Panoee tour (any other station), the button stays hidden
+        if(station && station.name === "Map") {
+            btn.style.display = 'block';
+        } else {
+            btn.style.display = 'none';
+        }
+
+        document.getElementById('tour-iframe').src = url; 
+        document.getElementById('tour-modal').classList.add('visible'); 
     },
 
     closeInternalPage: function() { 
@@ -440,25 +447,14 @@ const app = {
 
     startHeroSlider: function() { 
         setInterval(() => { 
-            const banners = document.querySelectorAll('.promo-banner');
-            const dots = document.querySelectorAll('.dot');
-            
-            // Remove active class from current
-            banners[this.currentHero].classList.remove('active');
-            dots[this.currentHero].classList.remove('active');
-            
-            // Increment index
-            this.currentHero = (this.currentHero + 1) % banners.length; 
-            
-            // Add active class to next
-            banners[this.currentHero].classList.add('active');
-            dots[this.currentHero].classList.add('active');
+            this.currentHero = (this.currentHero + 1) % 4; 
+            const wrap = document.getElementById('hero-wrapper'); 
+            if(wrap) wrap.style.transform = `translateX(-${this.currentHero * 25}%)`; 
         }, 4000); 
     },
 
     resetApp: function() { window.location.reload(); }
 };
-
 window.onload = () => app.init();
 </script>
 </body>
