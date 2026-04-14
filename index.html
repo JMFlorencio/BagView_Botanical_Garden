@@ -15,172 +15,91 @@
             --accent-soft: rgba(0, 166, 153, 0.2);
             --bg-page: #ffffff; 
             --transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1); 
-            --nav-height: 80px; 
             --safe-bottom: env(safe-area-inset-bottom, 0px); 
             --card-shadow: 0 10px 30px rgba(0,0,0,0.08); 
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Agrandir', sans-serif !important; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: transparent !important; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
         
         /* --- AR UI ELEMENTS --- */
-        #ar-reticle { position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%); width: 80vw; height: 45vh; z-index: 4000; pointer-events: none; opacity: 0; transition: 0.5s var(--transition); }
-        .leaf-corner { position: absolute; width: 60px; height: 60px; border: 4px solid var(--accent); animation: leafPulse 2.5s ease-in-out infinite; }
-        @keyframes leafPulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; border-width: 5px; } }
-        .top-left { top: 0; left: 0; border-right: 0; border-bottom: 0; border-radius: 40px 0 0 0; }
-        .top-right { top: 0; right: 0; border-left: 0; border-bottom: 0; border-radius: 0 40px 0 0; }
-        .bottom-left { bottom: 0; left: 0; border-right: 0; border-top: 0; border-radius: 0 0 0 40px; }
-        .bottom-right { bottom: 0; right: 0; border-left: 0; border-top: 0; border-radius: 0 0 40px 0; }
-        .scan-vignette { position: absolute; inset: -20px; border: 1px solid var(--accent-soft); border-radius: 50px; background: radial-gradient(circle, transparent 60%, var(--accent-soft) 150%); }
-        .laser-line { position: absolute; width: 100%; height: 2px; background: linear-gradient(to right, transparent, var(--accent), transparent); box-shadow: 0 0 20px var(--accent); top: 0; animation: scanMove 4s linear infinite; }
+        #ar-reticle { position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%); width: 75vw; height: 40vh; z-index: 4000; pointer-events: none; opacity: 0; transition: 0.5s var(--transition); }
+        .leaf-corner { position: absolute; width: 50px; height: 50px; border: 4px solid var(--accent); }
+        .top-left { top: 0; left: 0; border-right: 0; border-bottom: 0; border-radius: 25px 0 0 0; }
+        .top-right { top: 0; right: 0; border-left: 0; border-bottom: 0; border-radius: 0 25px 0 0; }
+        .bottom-left { bottom: 0; left: 0; border-right: 0; border-top: 0; border-radius: 0 0 0 25px; }
+        .bottom-right { bottom: 0; right: 0; border-left: 0; border-top: 0; border-radius: 0 0 25px 0; }
+        .laser-line { position: absolute; width: 100%; height: 2px; background: linear-gradient(to right, transparent, var(--accent), transparent); box-shadow: 0 0 15px var(--accent); top: 0; animation: scanMove 3s linear infinite; }
         @keyframes scanMove { 0% { top: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
 
-        #ar-top-layer { position: fixed; top: 40px; left: 20px; right: 20px; z-index: 4500; display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center; pointer-events: none; transition: 0.3s; opacity: 0; }
-        .ar-home-btn { pointer-events: auto; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; border: 1px solid rgba(255,255,255,0.1); }
-        .status-badge { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); padding: 8px 18px; border-radius: 50px; color: white; font-size: 11px; font-weight: 800; text-transform: uppercase; transition: 0.3s; pointer-events: auto; }
-        .status-badge.match-found { background: var(--accent); }
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(0.9); opacity: 1; } 70% { transform: scale(1.5); opacity: 0; } 100% { transform: scale(0.9); opacity: 0; } }
+        #ar-top-layer { position: fixed; top: 50px; left: 20px; right: 20px; z-index: 4500; display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center; pointer-events: none; transition: 0.3s; opacity: 0; }
+        .ar-home-btn { pointer-events: auto; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; border: 1px solid rgba(255,255,255,0.2); }
+        .status-badge { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); padding: 8px 16px; border-radius: 50px; color: white; font-size: 10px; font-weight: 800; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.2); }
+        .status-badge.match-found { background: var(--accent); border-color: var(--accent); }
 
         /* --- GALLERY DOCK --- */
-        #gallery-dock-container { position: fixed; bottom: 0; left: 0; right: 0; z-index: 4600; background: rgba(255,255,255,0.95); border-top-left-radius: 35px; border-top-right-radius: 35px; display: flex; flex-direction: column; align-items: center; padding-bottom: calc(20px + var(--safe-bottom)); transform: translateY(100%); transition: transform 0.6s var(--transition), opacity 0.4s ease; opacity: 0; pointer-events: none; }
-        #gallery-dock-container.ar-active { opacity: 1; transform: translateY(0); pointer-events: auto; }
-        .dock-handle-area { width: 100%; padding: 15px 0 15px; display: flex; justify-content: center; touch-action: none; cursor: grab; }
-        .dock-handle { width: 50px; height: 4px; background: #e0e0e0; border-radius: 10px; }
-        #gallery-dock { display: flex; gap: 15px; overflow-x: auto; padding: 10px 25px 15px; width: 100%; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        #gallery-dock-container { position: fixed; bottom: 0; left: 0; right: 0; z-index: 4600; background: rgba(255,255,255,0.95); backdrop-filter: blur(15px); border-top-left-radius: 30px; border-top-right-radius: 30px; transform: translateY(100%); transition: transform 0.6s var(--transition); padding-bottom: var(--safe-bottom); }
+        #gallery-dock-container.ar-active { transform: translateY(0); }
+        .dock-handle-area { width: 100%; padding: 15px 0; display: flex; justify-content: center; }
+        .dock-handle { width: 40px; height: 4px; background: #ddd; border-radius: 10px; }
+        #gallery-dock { display: flex; gap: 12px; overflow-x: auto; padding: 0 20px 20px; scrollbar-width: none; }
         #gallery-dock::-webkit-scrollbar { display: none; }
-        .gallery-item { flex: 0 0 100px; text-align: center; transition: 0.3s; }
-        .gallery-item.selected .gallery-img-wrap { border: 3px solid var(--accent); transform: scale(1.05); }
-        .gallery-img-wrap { width: 100px; height: 100px; border-radius: 20px; overflow: hidden; border: 1px solid #eee; margin-bottom: 8px; position: relative; background: #f9f9f9; }
+        .gallery-item { flex: 0 0 85px; text-align: center; }
+        .gallery-img-wrap { width: 85px; height: 85px; border-radius: 18px; overflow: hidden; border: 2px solid transparent; transition: 0.3s; margin-bottom: 6px; }
+        .gallery-item.selected .gallery-img-wrap { border-color: var(--accent); transform: scale(1.05); }
         .gallery-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
-        .gallery-item span { font-size: 9px; font-weight: 800; text-transform: uppercase; color: #444; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .dock-view-tag { position: absolute; bottom: 5px; right: 5px; background: rgba(0,0,0,0.6); color: white; font-size: 8px; padding: 3px 6px; border-radius: 10px; backdrop-filter: blur(4px); font-weight: 900; }
+        .gallery-item span { font-size: 9px; font-weight: 800; text-transform: uppercase; color: #666; }
 
-        /* --- OVERLAYS & PAGES --- */
-        .overlay-screen { position: fixed; inset: 0; z-index: 1000; background: #fff; transition: 0.4s; overflow-y: auto; padding-bottom: 140px; }
-        .hidden { opacity: 0 !important; pointer-events: none !important; transform: translateY(20px); }
-        .user-greeting { padding: 45px 25px 10px; }
-        .user-greeting h3 { margin: 0; font-size: 14px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
-        .user-greeting h2 { margin: 0; font-size: 26px; font-weight: 900; color: #333; }
+        /* --- PAGES --- */
+        .overlay-screen { position: fixed; inset: 0; z-index: 1000; background: #fff; transition: 0.4s; overflow-y: auto; padding-bottom: 120px; }
+        .hidden { opacity: 0 !important; pointer-events: none !important; transform: translateY(10px); }
+        .user-greeting { padding: 50px 25px 10px; }
+        .user-greeting h3 { margin: 0; font-size: 12px; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .user-greeting h2 { margin: 5px 0 0; font-size: 28px; font-weight: 900; color: #1a1a1a; }
 
-        /* --- UPDATED LEFT-ALIGNED HERO --- */
-        .hero-slider-container { margin: 15px 25px; height: 190px; border-radius: 30px; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,166,153,0.25); }
-        .hero-wrapper { width: 100%; height: 100%; position: relative; }
-        
-        .promo-banner { 
-            position: absolute;
-            inset: 0;
-            width: 100%; 
-            height: 100%; 
-            background: var(--accent); 
-            color: white; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: flex-start; 
-            text-align: left; 
-            padding: 30px; 
-            opacity: 0;
-            transition: opacity 0.8s ease-in-out;
-            z-index: 1;
-        }
-        
-        .promo-banner.active { opacity: 1; z-index: 2; }
-        
-        .promo-banner h1 { 
-            margin: 0; 
-            font-size: 18px; 
-            font-weight: 900; 
-            line-height: 1.2; 
-            max-width: 80%; 
-        }
-        
-        .promo-banner button { 
-            background: white; 
-            color: var(--accent); 
-            border: none; 
-            padding: 10px 20px; 
-            border-radius: 50px; 
-            font-weight: 900; 
-            margin-top: 15px; 
-            width: fit-content; 
-            font-size: 10px; 
-            text-transform: uppercase; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .hero-dots {
-            position: absolute;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 8px;
-            z-index: 10;
-        }
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.4);
-            transition: 0.3s;
-        }
-        .dot.active {
-            background: #fff;
-            width: 20px;
-            border-radius: 10px;
-        }
-
-        /* --- SECTIONS --- */
-        .section-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; }
-        .section-header h4 { margin: 0; font-size: 16px; font-weight: 900; color: #222; }
-        .section-header .explore-link { font-size: 11px; color: var(--accent); font-weight: 800; text-transform: uppercase; text-decoration: none; }
-        .did-you-know-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 5px 25px 25px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-        .fact-card { flex: 0 0 260px; height: 150px; border-radius: 25px; position: relative; overflow: hidden; color: white; padding: 20px; display: flex; align-items: flex-end; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .fact-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; filter: brightness(0.65); }
-        .fact-card span { position: relative; z-index: 2; font-size: 14px; font-weight: 800; line-height: 1.3; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-
-        .update-item { display: flex; gap: 15px; padding: 20px 25px; border-bottom: 1px solid #f0f0f0; }
-        .update-icon { width: 45px; height: 45px; border-radius: 12px; background: #f0faf9; display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0; }
-        .update-info h5 { margin: 0 0 4px; font-size: 15px; font-weight: 900; color: #222; }
-        .update-info p { margin: 0 0 6px; font-size: 13px; color: #666; line-height: 1.4; }
-        .update-info span { font-size: 10px; font-weight: 800; color: #bbb; text-transform: uppercase; }
+        /* --- HERO SLIDER --- */
+        .hero-slider-container { margin: 20px 20px; height: 200px; border-radius: 25px; position: relative; overflow: hidden; }
+        .promo-banner { position: absolute; inset: 0; padding: 30px; display: flex; flex-direction: column; justify-content: center; opacity: 0; transition: 0.8s ease; }
+        .promo-banner.active { opacity: 1; }
+        .promo-banner h1 { color: white; margin: 0; font-size: 22px; font-weight: 900; line-height: 1.2; max-width: 70%; }
+        .promo-banner button { background: white; color: #222; border: none; padding: 12px 24px; border-radius: 50px; font-weight: 900; margin-top: 20px; width: fit-content; font-size: 11px; text-transform: uppercase; }
 
         /* --- NAVIGATION --- */
-        .main-navigation-bar { position: fixed; bottom: 0; left: 0; right: 0; height: calc(90px + var(--safe-bottom)); background: #fff; z-index: 5000; display: flex; justify-content: space-around; align-items: center; padding: 0 15px var(--safe-bottom); box-shadow: 0 -10px 30px rgba(0,0,0,0.05); transition: 0.4s; }
-        .nav-item { color: #ccc; flex: 1; display: flex; justify-content: center; padding: 10px; }
+        .main-navigation-bar { position: fixed; bottom: 0; left: 0; right: 0; height: calc(85px + var(--safe-bottom)); background: #fff; z-index: 5000; display: flex; justify-content: space-around; align-items: center; padding: 0 10px var(--safe-bottom); box-shadow: 0 -10px 40px rgba(0,0,0,0.05); }
+        .nav-item { color: #bbb; padding: 15px; transition: 0.3s; }
         .nav-item.active { color: var(--accent); }
-        .nav-item-center { width: 65px; height: 65px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -45px; border: 6px solid #fff; box-shadow: 0 10px 25px rgba(0,166,153,0.3); }
+        .nav-item-center { width: 60px; height: 60px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -40px; border: 5px solid #fff; box-shadow: 0 10px 20px rgba(0,166,153,0.3); }
 
-        /* --- TOUR MODAL WITH FIXED HEADER --- */
-        #tour-modal { position: fixed; inset: 0; z-index: 9000; background: white; transform: translateY(100%); transition: 0.5s; display: flex; flex-direction: column; }
+        /* --- MODAL --- */
+        #tour-modal { position: fixed; inset: 0; z-index: 9000; background: white; transform: translateY(100%); transition: 0.5s var(--transition); }
         #tour-modal.visible { transform: translateY(0); }
-        
-        .tour-header { 
-            height: 90px; 
-            padding: 40px 20px 0; 
-            background: #fff; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            border-bottom: 1px solid #eee; 
-            flex-shrink: 0; 
+        .modal-header { height: 75px; display: flex; align-items: center; justify-content: space-between; padding: 25px 20px 0; border-bottom: 1px solid #f0f0f0; }
+        .modal-header h4 { margin: 0; font-size: 14px; text-transform: uppercase; font-weight: 900; color: #222; }
+        .close-btn { background: #f5f5f5; border: none; padding: 8px 20px; border-radius: 50px; font-weight: 900; font-size: 11px; color: #666; }
+
+        /* NEW: Fullscreen Map Adjustments */
+        #tour-modal.hide-header .modal-header { display: none; }
+        #tour-modal.hide-header #tour-iframe { height: 100% !important; }
+        #floating-close-btn { 
+            position: fixed; top: 20px; right: 20px; z-index: 9999; 
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); 
+            color: white; border: 1px solid rgba(255,255,255,0.2); 
+            width: 40px; height: 40px; border-radius: 50%; 
+            display: none; align-items: center; justify-content: center; 
         }
-        .tour-header span { font-weight: 900; color: var(--accent); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        #tour-modal.hide-header #floating-close-btn { display: flex; }
 
         a-scene { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
-        .scans-info { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
     </style>
 </head>
 <body>
     <audio id="match-sound" src="https://cdn.pixabay.com/audio/2021/08/04/audio_bb630cc098.mp3" preload="auto"></audio>
 
     <div id="splash-screen" style="position:fixed; inset:0; z-index:9999; background:#00A699; display:flex; align-items:center; justify-content:center; transition:0.6s;">
-        <img src="Assets/Logo_Icon.png" width="100" style="filter:brightness(0) invert(1);">
+        <img src="Assets/Logo_Icon.png" width="80" style="filter:brightness(0) invert(1);">
     </div>
 
     <div id="ar-reticle">
-        <div class="scan-vignette"></div>
         <div class="leaf-corner top-left"></div>
         <div class="leaf-corner top-right"></div>
         <div class="leaf-corner bottom-left"></div>
@@ -190,95 +109,53 @@
     
     <div id="ar-top-layer">
         <div class="ar-home-btn" onclick="app.nav('home')">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
         </div>
         <div class="status-badge" id="ar-status-badge">
-            <div class="status-dot"></div><span id="status-text">Scanning...</span>
+            <span id="status-text">Scanning Area</span>
         </div>
     </div>
 
     <div id="gallery-dock-container">
-        <div class="dock-handle-area" id="dock-drag-handle"><div class="dock-handle"></div></div>
+        <div class="dock-handle-area"><div class="dock-handle"></div></div>
         <div id="gallery-dock"></div>
     </div>
 
     <div id="home-page" class="overlay-screen">
-        <div class="user-greeting"><h3>Hi, Explorer!</h3><h2>Let’s Discover Baguio</h2></div>
+        <div class="user-greeting"><h3>Welcome Explorer</h3><h2>Baguio City</h2></div>
         
         <div class="hero-slider-container">
-            <div class="hero-wrapper" id="hero-wrapper">
-                <div class="promo-banner active">
-                    <h1>Discover Hidden Eco-Trails</h1>
-                    <button onclick="app.startScanner()">Explore Now</button>
-                </div>
-                <div class="promo-banner" style="background: #008f84">
-                    <h1>Unlock 3D Plant Models</h1>
-                    <button onclick="app.startScanner()">Scan Marker</button>
-                </div>
-                <div class="promo-banner" style="background: #007a71">
-                    <h1>Virtual Heritage Tours</h1>
-                    <button onclick="app.startScanner()">Find Marker</button>
-                </div>
-                <div class="promo-banner" style="background: #00665e">
-                    <h1>Interactive Botanical Map</h1>
-                    <button onclick="app.startScanner()">Scan for Map</button>
-                </div>
+            <div class="promo-banner active" style="background: linear-gradient(135deg, #00A699, #007a71)">
+                <h1>Discover the Hidden Eco-Trails</h1>
+                <button onclick="app.startScanner()">Start Scanning</button>
             </div>
-            <div class="hero-dots" id="hero-dots">
-                <div class="dot active"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
+            <div class="promo-banner" style="background: linear-gradient(135deg, #222, #444)">
+                <h1>Unlock Virtual Heritage Tours</h1>
+                <button onclick="app.startScanner()">Find Marker</button>
             </div>
         </div>
 
-        <div class="section-header"><h4>Most Scanned Station</h4></div>
+        <div style="padding: 10px 25px;"><h4 style="font-weight: 900; font-size: 16px;">Nearby Stations</h4></div>
         <div id="most-scanned-list" style="display:flex; gap:15px; overflow-x:auto; padding:0 25px 30px; scrollbar-width:none;"></div>
-
-        <div class="section-header">
-            <h4>Did You Know?</h4>
-            <a href="#" class="explore-link">Explore Articles</a>
-        </div>
-        <div class="did-you-know-scroll">
-            <div class="fact-card"><img src="Assets/Japanese%20Tunnel.png"><span>Hidden secrets of the Japanese Tunnel</span></div>
-            <div class="fact-card"><img src="Assets/Asian%20Garden.png"><span>Baguio's Botanical Garden covers over 10 hectares.</span></div>
-            <div class="fact-card"><img src="Assets/Cordillera%20Village.png"><span>The Cordillera Village showcases traditional hut architecture.</span></div>
-        </div>
-    </div>
-
-    <div id="notifications-page" class="overlay-screen hidden">
-        <div class="user-greeting"><h2>Updates</h2></div>
-        <div class="update-item">
-            <div class="update-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
-            <div class="update-info">
-                <h5>New AR Station Spotted!</h5>
-                <p>The Korean Pavilion is now active. Scan the entrance sign for a new virtual experience.</p>
-                <span>2 HOURS AGO</span>
-            </div>
-        </div>
-    </div>
-
-    <div id="search-page" class="overlay-screen hidden">
-        <div class="user-greeting"><h2>Search Stations</h2></div>
-        <div style="padding:0 25px"><input type="text" placeholder="Find flowers, tunnels..." style="width:100%; padding:15px; border-radius:15px; border:none; background:#f4f4f4;"></div>
     </div>
 
     <nav class="main-navigation-bar" id="main-nav">
-        <div class="nav-item active" id="nav-home" onclick="app.nav('home')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
-        <div class="nav-item" id="nav-search" onclick="app.nav('search')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
+        <div class="nav-item active" onclick="app.nav('home')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
         <div class="nav-item-center" onclick="app.startScanner()">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="9" y="9" width="6" height="6"></rect></svg>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="9" y="9" width="6" height="6"></rect></svg>
         </div>
-        <div class="nav-item" id="nav-notifications" onclick="app.nav('notifications')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
-        <div class="nav-item" onclick="app.resetApp()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></div>
+        <div class="nav-item" onclick="app.resetApp()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></div>
     </nav>
 
     <div id="tour-modal">
-        <div class="tour-header">
-            <span id="tour-title">Station Explorer</span>
-            <button style="background:var(--accent); color:white; border:none; padding:10px 20px; border-radius:50px; font-weight:900; font-size:10px;" onclick="app.closeInternalPage()">CLOSE</button>
+        <div id="floating-close-btn" onclick="app.closeInternalPage()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"></path></svg>
         </div>
-        <iframe id="tour-iframe" style="width:100%; flex:1; border:none;"></iframe>
+        <div class="modal-header">
+            <h4 id="modal-title">Station Tour</h4>
+            <button class="close-btn" onclick="app.closeInternalPage()">CLOSE</button>
+        </div>
+        <iframe id="tour-iframe" style="width:100%; height:calc(100% - 75px); border:none;"></iframe>
     </div>
 
     <a-scene id="ar-scene" mindar-image="imageTargetSrc: targets.mind; autoStart: false; uiLoading: no; uiScanning: no;" embedded vr-mode-ui="enabled: false">
@@ -289,32 +166,17 @@
 <script>
 const app = {
     currentHero: 0, 
-    dockState: { startY: 0, currentY: 0, isDragging: false, isOpen: true },
     stations: [
-        { id: 0, name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/Interactive_Map/", scans: 1240 },
+        { id: 0, name: "Interactive Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/Interactive_Map/", scans: 1240 },
         { id: 1, name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://tour.panoee.net/mainentrance/1", scans: 980 },
-        { id: 2, name: "Arbor", thumb: "Assets/Arbor.png", link: "https://tour.panoee.net/arbor", scans: 340 },
-        { id: 3, name: "Asian Garden", thumb: "Assets/Asian Garden.png", link: "https://tour.panoee.net/asian-garden", scans: 450 },
-        { id: 4, name: "Cactus & Succulents", thumb: "Assets/Cactus&Succulents.png", link: "https://tour.panoee.net/cactus-succulent-garden/1-1", scans: 640 },
-        { id: 5, name: "Centennial Garden", thumb: "Assets/Centennial Garden.png", link: "https://tour.panoee.net/centennial-garden/1", scans: 210 },
-        { id: 6, name: "Chinese Garden", thumb: "Assets/Chinese%20Garden.png", link: "https://tour.panoee.net/chinese-garden/69cd28ffcd728200084a2654", scans: 520 },
-        { id: 7, name: "City of Vaughan", thumb: "Assets/City%20of%20Vaughan%20Friendship%20Garden.png", link: "https://tour.panoee.net/city-of-vaughan", scans: 180 },
-        { id: 8, name: "Cordillera Village", thumb: "Assets/Cordillera%20Village.png", link: "https://tour.panoee.net/cordillera-village/1", scans: 890 },
-        { id: 9, name: "Dahlia Garden", thumb: "Assets/Dahlia Garden.png", link: "https://tour.panoee.net/69b74a8ccd5918bff013a943", scans: 310 },
-        { id: 10, name: "Greenhouse", thumb: "Assets/Greenhouse.png", link: "https://tour.panoee.net/greenhouse/1", scans: 420 },
         { id: 11, name: "Japanese Garden", thumb: "Assets/Japanese%20Garden.png", link: "https://tour.panoee.net/japanese-garden", scans: 760 },
-        { id: 12, name: "Japanese Tunnel", thumb: "Assets/Japanese%20Tunnel.png", link: "https://tour.panoee.net/japanese-tunnel/1", scans: 1120 },
-        { id: 13, name: "Korea Garden", thumb: "Assets/Korea%20Garden.png", link: "https://tour.panoee.net/korea-garden/1", scans: 580 },
-        { id: 14, name: "Orchidarium", thumb: "Assets/Orchidarium.png", link: "https://tour.panoee.net/orchidarium/1", scans: 390 },
-        { id: 15, name: "Friendship Garden", thumb: "Assets/Philippine-Thailand Frienship Garden.png", link: "https://tour.panoee.net/philippine-thailand-friendship-garden/7-1", scans: 270 },
-        { id: 16, name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.png", link: "https://tour.panoee.net/pmsea-garden", scans: 150 }
+        { id: 12, name: "Japanese Tunnel", thumb: "Assets/Japanese%20Tunnel.png", link: "https://tour.panoee.net/japanese-tunnel/1", scans: 1120 }
     ],
 
     init: function() {
         this.renderMostScanned(); 
         this.renderDock(); 
         this.initAR(); 
-        this.initDockDraggable();
         this.startHeroSlider();
         setTimeout(() => { 
             const splash = document.getElementById('splash-screen');
@@ -322,51 +184,12 @@ const app = {
         }, 1500);
     },
 
-    initDockDraggable: function() {
-        const dock = document.getElementById('gallery-dock-container');
-        const handle = document.getElementById('dock-drag-handle');
-        const threshold = 60;
-        handle.addEventListener('touchstart', (e) => { this.dockState.startY = e.touches[0].clientY; this.dockState.isDragging = true; dock.style.transition = 'none'; });
-        window.addEventListener('touchmove', (e) => {
-            if (!this.dockState.isDragging) return;
-            let moveY = e.touches[0].clientY - this.dockState.startY;
-            if (this.dockState.isOpen && moveY > 0) { this.dockState.currentY = moveY; dock.style.transform = `translateY(${moveY}px)`; } 
-            else if (!this.dockState.isOpen && moveY < 0) {
-                let hiddenOffset = dock.offsetHeight - 45;
-                let newPos = hiddenOffset + moveY;
-                this.dockState.currentY = newPos;
-                dock.style.transform = `translateY(${Math.max(0, newPos)}px)`;
-            }
-        });
-        window.addEventListener('touchend', () => {
-            if (!this.dockState.isDragging) return;
-            this.dockState.isDragging = false;
-            dock.style.transition = 'transform 0.5s cubic-bezier(0.19, 1, 0.22, 1)';
-            if (this.dockState.isOpen) {
-                if (this.dockState.currentY > threshold) { dock.style.transform = 'translateY(calc(100% - 45px))'; this.dockState.isOpen = false; } 
-                else { dock.style.transform = 'translateY(0)'; }
-            } else {
-                let hiddenOffset = dock.offsetHeight - 45;
-                if (this.dockState.currentY < hiddenOffset - threshold) { dock.style.transform = 'translateY(0)'; this.dockState.isOpen = true; } 
-                else { dock.style.transform = 'translateY(calc(100% - 45px))'; }
-            }
-            this.dockState.currentY = 0;
-        });
-    },
-
     renderMostScanned: function() {
         const list = document.getElementById('most-scanned-list');
-        const top = [...this.stations].sort((a,b) => b.scans - a.scans).slice(0, 5);
-        list.innerHTML = top.map((s) => `
-            <div style="flex:0 0 200px; background:white; border-radius:25px; padding:12px; box-shadow:var(--card-shadow); position:relative;">
-                <img src="${s.thumb}" style="width:100%; height:120px; border-radius:18px; object-fit:cover;">
-                <div style="margin-top:10px;">
-                    <b style="font-size:14px; display:block; color:#222;">${s.name}</b>
-                    <div class="scans-info">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                        <span>${s.scans} SCANS</span>
-                    </div>
-                </div>
+        list.innerHTML = this.stations.map(s => `
+            <div style="flex:0 0 160px; background:white; border-radius:20px; padding:10px; box-shadow:var(--card-shadow);">
+                <img src="${s.thumb}" style="width:100%; height:100px; border-radius:15px; object-fit:cover;">
+                <b style="font-size:12px; display:block; margin-top:8px; color:#333;">${s.name}</b>
             </div>
         `).join('');
     },
@@ -374,47 +197,31 @@ const app = {
     renderDock: function() {
         const dock = document.getElementById('gallery-dock');
         dock.innerHTML = this.stations.map(s => `
-            <div class="gallery-item" data-station-id="${s.id}" onclick="app.selectReference('${s.name}', this)">
-                <div class="gallery-img-wrap">
-                    <img src="${s.thumb}">
-                    <div class="dock-view-tag">👁 ${s.scans}</div>
-                </div>
+            <div class="gallery-item" data-station-id="${s.id}">
+                <div class="gallery-img-wrap"><img src="${s.thumb}"></div>
                 <span>${s.name}</span>
             </div>
         `).join('');
     },
 
-    selectReference: function(name, el) {
-        document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('selected'));
-        el.classList.add('selected');
-        document.getElementById('status-text').innerText = `Selected: ${name}`;
-        el.scrollIntoView({ behavior: 'smooth', inline: 'center' });
-    },
-
     startScanner: function() {
-        document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
+        document.getElementById('home-page').classList.add('hidden');
         document.getElementById('main-nav').style.transform = "translateY(150%)";
         document.getElementById('ar-top-layer').style.opacity = "1";
         document.getElementById('ar-reticle').style.opacity = "1";
-        const dockContainer = document.getElementById('gallery-dock-container');
-        dockContainer.classList.add('ar-active');
-        dockContainer.style.transform = 'translateY(0)';
-        this.dockState.isOpen = true;
+        document.getElementById('gallery-dock-container').classList.add('ar-active');
         const sceneEl = document.querySelector('a-scene');
-        if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].start(); }
+        if (sceneEl.systems['mindar-image-system']) sceneEl.systems['mindar-image-system'].start();
     },
 
     nav: function(page) {
-        document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        document.getElementById(page + '-page').classList.remove('hidden');
-        if(document.getElementById('nav-'+page)) document.getElementById('nav-'+page).classList.add('active');
+        document.getElementById('home-page').classList.remove('hidden');
         document.getElementById('main-nav').style.transform = "translateY(0)";
         document.getElementById('ar-top-layer').style.opacity = "0";
         document.getElementById('ar-reticle').style.opacity = "0";
         document.getElementById('gallery-dock-container').classList.remove('ar-active');
         const sceneEl = document.querySelector('a-scene');
-        if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
+        if (sceneEl.systems['mindar-image-system']) sceneEl.systems['mindar-image-system'].stop();
     },
 
     initAR: function() {
@@ -425,47 +232,55 @@ const app = {
             entity.setAttribute('mindar-image-target', `targetIndex: ${s.id}`);
             entity.addEventListener("targetFound", () => {
                 matchSound.play();
-                s.scans++;
-                this.renderMostScanned();
-                this.renderDock();
-                const item = document.querySelector(`.gallery-item[data-station-id="${s.id}"]`);
-                if (item) this.selectReference(s.name, item);
                 document.getElementById('ar-status-badge').classList.add('match-found');
                 document.getElementById('status-text').innerText = "Match Found!";
-                setTimeout(() => this.openInternalPage(s.link, s.name), 1500); // Pass name to function
+                document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('selected'));
+                const item = document.querySelector(`.gallery-item[data-station-id="${s.id}"]`);
+                if (item) {
+                    item.classList.add('selected');
+                    item.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+                }
+                setTimeout(() => this.openInternalPage(s.link, s.name), 1200);
             });
             entity.addEventListener("targetLost", () => {
                 document.getElementById('ar-status-badge').classList.remove('match-found');
-                document.getElementById('status-text').innerText = "Scanning...";
+                document.getElementById('status-text').innerText = "Scanning Area";
             });
             container.appendChild(entity);
         });
     },
 
-    openInternalPage: function(url, title = "Station Explorer") { 
-        const frame = document.getElementById('tour-iframe');
+    openInternalPage: function(url, title) { 
         const modal = document.getElementById('tour-modal');
-        const titleEl = document.getElementById('tour-title');
-        titleEl.innerText = title;
-        frame.src = url; 
+        
+        // Logic to hide header for the Interactive Map
+        if (title === "Interactive Map") {
+            modal.classList.add('hide-header');
+        } else {
+            modal.classList.remove('hide-header');
+        }
+
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('tour-iframe').src = url; 
         modal.classList.add('visible'); 
     },
 
     closeInternalPage: function() { 
-        document.getElementById('tour-modal').classList.remove('visible'); 
-        document.getElementById('tour-iframe').src = ""; 
+        const modal = document.getElementById('tour-modal');
+        modal.classList.remove('visible'); 
+        setTimeout(() => { 
+            document.getElementById('tour-iframe').src = ""; 
+            modal.classList.remove('hide-header');
+        }, 500);
     },
 
     startHeroSlider: function() { 
         setInterval(() => { 
             const banners = document.querySelectorAll('.promo-banner');
-            const dots = document.querySelectorAll('.dot');
             banners[this.currentHero].classList.remove('active');
-            dots[this.currentHero].classList.remove('active');
             this.currentHero = (this.currentHero + 1) % banners.length; 
             banners[this.currentHero].classList.add('active');
-            dots[this.currentHero].classList.add('active');
-        }, 4000); 
+        }, 5000); 
     },
 
     resetApp: function() { window.location.reload(); }
