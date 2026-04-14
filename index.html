@@ -63,7 +63,7 @@
         .user-greeting h3 { margin: 0; font-size: 14px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
         .user-greeting h2 { margin: 0; font-size: 26px; font-weight: 900; color: #333; }
 
-        /* --- UPDATED LEFT-ALIGNED HERO --- */
+        /* --- HERO --- */
         .hero-slider-container { margin: 15px 25px; height: 190px; border-radius: 30px; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,166,153,0.25); }
         .hero-wrapper { width: 100%; height: 100%; position: relative; }
         
@@ -77,9 +77,9 @@
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
-            align-items: flex-start; /* Aligned items to the left */
-            text-align: left;        /* Aligned text to the left */
-            padding: 30px;           /* Increased padding for breathable look */
+            align-items: flex-start; 
+            text-align: left; 
+            padding: 30px; 
             opacity: 0;
             transition: opacity 0.8s ease-in-out;
             z-index: 1;
@@ -89,10 +89,10 @@
         
         .promo-banner h1 { 
             margin: 0; 
-            font-size: 18px; /* Slightly adjusted size for better fit */
+            font-size: 18px; 
             font-weight: 900; 
             line-height: 1.2; 
-            max-width: 80%; /* Prevents text from hitting the edges */
+            max-width: 80%; 
         }
         
         .promo-banner button { 
@@ -109,7 +109,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        /* Dot Indicators */
         .hero-dots {
             position: absolute;
             bottom: 15px;
@@ -261,7 +260,7 @@
     </nav>
 
     <div id="tour-modal">
-        <button style="position:absolute; top:45px; right:20px; z-index:9001; background:var(--accent); color:white; border:none; padding:12px 25px; border-radius:50px; font-weight:900;" onclick="app.closeInternalPage()">BACK</button>
+        <button id="main-back-btn" style="position:absolute; top:45px; right:20px; z-index:9001; background:var(--accent); color:white; border:none; padding:12px 25px; border-radius:50px; font-weight:900;" onclick="app.closeInternalPage()">BACK</button>
         <iframe id="tour-iframe" style="width:100%; height:100%; border:none;"></iframe>
     </div>
 
@@ -429,28 +428,34 @@ const app = {
     openInternalPage: function(url) { 
         const frame = document.getElementById('tour-iframe');
         const modal = document.getElementById('tour-modal');
+        const backBtn = document.getElementById('main-back-btn');
+        
         frame.src = url; 
+        
+        // Hide back button if loading the interactive map
+        if (url.includes("Interactive_Map")) {
+            backBtn.style.display = "none";
+        } else {
+            backBtn.style.display = "block";
+        }
+        
         modal.classList.add('visible'); 
     },
 
     closeInternalPage: function() { 
         document.getElementById('tour-modal').classList.remove('visible'); 
         document.getElementById('tour-iframe').src = ""; 
+        // Reset button visibility when closing
+        document.getElementById('main-back-btn').style.display = "block";
     },
 
     startHeroSlider: function() { 
         setInterval(() => { 
             const banners = document.querySelectorAll('.promo-banner');
             const dots = document.querySelectorAll('.dot');
-            
-            // Remove active class from current
             banners[this.currentHero].classList.remove('active');
             dots[this.currentHero].classList.remove('active');
-            
-            // Increment index
             this.currentHero = (this.currentHero + 1) % banners.length; 
-            
-            // Add active class to next
             banners[this.currentHero].classList.add('active');
             dots[this.currentHero].classList.add('active');
         }, 4000); 
