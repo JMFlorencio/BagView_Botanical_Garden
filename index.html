@@ -89,27 +89,12 @@
         .nav-item.active { color: var(--accent); }
         .nav-item-center { width: 65px; height: 65px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -45px; border: 6px solid #fff; box-shadow: 0 10px 25px rgba(0,166,153,0.3); }
 
-        /* --- NEW FLOATING CLOSE METHOD --- */
+        /* --- MODAL --- */
         #tour-modal { position: fixed; inset: 0; z-index: 9000; background: white; transform: translateY(100%); transition: 0.5s var(--transition); }
         #tour-modal.visible { transform: translateY(0); }
         
-        .floating-close-btn { 
-            position: absolute; 
-            top: 40px; 
-            left: 20px; 
-            z-index: 9500; 
-            width: 44px; 
-            height: 44px; 
-            background: rgba(0,0,0,0.5); 
-            backdrop-filter: blur(10px); 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: white; 
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
+        /* Floating Button for Visual Close Option */
+        .floating-back-btn { position: absolute; top: 45px; right: 20px; z-index: 9001; background: var(--accent); color: white; border: none; padding: 12px 25px; border-radius: 50px; font-weight: 900; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
 
         a-scene { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
         .scans-info { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
@@ -154,7 +139,6 @@
             </div>
             <div class="hero-dots" id="hero-dots"><div class="dot active"></div><div class="dot"></div></div>
         </div>
-
         <div class="section-header"><h4>Most Scanned Station</h4></div>
         <div id="most-scanned-list" style="display:flex; gap:15px; overflow-x:auto; padding:0 25px 30px; scrollbar-width:none;"></div>
     </div>
@@ -178,9 +162,7 @@
     </nav>
 
     <div id="tour-modal">
-        <div class="floating-close-btn" onclick="app.closeInternalPage()">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </div>
+        <button class="floating-back-btn" onclick="app.closeInternalPage()">BACK</button>
         <iframe id="tour-iframe" style="width:100%; height:100%; border:none;"></iframe>
     </div>
 
@@ -215,7 +197,19 @@ const app = {
 
     init: function() {
         this.renderMostScanned(); this.renderDock(); this.initAR(); this.initDockDraggable(); this.startHeroSlider();
-        setTimeout(() => { const splash = document.getElementById('splash-screen'); if(splash) { splash.style.opacity = '0'; setTimeout(() => splash.style.display='none', 600); } }, 1500);
+        
+        // Listen for hardware back button (System Navigation)
+        window.addEventListener('popstate', (event) => {
+            const modal = document.getElementById('tour-modal');
+            if (modal.classList.contains('visible')) {
+                this.closeInternalPage(true); // Close modal and stop browser from leaving the app
+            }
+        });
+
+        setTimeout(() => { 
+            const splash = document.getElementById('splash-screen');
+            if(splash) { splash.style.opacity = '0'; setTimeout(() => splash.style.display='none', 600); }
+        }, 1500);
     },
 
     initDockDraggable: function() {
@@ -299,11 +293,17 @@ const app = {
     openInternalPage: function(url) { 
         document.getElementById('tour-iframe').src = url; 
         document.getElementById('tour-modal').classList.add('visible'); 
+        // Create a history state so the phone's back button has something to "go back" to
+        history.pushState({ modalOpen: true }, "");
     },
 
-    closeInternalPage: function() { 
+    closeInternalPage: function(isHardwareBack = false) { 
         document.getElementById('tour-modal').classList.remove('visible'); 
         document.getElementById('tour-iframe').src = ""; 
+        // If they used the on-screen BACK button, we manually clear the history state we created
+        if (!isHardwareBack) {
+            history.back();
+        }
     },
 
     startHeroSlider: function() { setInterval(() => { const banners = document.querySelectorAll('.promo-banner'); banners[this.currentHero].classList.remove('active'); this.currentHero = (this.currentHero + 1) % banners.length; banners[this.currentHero].classList.add('active'); }, 4000); },
