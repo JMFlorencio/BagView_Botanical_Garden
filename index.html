@@ -63,7 +63,7 @@
         .user-greeting h3 { margin: 0; font-size: 14px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
         .user-greeting h2 { margin: 0; font-size: 26px; font-weight: 900; color: #333; }
 
-        /* --- UPDATED LEFT-ALIGNED HERO --- */
+        /* --- LEFT-ALIGNED HERO --- */
         .hero-slider-container { margin: 15px 25px; height: 190px; border-radius: 30px; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,166,153,0.25); }
         .hero-wrapper { width: 100%; height: 100%; position: relative; }
         
@@ -77,60 +77,21 @@
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
-            align-items: flex-start; /* Aligned items to the left */
-            text-align: left;        /* Aligned text to the left */
-            padding: 30px;           /* Increased padding for breathable look */
+            align-items: flex-start; 
+            text-align: left; 
+            padding: 30px; 
             opacity: 0;
             transition: opacity 0.8s ease-in-out;
             z-index: 1;
         }
         
         .promo-banner.active { opacity: 1; z-index: 2; }
-        
-        .promo-banner h1 { 
-            margin: 0; 
-            font-size: 18px; /* Slightly adjusted size for better fit */
-            font-weight: 900; 
-            line-height: 1.2; 
-            max-width: 80%; /* Prevents text from hitting the edges */
-        }
-        
-        .promo-banner button { 
-            background: white; 
-            color: var(--accent); 
-            border: none; 
-            padding: 10px 20px; 
-            border-radius: 50px; 
-            font-weight: 900; 
-            margin-top: 15px; 
-            width: fit-content; 
-            font-size: 10px; 
-            text-transform: uppercase; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
+        .promo-banner h1 { margin: 0; font-size: 18px; font-weight: 900; line-height: 1.2; max-width: 80%; }
+        .promo-banner button { background: white; color: var(--accent); border: none; padding: 10px 20px; border-radius: 50px; font-weight: 900; margin-top: 15px; width: fit-content; font-size: 10px; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
-        /* Dot Indicators */
-        .hero-dots {
-            position: absolute;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 8px;
-            z-index: 10;
-        }
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.4);
-            transition: 0.3s;
-        }
-        .dot.active {
-            background: #fff;
-            width: 20px;
-            border-radius: 10px;
-        }
+        .hero-dots { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.4); transition: 0.3s; }
+        .dot.active { background: #fff; width: 20px; border-radius: 10px; }
 
         /* --- SECTIONS --- */
         .section-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; }
@@ -404,24 +365,42 @@ const app = {
     initAR: function() {
         const container = document.getElementById('target-container');
         const matchSound = document.getElementById('match-sound');
+        
         this.stations.forEach(s => {
             const entity = document.createElement('a-entity');
             entity.setAttribute('mindar-image-target', `targetIndex: ${s.id}`);
+            
             entity.addEventListener("targetFound", () => {
-                matchSound.play();
+                // Play Audio
+                matchSound.play().catch(e => console.log("Audio block:", e));
+                
+                // Update Badge UI
+                const badge = document.getElementById('ar-status-badge');
+                const text = document.getElementById('status-text');
+                badge.classList.add('match-found');
+                text.innerText = "Match Found!";
+                
+                // Logic Updates
                 s.scans++;
                 this.renderMostScanned();
                 this.renderDock();
+                
+                // Visual feedback in dock
                 const item = document.querySelector(`.gallery-item[data-station-id="${s.id}"]`);
                 if (item) this.selectReference(s.name, item);
-                document.getElementById('ar-status-badge').classList.add('match-found');
-                document.getElementById('status-text').innerText = "Match Found!";
+                
+                // Open content
                 setTimeout(() => this.openInternalPage(s.link), 1500);
             });
+            
             entity.addEventListener("targetLost", () => {
-                document.getElementById('ar-status-badge').classList.remove('match-found');
-                document.getElementById('status-text').innerText = "Scanning...";
+                const badge = document.getElementById('ar-status-badge');
+                const text = document.getElementById('status-text');
+                badge.classList.remove('match-found');
+                const selected = document.querySelector('.gallery-item.selected');
+                text.innerText = selected ? `Selected: ${selected.querySelector('span').innerText}` : "Scanning...";
             });
+            
             container.appendChild(entity);
         });
     },
@@ -442,15 +421,9 @@ const app = {
         setInterval(() => { 
             const banners = document.querySelectorAll('.promo-banner');
             const dots = document.querySelectorAll('.dot');
-            
-            // Remove active class from current
             banners[this.currentHero].classList.remove('active');
             dots[this.currentHero].classList.remove('active');
-            
-            // Increment index
             this.currentHero = (this.currentHero + 1) % banners.length; 
-            
-            // Add active class to next
             banners[this.currentHero].classList.add('active');
             dots[this.currentHero].classList.add('active');
         }, 4000); 
