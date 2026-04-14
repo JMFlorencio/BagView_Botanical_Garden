@@ -63,7 +63,7 @@
         .user-greeting h3 { margin: 0; font-size: 14px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
         .user-greeting h2 { margin: 0; font-size: 26px; font-weight: 900; color: #333; }
 
-        /* --- HERO --- */
+        /* --- UPDATED LEFT-ALIGNED HERO --- */
         .hero-slider-container { margin: 15px 25px; height: 190px; border-radius: 30px; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,166,153,0.25); }
         .hero-wrapper { width: 100%; height: 100%; position: relative; }
         
@@ -86,12 +86,50 @@
         }
         
         .promo-banner.active { opacity: 1; z-index: 2; }
-        .promo-banner h1 { margin: 0; font-size: 18px; font-weight: 900; line-height: 1.2; max-width: 80%; }
-        .promo-banner button { background: white; color: var(--accent); border: none; padding: 10px 20px; border-radius: 50px; font-weight: 900; margin-top: 15px; width: fit-content; font-size: 10px; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        .promo-banner h1 { 
+            margin: 0; 
+            font-size: 18px; 
+            font-weight: 900; 
+            line-height: 1.2; 
+            max-width: 80%; 
+        }
+        
+        .promo-banner button { 
+            background: white; 
+            color: var(--accent); 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 50px; 
+            font-weight: 900; 
+            margin-top: 15px; 
+            width: fit-content; 
+            font-size: 10px; 
+            text-transform: uppercase; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
 
-        .hero-dots { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.4); transition: 0.3s; }
-        .dot.active { background: #fff; width: 20px; border-radius: 10px; }
+        .hero-dots {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transition: 0.3s;
+        }
+        .dot.active {
+            background: #fff;
+            width: 20px;
+            border-radius: 10px;
+        }
 
         /* --- SECTIONS --- */
         .section-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; }
@@ -114,8 +152,22 @@
         .nav-item.active { color: var(--accent); }
         .nav-item-center { width: 65px; height: 65px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -45px; border: 6px solid #fff; box-shadow: 0 10px 25px rgba(0,166,153,0.3); }
 
-        #tour-modal { position: fixed; inset: 0; z-index: 9000; background: white; transform: translateY(100%); transition: 0.5s; }
+        /* --- TOUR MODAL WITH FIXED HEADER --- */
+        #tour-modal { position: fixed; inset: 0; z-index: 9000; background: white; transform: translateY(100%); transition: 0.5s; display: flex; flex-direction: column; }
         #tour-modal.visible { transform: translateY(0); }
+        
+        .tour-header { 
+            height: 90px; 
+            padding: 40px 20px 0; 
+            background: #fff; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            border-bottom: 1px solid #eee; 
+            flex-shrink: 0; 
+        }
+        .tour-header span { font-weight: 900; color: var(--accent); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+
         a-scene { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
         .scans-info { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
     </style>
@@ -222,8 +274,11 @@
     </nav>
 
     <div id="tour-modal">
-        <button id="modal-back-btn" style="position:absolute; top:45px; right:20px; z-index:9001; background:var(--accent); color:white; border:none; padding:12px 25px; border-radius:50px; font-weight:900;" onclick="app.closeInternalPage()">BACK</button>
-        <iframe id="tour-iframe" style="width:100%; height:100%; border:none;"></iframe>
+        <div class="tour-header">
+            <span id="tour-title">Station Explorer</span>
+            <button style="background:var(--accent); color:white; border:none; padding:10px 20px; border-radius:50px; font-weight:900; font-size:10px;" onclick="app.closeInternalPage()">CLOSE</button>
+        </div>
+        <iframe id="tour-iframe" style="width:100%; flex:1; border:none;"></iframe>
     </div>
 
     <a-scene id="ar-scene" mindar-image="imageTargetSrc: targets.mind; autoStart: false; uiLoading: no; uiScanning: no;" embedded vr-mode-ui="enabled: false">
@@ -377,7 +432,7 @@ const app = {
                 if (item) this.selectReference(s.name, item);
                 document.getElementById('ar-status-badge').classList.add('match-found');
                 document.getElementById('status-text').innerText = "Match Found!";
-                setTimeout(() => this.openInternalPage(s.link), 1500);
+                setTimeout(() => this.openInternalPage(s.link, s.name), 1500); // Pass name to function
             });
             entity.addEventListener("targetLost", () => {
                 document.getElementById('ar-status-badge').classList.remove('match-found');
@@ -387,32 +442,18 @@ const app = {
         });
     },
 
-    openInternalPage: function(url) { 
+    openInternalPage: function(url, title = "Station Explorer") { 
         const frame = document.getElementById('tour-iframe');
         const modal = document.getElementById('tour-modal');
-        const backBtn = document.getElementById('modal-back-btn');
-        
-        // Reset: Ensure button is visible when first opening the window
-        backBtn.style.display = "block";
+        const titleEl = document.getElementById('tour-title');
+        titleEl.innerText = title;
         frame.src = url; 
         modal.classList.add('visible'); 
-
-        // Tracking how many times the frame loads
-        let loadCount = 0;
-        frame.onload = function() {
-            loadCount++;
-            // If loadCount is > 1, it means the user clicked a link INSIDE the iframe
-            if (loadCount > 1) {
-                backBtn.style.display = "none";
-            }
-        };
     },
 
     closeInternalPage: function() { 
-        const frame = document.getElementById('tour-iframe');
         document.getElementById('tour-modal').classList.remove('visible'); 
-        frame.src = ""; 
-        frame.onload = null; // Clear the tracking for the next use
+        document.getElementById('tour-iframe').src = ""; 
     },
 
     startHeroSlider: function() { 
