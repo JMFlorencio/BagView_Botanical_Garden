@@ -13,7 +13,9 @@
         :root { 
             --accent: #00A699; 
             --accent-soft: rgba(0, 166, 153, 0.2);
+            --bg-page: #ffffff; 
             --transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1); 
+            --nav-height: 80px; 
             --safe-bottom: env(safe-area-inset-bottom, 0px); 
             --card-shadow: 0 10px 30px rgba(0,0,0,0.08); 
         }
@@ -21,67 +23,100 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Agrandir', sans-serif !important; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: transparent !important; }
         
-        /* --- AR SCANNER UI --- */
+        /* --- AR UI ELEMENTS --- */
         #ar-reticle { position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%); width: 80vw; height: 45vh; z-index: 4000; pointer-events: none; opacity: 0; transition: 0.5s var(--transition); }
-        .leaf-corner { position: absolute; width: 60px; height: 60px; border: 4px solid var(--accent); }
+        .leaf-corner { position: absolute; width: 60px; height: 60px; border: 4px solid var(--accent); animation: leafPulse 2.5s ease-in-out infinite; }
+        @keyframes leafPulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; border-width: 5px; } }
         .top-left { top: 0; left: 0; border-right: 0; border-bottom: 0; border-radius: 40px 0 0 0; }
         .top-right { top: 0; right: 0; border-left: 0; border-bottom: 0; border-radius: 0 40px 0 0; }
         .bottom-left { bottom: 0; left: 0; border-right: 0; border-top: 0; border-radius: 0 0 0 40px; }
         .bottom-right { bottom: 0; right: 0; border-left: 0; border-top: 0; border-radius: 0 0 40px 0; }
-        .laser-line { position: absolute; width: 100%; height: 2px; background: linear-gradient(to right, transparent, var(--accent), transparent); top: 0; animation: scanMove 4s linear infinite; }
+        .scan-vignette { position: absolute; inset: -20px; border: 1px solid var(--accent-soft); border-radius: 50px; background: radial-gradient(circle, transparent 60%, var(--accent-soft) 150%); }
+        .laser-line { position: absolute; width: 100%; height: 2px; background: linear-gradient(to right, transparent, var(--accent), transparent); box-shadow: 0 0 20px var(--accent); top: 0; animation: scanMove 4s linear infinite; }
         @keyframes scanMove { 0% { top: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
 
         #ar-top-layer { position: fixed; top: 40px; left: 20px; right: 20px; z-index: 4500; display: flex; flex-direction: row-reverse; justify-content: space-between; align-items: center; pointer-events: none; transition: 0.3s; opacity: 0; }
         .ar-home-btn { pointer-events: auto; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; border: 1px solid rgba(255,255,255,0.1); }
-        .status-badge { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); padding: 8px 18px; border-radius: 50px; color: white; font-size: 11px; font-weight: 800; text-transform: uppercase; pointer-events: auto; }
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+        .status-badge { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); padding: 8px 18px; border-radius: 50px; color: white; font-size: 11px; font-weight: 800; text-transform: uppercase; transition: 0.3s; pointer-events: auto; }
+        .status-badge.match-found { background: var(--accent); }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(0.9); opacity: 1; } 70% { transform: scale(1.5); opacity: 0; } 100% { transform: scale(0.9); opacity: 0; } }
 
         /* --- GALLERY DOCK --- */
-        #gallery-dock-container { position: fixed; bottom: 0; left: 0; right: 0; z-index: 4600; background: rgba(255,255,255,0.95); border-top-left-radius: 35px; border-top-right-radius: 35px; display: flex; flex-direction: column; align-items: center; padding-bottom: calc(20px + var(--safe-bottom)); transform: translateY(100%); transition: transform 0.6s var(--transition), opacity 0.4s ease; opacity: 0; }
+        #gallery-dock-container { position: fixed; bottom: 0; left: 0; right: 0; z-index: 4600; background: rgba(255,255,255,0.95); border-top-left-radius: 35px; border-top-right-radius: 35px; display: flex; flex-direction: column; align-items: center; padding-bottom: calc(20px + var(--safe-bottom)); transform: translateY(100%); transition: transform 0.6s var(--transition), opacity 0.4s ease; opacity: 0; pointer-events: none; }
         #gallery-dock-container.ar-active { opacity: 1; transform: translateY(0); pointer-events: auto; }
-        .dock-handle-area { width: 100%; padding: 15px 0; display: flex; justify-content: center; touch-action: none; cursor: grab; }
+        .dock-handle-area { width: 100%; padding: 15px 0 15px; display: flex; justify-content: center; touch-action: none; cursor: grab; }
         .dock-handle { width: 50px; height: 4px; background: #e0e0e0; border-radius: 10px; }
-        #gallery-dock { display: flex; gap: 15px; overflow-x: auto; padding: 10px 25px 15px; width: 100%; scrollbar-width: none; }
-        .gallery-item { flex: 0 0 100px; text-align: center; }
+        #gallery-dock { display: flex; gap: 15px; overflow-x: auto; padding: 10px 25px 15px; width: 100%; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        #gallery-dock::-webkit-scrollbar { display: none; }
+        .gallery-item { flex: 0 0 100px; text-align: center; transition: 0.3s; }
+        .gallery-item.selected .gallery-img-wrap { border: 3px solid var(--accent); transform: scale(1.05); }
         .gallery-img-wrap { width: 100px; height: 100px; border-radius: 20px; overflow: hidden; border: 1px solid #eee; margin-bottom: 8px; position: relative; background: #f9f9f9; }
         .gallery-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
         .gallery-item span { font-size: 9px; font-weight: 800; text-transform: uppercase; color: #444; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .dock-view-tag { position: absolute; bottom: 5px; right: 5px; background: rgba(0,0,0,0.6); color: white; font-size: 8px; padding: 3px 6px; border-radius: 10px; backdrop-filter: blur(4px); font-weight: 900; }
 
-        /* --- ORIGINAL PAGES & HERO --- */
+        /* --- OVERLAYS & PAGES --- */
         .overlay-screen { position: fixed; inset: 0; z-index: 1000; background: #fff; transition: 0.4s; overflow-y: auto; padding-bottom: 140px; }
         .hidden { opacity: 0 !important; pointer-events: none !important; transform: translateY(20px); }
         .user-greeting { padding: 45px 25px 10px; }
+        .user-greeting h3 { margin: 0; font-size: 14px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
         .user-greeting h2 { margin: 0; font-size: 26px; font-weight: 900; color: #333; }
 
+        /* --- HERO --- */
         .hero-slider-container { margin: 15px 25px; height: 190px; border-radius: 30px; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,166,153,0.25); }
-        .promo-banner { position: absolute; inset: 0; width: 100%; height: 100%; background: var(--accent); color: white; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 30px; opacity: 0; transition: opacity 0.8s ease-in-out; z-index: 1; }
+        .hero-wrapper { width: 100%; height: 100%; position: relative; }
+        .promo-banner { position: absolute; inset: 0; width: 100%; height: 100%; background: var(--accent); color: white; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; padding: 30px; opacity: 0; transition: opacity 0.8s ease-in-out; z-index: 1; }
         .promo-banner.active { opacity: 1; z-index: 2; }
-        .promo-banner h1 { margin: 0; font-size: 18px; font-weight: 900; line-height: 1.2; }
-        .promo-banner button { background: white; color: var(--accent); border: none; padding: 10px 20px; border-radius: 50px; font-weight: 900; margin-top: 15px; font-size: 10px; text-transform: uppercase; }
+        .promo-banner h1 { margin: 0; font-size: 18px; font-weight: 900; line-height: 1.2; max-width: 80%; }
+        .promo-banner button { background: white; color: var(--accent); border: none; padding: 10px 20px; border-radius: 50px; font-weight: 900; margin-top: 15px; width: fit-content; font-size: 10px; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .hero-dots { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.4); transition: 0.3s; }
+        .dot.active { background: #fff; width: 20px; border-radius: 10px; }
 
+        /* --- SECTIONS --- */
         .section-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; }
         .section-header h4 { margin: 0; font-size: 16px; font-weight: 900; color: #222; }
-        .scans-info { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
+        .section-header .explore-link { font-size: 11px; color: var(--accent); font-weight: 800; text-transform: uppercase; text-decoration: none; }
+        .did-you-know-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 5px 25px 25px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .fact-card { flex: 0 0 260px; height: 150px; border-radius: 25px; position: relative; overflow: hidden; color: white; padding: 20px; display: flex; align-items: flex-end; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .fact-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; filter: brightness(0.65); }
+        .fact-card span { position: relative; z-index: 2; font-size: 14px; font-weight: 800; line-height: 1.3; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
 
-        /* --- EXIT BUTTON (TOP RIGHT) --- */
-        #tour-back-btn { position: fixed; top: 30px; right: 20px; z-index: 9999; display: none; }
-        #tour-back-btn button { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 12px 20px; border-radius: 50px; font-weight: 900; font-size: 11px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; flex-direction: row-reverse; }
+        .update-item { display: flex; gap: 15px; padding: 20px 25px; border-bottom: 1px solid #f0f0f0; }
+        .update-icon { width: 45px; height: 45px; border-radius: 12px; background: #f0faf9; display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0; }
+        .update-info h5 { margin: 0 0 4px; font-size: 15px; font-weight: 900; color: #222; }
+        .update-info p { margin: 0 0 6px; font-size: 13px; color: #666; line-height: 1.4; }
+        .update-info span { font-size: 10px; font-weight: 800; color: #bbb; text-transform: uppercase; }
 
-        /* --- LOADING EXPERIENCE --- */
-        #tour-modal { position: fixed; inset: 0; z-index: 9000; background: #111; transform: translateY(100%); transition: 0.5s; }
+        /* --- NAVIGATION --- */
+        .main-navigation-bar { position: fixed; bottom: 0; left: 0; right: 0; height: calc(90px + var(--safe-bottom)); background: #fff; z-index: 5000; display: flex; justify-content: space-around; align-items: center; padding: 0 15px var(--safe-bottom); box-shadow: 0 -10px 30px rgba(0,0,0,0.05); transition: 0.4s; }
+        .nav-item { color: #ccc; flex: 1; display: flex; justify-content: center; padding: 10px; }
+        .nav-item.active { color: var(--accent); }
+        .nav-item-center { width: 65px; height: 65px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -45px; border: 6px solid #fff; box-shadow: 0 10px 25px rgba(0,166,153,0.3); }
+
+        #tour-modal { position: fixed; inset: 0; z-index: 9000; background: #111; transform: translateY(100%); transition: 0.5s; overflow: hidden; }
         #tour-modal.visible { transform: translateY(0); }
-        #tour-loader { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; background: #111; z-index: 9001; }
+
+        /* --- LOADER --- */
+        #tour-loader { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; background: #111; z-index: 9001; transition: 0.5s; }
         .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .main-navigation-bar { position: fixed; bottom: 0; left: 0; right: 0; height: calc(90px + var(--safe-bottom)); background: #fff; z-index: 5000; display: flex; justify-content: space-around; align-items: center; padding: 0 15px var(--safe-bottom); box-shadow: 0 -10px 30px rgba(0,0,0,0.05); }
-        .nav-item-center { width: 65px; height: 65px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -45px; border: 6px solid #fff; }
-
+        .scans-info { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
         a-scene { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
+        
+        /* FLOATING BACK BUTTON STYLE - MOVED TO TOP RIGHT */
+        #tour-back-btn { position: fixed; top: 30px; right: 20px; z-index: 9999; display: none; pointer-events: auto; }
+        #tour-back-btn button { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 12px 20px; border-radius: 50px; font-weight: 900; font-size: 11px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-transform: uppercase; flex-direction: row-reverse; }
     </style>
 </head>
 <body>
     <audio id="match-sound" src="https://cdn.pixabay.com/audio/2021/08/04/audio_bb630cc098.mp3" preload="auto"></audio>
+
+    <div id="splash-screen" style="position:fixed; inset:0; z-index:9999; background:#00A699; display:flex; align-items:center; justify-content:center; transition:0.6s;">
+        <img src="Assets/Logo_Icon.png" width="100" style="filter:brightness(0) invert(1);">
+    </div>
 
     <div id="tour-back-btn">
         <button onclick="app.closeInternalPage()">
@@ -91,8 +126,11 @@
     </div>
 
     <div id="ar-reticle">
-        <div class="leaf-corner top-left"></div><div class="leaf-corner top-right"></div>
-        <div class="leaf-corner bottom-left"></div><div class="leaf-corner bottom-right"></div>
+        <div class="scan-vignette"></div>
+        <div class="leaf-corner top-left"></div>
+        <div class="leaf-corner top-right"></div>
+        <div class="leaf-corner bottom-left"></div>
+        <div class="leaf-corner bottom-right"></div>
         <div class="laser-line"></div>
     </div>
     
@@ -100,7 +138,7 @@
         <div class="ar-home-btn" onclick="app.nav('home')">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
         </div>
-        <div class="status-badge">
+        <div class="status-badge" id="ar-status-badge">
             <div class="status-dot"></div><span id="status-text">Scanning...</span>
         </div>
     </div>
@@ -118,18 +156,51 @@
                 <div class="promo-banner active"><h1>Discover Hidden Eco-Trails</h1><button onclick="app.startScanner()">Explore Now</button></div>
                 <div class="promo-banner" style="background: #008f84"><h1>Unlock 3D Plant Models</h1><button onclick="app.startScanner()">Scan Marker</button></div>
                 <div class="promo-banner" style="background: #007a71"><h1>Virtual Heritage Tours</h1><button onclick="app.startScanner()">Find Marker</button></div>
+                <div class="promo-banner" style="background: #00665e"><h1>Interactive Botanical Map</h1><button onclick="app.startScanner()">Scan for Map</button></div>
+            </div>
+            <div class="hero-dots" id="hero-dots">
+                <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
             </div>
         </div>
 
         <div class="section-header"><h4>Most Scanned Station</h4></div>
         <div id="most-scanned-list" style="display:flex; gap:15px; overflow-x:auto; padding:0 25px 30px; scrollbar-width:none;"></div>
+
+        <div class="section-header">
+            <h4>Did You Know?</h4>
+            <a href="#" class="explore-link">Explore Articles</a>
+        </div>
+        <div class="did-you-know-scroll">
+            <div class="fact-card"><img src="Assets/Japanese%20Tunnel.png"><span>Hidden secrets of the Japanese Tunnel</span></div>
+            <div class="fact-card"><img src="Assets/Asian%20Garden.png"><span>Baguio's Botanical Garden covers over 10 hectares.</span></div>
+            <div class="fact-card"><img src="Assets/Cordillera%20Village.png"><span>The Cordillera Village showcases traditional hut architecture.</span></div>
+        </div>
+    </div>
+
+    <div id="notifications-page" class="overlay-screen hidden">
+        <div class="user-greeting"><h2>Updates</h2></div>
+        <div class="update-item">
+            <div class="update-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+            <div class="update-info">
+                <h5>New AR Station Spotted!</h5>
+                <p>The Korean Pavilion is now active. Scan the entrance sign for a new virtual experience.</p>
+                <span>2 HOURS AGO</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="search-page" class="overlay-screen hidden">
+        <div class="user-greeting"><h2>Search Stations</h2></div>
+        <div style="padding:0 25px"><input type="text" placeholder="Find flowers, tunnels..." style="width:100%; padding:15px; border-radius:15px; border:none; background:#f4f4f4;"></div>
     </div>
 
     <nav class="main-navigation-bar" id="main-nav">
-        <div class="nav-item active" onclick="app.nav('home')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
+        <div class="nav-item active" id="nav-home" onclick="app.nav('home')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
+        <div class="nav-item" id="nav-search" onclick="app.nav('search')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
         <div class="nav-item-center" onclick="app.startScanner()">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="9" y="9" width="6" height="6"></rect></svg>
         </div>
+        <div class="nav-item" id="nav-notifications" onclick="app.nav('notifications')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
         <div class="nav-item" onclick="app.resetApp()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></div>
     </nav>
 
@@ -148,7 +219,7 @@
 
 <script>
 const app = {
-    currentHero: 0,
+    currentHero: 0, 
     dockState: { startY: 0, currentY: 0, isDragging: false, isOpen: true },
     stations: [
         { id: 0, name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/Interactive_Map/", scans: 1240 },
@@ -172,10 +243,23 @@ const app = {
 
     init: function() {
         this.renderMostScanned(); this.renderDock(); this.initAR(); this.initDockDraggable(); this.startHeroSlider();
+        
+        // Handle iframe load
         document.getElementById('tour-iframe').onload = () => {
             document.getElementById('tour-loader').style.opacity = '0';
             setTimeout(() => { document.getElementById('tour-loader').style.display = 'none'; }, 500);
         };
+
+        window.addEventListener('popstate', () => {
+            if (document.getElementById('tour-modal').classList.contains('visible')) {
+                this.closeInternalPage(true); 
+            }
+        });
+
+        setTimeout(() => { 
+            const splash = document.getElementById('splash-screen');
+            if(splash) { splash.style.opacity = '0'; setTimeout(() => splash.style.display='none', 600); }
+        }, 1500);
     },
 
     initDockDraggable: function() {
@@ -200,21 +284,18 @@ const app = {
     renderMostScanned: function() {
         const list = document.getElementById('most-scanned-list');
         const top = [...this.stations].sort((a,b) => b.scans - a.scans).slice(0, 5);
-        list.innerHTML = top.map(s => `
-            <div style="flex:0 0 200px; background:white; border-radius:25px; padding:12px; box-shadow:var(--card-shadow);">
-                <img src="${s.thumb}" style="width:100%; height:120px; border-radius:18px; object-fit:cover;">
-                <b style="font-size:14px; display:block; margin-top:10px;">${s.name}</b>
-                <div class="scans-info"><span>${s.scans} SCANS</span></div>
-            </div>`).join('');
+        list.innerHTML = top.map((s) => `<div style="flex:0 0 200px; background:white; border-radius:25px; padding:12px; box-shadow:var(--card-shadow);"><img src="${s.thumb}" style="width:100%; height:120px; border-radius:18px; object-fit:cover;"><b style="font-size:14px; display:block; margin-top:10px;">${s.name}</b><div class="scans-info"><span>${s.scans} SCANS</span></div></div>`).join('');
     },
 
     renderDock: function() {
         const dock = document.getElementById('gallery-dock');
-        dock.innerHTML = this.stations.map(s => `
-            <div class="gallery-item" onclick="app.openInternalPage('${s.link}', ${s.id})">
-                <div class="gallery-img-wrap"><img src="${s.thumb}"></div>
-                <span>${s.name}</span>
-            </div>`).join('');
+        dock.innerHTML = this.stations.map(s => `<div class="gallery-item" data-station-id="${s.id}" onclick="app.selectReference(${s.id}, '${s.name}', this)"><div class="gallery-img-wrap"><img src="${s.thumb}"><div class="dock-view-tag">👁 ${s.scans}</div></div><span>${s.name}</span></div>`).join('');
+    },
+
+    selectReference: function(id, name, el) {
+        document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('status-text').innerText = `Selected: ${name}`;
     },
 
     startScanner: function() {
@@ -224,7 +305,20 @@ const app = {
         document.getElementById('ar-reticle').style.opacity = "1";
         document.getElementById('gallery-dock-container').classList.add('ar-active');
         const sceneEl = document.querySelector('a-scene');
-        if (sceneEl.systems['mindar-image-system']) sceneEl.systems['mindar-image-system'].start();
+        if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].start(); }
+    },
+
+    nav: function(page) {
+        document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
+        document.getElementById(page + '-page').classList.remove('hidden');
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        if (document.getElementById('nav-' + page)) document.getElementById('nav-' + page).classList.add('active');
+        document.getElementById('main-nav').style.transform = "translateY(0)";
+        document.getElementById('ar-top-layer').style.opacity = "0";
+        document.getElementById('ar-reticle').style.opacity = "0";
+        document.getElementById('gallery-dock-container').classList.remove('ar-active');
+        const sceneEl = document.querySelector('a-scene');
+        if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
     },
 
     initAR: function() {
@@ -235,8 +329,15 @@ const app = {
             entity.setAttribute('mindar-image-target', `targetIndex: ${s.id}`);
             entity.addEventListener("targetFound", () => {
                 matchSound.play();
+                s.scans++;
+                this.renderMostScanned(); 
+                document.getElementById('ar-status-badge').classList.add('match-found');
                 document.getElementById('status-text').innerText = "Match Found!";
-                setTimeout(() => this.openInternalPage(s.link, s.id), 800);
+                setTimeout(() => this.openInternalPage(s.link, s.id), 1000);
+            });
+            entity.addEventListener("targetLost", () => {
+                document.getElementById('ar-status-badge').classList.remove('match-found');
+                document.getElementById('status-text').innerText = "Scanning...";
             });
             container.appendChild(entity);
         });
@@ -244,37 +345,43 @@ const app = {
 
     openInternalPage: function(url, stationId) { 
         const sceneEl = document.querySelector('a-scene');
-        if (sceneEl.systems['mindar-image-system']) sceneEl.systems['mindar-image-system'].stop();
+        if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
+        
+        // Show loader immediately
         document.getElementById('tour-loader').style.display = 'flex';
         document.getElementById('tour-loader').style.opacity = '1';
+        
+        // Load URL
         document.getElementById('tour-iframe').src = url; 
         document.getElementById('tour-modal').classList.add('visible'); 
-        document.getElementById('tour-back-btn').style.display = (stationId === 0) ? 'none' : 'block';
+
+        // Show back button only if not Map
+        const backBtn = document.getElementById('tour-back-btn');
+        backBtn.style.display = (stationId !== 0) ? 'block' : 'none';
+
+        history.pushState({ modal: true }, "");
     },
 
-    closeInternalPage: function() { 
+    closeInternalPage: function(isHardwareBack = false) { 
         document.getElementById('tour-modal').classList.remove('visible'); 
         document.getElementById('tour-back-btn').style.display = 'none'; 
         document.getElementById('tour-iframe').src = ""; 
         const sceneEl = document.querySelector('a-scene');
-        if (sceneEl.systems['mindar-image-system']) sceneEl.systems['mindar-image-system'].start();
-    },
-
-    nav: function(page) {
-        document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
-        document.getElementById(page + '-page').classList.remove('hidden');
-        document.getElementById('main-nav').style.transform = "translateY(0)";
-        document.getElementById('ar-top-layer').style.opacity = "0";
-        document.getElementById('ar-reticle').style.opacity = "0";
-        document.getElementById('gallery-dock-container').classList.remove('ar-active');
+        if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].start(); }
+        if (!isHardwareBack) history.back();
     },
 
     startHeroSlider: function() { 
         setInterval(() => { 
             const banners = document.querySelectorAll('.promo-banner'); 
-            banners[this.currentHero].classList.remove('active'); 
-            this.currentHero = (this.currentHero + 1) % banners.length; 
-            banners[this.currentHero].classList.add('active'); 
+            const dots = document.querySelectorAll('.dot');
+            if(banners.length > 0) {
+                banners[this.currentHero].classList.remove('active'); 
+                dots[this.currentHero].classList.remove('active');
+                this.currentHero = (this.currentHero + 1) % banners.length; 
+                banners[this.currentHero].classList.add('active'); 
+                dots[this.currentHero].classList.add('active');
+            }
         }, 4000); 
     },
 
