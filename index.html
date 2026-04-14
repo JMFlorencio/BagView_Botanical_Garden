@@ -7,8 +7,8 @@
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <style>
-        @font-face { font-family: 'Agrandir'; src: url('./Assets/agrandir-thin.woff2') format('woff2'); font-weight: 100; font-style: normal; }
-        @font-face { font-family: 'Agrandir'; src: url('./Assets/agrandir-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+        @font-face { font-family: 'Agrandir'; src: url('./Assets/aggrandir-thin.woff2') format('woff2'); font-weight: 100; font-style: normal; }
+        @font-face { font-family: 'Agrandir'; src: url('./Assets/aggrandir-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
         
         :root { 
             --accent: #00A699; 
@@ -99,14 +99,14 @@
         #tour-modal.visible { transform: translateY(0); }
 
         /* --- LOADER --- */
-        #tour-loader { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; background: #111; z-index: 9001; transition: 0.5s; }
+        #tour-loader { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; background: #111; z-index: 9001; transition: opacity 0.3s ease; }
         .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
         .scans-info { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
         a-scene { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
         
-        /* FLOATING BACK BUTTON STYLE - MOVED TO TOP RIGHT */
+        /* EXIT BUTTON - TOP RIGHT POSITION */
         #tour-back-btn { position: fixed; top: 30px; right: 20px; z-index: 9999; display: none; pointer-events: auto; }
         #tour-back-btn button { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 12px 20px; border-radius: 50px; font-weight: 900; font-size: 11px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-transform: uppercase; flex-direction: row-reverse; }
     </style>
@@ -244,15 +244,24 @@ const app = {
     init: function() {
         this.renderMostScanned(); this.renderDock(); this.initAR(); this.initDockDraggable(); this.startHeroSlider();
         
-        // Handle iframe load
         document.getElementById('tour-iframe').onload = () => {
-            document.getElementById('tour-loader').style.opacity = '0';
-            setTimeout(() => { document.getElementById('tour-loader').style.display = 'none'; }, 500);
+            const loader = document.getElementById('tour-loader');
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 300);
         };
 
-        window.addEventListener('popstate', () => {
-            if (document.getElementById('tour-modal').classList.contains('visible')) {
+        // --- HARDWARE BACK BUTTON LOGIC ---
+        window.addEventListener('popstate', (event) => {
+            // Check if we are currently looking at a modal or a sub-page
+            const isModalOpen = document.getElementById('tour-modal').classList.contains('visible');
+            const isARActive = document.getElementById('gallery-dock-container').classList.contains('ar-active');
+            
+            if (isModalOpen) {
+                // If the tour modal is open, close it
                 this.closeInternalPage(true); 
+            } else if (isARActive) {
+                // If user is in AR mode, return to Home
+                this.nav('home', true);
             }
         });
 
@@ -304,11 +313,15 @@ const app = {
         document.getElementById('ar-top-layer').style.opacity = "1";
         document.getElementById('ar-reticle').style.opacity = "1";
         document.getElementById('gallery-dock-container').classList.add('ar-active');
+        
+        // Push state for Android back button to handle "Exit AR"
+        history.pushState({ ar: true }, "");
+
         const sceneEl = document.querySelector('a-scene');
         if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].start(); }
     },
 
-    nav: function(page) {
+    nav: function(page, isHardwareBack = false) {
         document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
         document.getElementById(page + '-page').classList.remove('hidden');
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -319,6 +332,11 @@ const app = {
         document.getElementById('gallery-dock-container').classList.remove('ar-active');
         const sceneEl = document.querySelector('a-scene');
         if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
+        
+        // Clean up history state if navigating via UI buttons
+        if (!isHardwareBack && page === 'home') {
+            // No specific action needed, but ensures flow is clean
+        }
     },
 
     initAR: function() {
@@ -333,7 +351,7 @@ const app = {
                 this.renderMostScanned(); 
                 document.getElementById('ar-status-badge').classList.add('match-found');
                 document.getElementById('status-text').innerText = "Match Found!";
-                setTimeout(() => this.openInternalPage(s.link, s.id), 1000);
+                setTimeout(() => this.openInternalPage(s.link, s.id), 800);
             });
             entity.addEventListener("targetLost", () => {
                 document.getElementById('ar-status-badge').classList.remove('match-found');
@@ -347,18 +365,17 @@ const app = {
         const sceneEl = document.querySelector('a-scene');
         if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
         
-        // Show loader immediately
-        document.getElementById('tour-loader').style.display = 'flex';
-        document.getElementById('tour-loader').style.opacity = '1';
+        const loader = document.getElementById('tour-loader');
+        loader.style.display = 'flex';
+        loader.style.opacity = '1';
         
-        // Load URL
         document.getElementById('tour-iframe').src = url; 
         document.getElementById('tour-modal').classList.add('visible'); 
 
-        // Show back button only if not Map
         const backBtn = document.getElementById('tour-back-btn');
         backBtn.style.display = (stationId !== 0) ? 'block' : 'none';
 
+        // Add a history entry so the hardware back button closes this modal
         history.pushState({ modal: true }, "");
     },
 
@@ -368,7 +385,11 @@ const app = {
         document.getElementById('tour-iframe').src = ""; 
         const sceneEl = document.querySelector('a-scene');
         if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].start(); }
-        if (!isHardwareBack) history.back();
+        
+        // If the user clicked the UI "Exit" button, we manually go back in history to remove the modal state
+        if (!isHardwareBack) {
+            history.back();
+        }
     },
 
     startHeroSlider: function() { 
