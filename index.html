@@ -259,7 +259,7 @@
     </div>
 
     <div id="home-page" class="overlay-screen">
-        <div class="user-greeting" id="welcome-text"><h3>Hi, Explorer!</h3><h2>Let’s Discover Baguio</h2></div>
+        <div class="user-greeting" id="welcome-text"><h3>Hi, Explorer!</h3><h2>Let's Discover Baguio</h2></div>
         
         <div class="hero-slider-container" id="hero-slider">
             <div class="hero-wrapper" id="hero-wrapper">
@@ -309,7 +309,7 @@
 
             <div class="notif-card" style="background: var(--accent-soft);">
                 <div class="notif-header">
-                    <span class="notif-title" style="color: var(--accent);">Eco-Explorer Tip 💡</span>
+                    <span class="notif-title" style="color: var(--accent);">Eco-Explorer Tip 🌲</span>
                     <span class="notif-time" style="color: #666;">YESTERDAY</span>
                 </div>
                 <p class="notif-desc" style="color: #333;">Did you know? Baguio Botanical Garden is home to over 150 species of flora. Use your AR scanner to identify rare pine varieties!</p>
@@ -375,6 +375,16 @@ const app = {
     init: function() {
         this.renderMostScanned(); this.renderDock(); this.initAR(); this.initDockDraggable(); this.startHeroSlider();
         
+        // Listener for Panoee integration from map.html
+        window.addEventListener('message', (event) => {
+            const exitBtn = document.getElementById('tour-back-btn');
+            if (event.data === 'hideExitBtn') {
+                exitBtn.style.display = 'none';
+            } else if (event.data === 'showExitBtn') {
+                exitBtn.style.display = 'block';
+            }
+        });
+
         document.getElementById('tour-iframe').onload = () => {
             const loader = document.getElementById('tour-loader');
             loader.style.opacity = '0';
@@ -580,7 +590,13 @@ const app = {
         iframe.src = url; 
         
         document.getElementById('tour-modal').classList.add('visible'); 
-        document.getElementById('tour-back-btn').style.display = 'block';
+
+        // Change: Hide this button if we are opening the Map, since the Map has its own back button
+        if (url === 'map.html') {
+            document.getElementById('tour-back-btn').style.display = 'none';
+        } else {
+            document.getElementById('tour-back-btn').style.display = 'block';
+        }
         
         history.pushState({ modal: true }, "");
     },
