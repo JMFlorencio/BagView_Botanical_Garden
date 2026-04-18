@@ -15,7 +15,7 @@
             --accent-soft: rgba(0, 166, 153, 0.2);
             --bg-page: #ffffff; 
             --transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1); 
-            --nav-height: 80px; 
+            --nav-height: 95px; 
             --safe-bottom: env(safe-area-inset-bottom, 0px); 
             --card-shadow: 0 10px 30px rgba(0,0,0,0.08); 
         }
@@ -23,6 +23,21 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Agrandir', sans-serif !important; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: transparent !important; }
         
+        /* --- TOUR CHOICE OVERLAY --- */
+        #tour-choice-overlay {
+            position: fixed; inset: 0; z-index: 11000; background: rgba(0,0,0,0.8);
+            display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px);
+            transition: 0.4s;
+        }
+        .choice-card {
+            background: white; width: 85%; max-width: 320px; padding: 30px; border-radius: 30px; text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+        .choice-card h2 { font-size: 22px; margin-bottom: 10px; color: #333; font-weight: 900; }
+        .choice-card p { font-size: 13px; color: #666; margin-bottom: 25px; line-height: 1.5; font-weight: 400; }
+        .btn-start-tour { background: var(--accent); color: white; border: none; width: 100%; padding: 16px; border-radius: 15px; font-weight: 900; margin-bottom: 12px; font-size: 14px; text-transform: uppercase; }
+        .btn-skip-tour { background: #f0f0f0; color: #666; border: none; width: 100%; padding: 12px; border-radius: 15px; font-weight: 800; font-size: 12px; text-transform: uppercase; }
+
         /* --- AR UI ELEMENTS --- */
         #ar-reticle { position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%); width: 80vw; height: 45vh; z-index: 4000; pointer-events: none; opacity: 0; transition: 0.5s var(--transition); }
         .leaf-corner { position: absolute; width: 60px; height: 60px; border: 4px solid var(--accent); animation: leafPulse 2.5s ease-in-out infinite; }
@@ -56,6 +71,73 @@
         .gallery-item span { font-size: 9px; font-weight: 800; text-transform: uppercase; color: #444; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .dock-view-tag { position: absolute; bottom: 5px; right: 5px; background: rgba(0,0,0,0.6); color: white; font-size: 8px; padding: 3px 6px; border-radius: 10px; backdrop-filter: blur(4px); font-weight: 900; }
 
+        /* --- INTERACTIVE INSTRUCTION BALLOON --- */
+        #instruction-bubble {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 16px 20px;
+            border-radius: 22px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.2);
+            z-index: 9999;
+            width: 85%;
+            max-width: 340px;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2.5px solid var(--accent);
+            pointer-events: auto;
+            animation: bubbleFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes bubbleFloat {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-5px); }
+        }
+        
+        #instruction-bubble::after {
+            content: '';
+            position: absolute;
+            width: 16px; height: 16px;
+            background: white;
+            border-right: 2.5px solid var(--accent);
+            border-bottom: 2.5px solid var(--accent);
+        }
+        #instruction-bubble.point-down::after { bottom: -10px; left: 50%; transform: translateX(-50%) rotate(45deg); }
+        #instruction-bubble.point-up::after { top: -10px; left: 50%; transform: translateX(-50%) rotate(-135deg); }
+        
+        #instruction-bubble.hidden { opacity: 0; transform: translateX(-50%) translateY(30px); pointer-events: none; }
+        
+        .bubble-main { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .inst-icon { background: var(--accent); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .inst-text { font-size: 11px; font-weight: 800; color: #333; line-height: 1.4; text-transform: uppercase; }
+
+        .next-prompt {
+            margin-top: 8px;
+            font-size: 9px;
+            color: var(--accent);
+            font-weight: 900;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 5px;
+        }
+
+        .skip-tour-link { 
+            display: block; text-align: center; margin-top: 12px; padding-top: 8px;
+            border-top: 1px solid #eee; color: #999; font-size: 10px; font-weight: 800; 
+            text-transform: uppercase; cursor: pointer;
+        }
+
+        /* Highlight effect for walkthrough */
+        .tutorial-highlight { 
+            position: relative;
+            z-index: 9998 !important; 
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.6), 0 0 25px var(--accent) !important;
+            border-radius: 25px;
+            pointer-events: none;
+        }
+
         /* --- OVERLAYS & PAGES --- */
         .overlay-screen { position: fixed; inset: 0; z-index: 1000; background: #fff; transition: 0.4s; overflow-y: auto; padding-bottom: 140px; }
         .hidden { opacity: 0 !important; pointer-events: none !important; transform: translateY(20px); }
@@ -64,7 +146,7 @@
         .user-greeting h2 { margin: 0; font-size: 26px; font-weight: 900; color: #333; }
 
         /* --- HERO --- */
-        .hero-slider-container { margin: 15px 25px; height: 190px; border-radius: 30px; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,166,153,0.25); }
+        .hero-slider-container { margin: 15px 25px; height: 190px; border-radius: 30px; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,166,153,0.25); touch-action: pan-y; }
         .hero-wrapper { width: 100%; height: 100%; position: relative; }
         .promo-banner { position: absolute; inset: 0; width: 100%; height: 100%; background: var(--accent); color: white; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; padding: 30px; opacity: 0; transition: opacity 0.8s ease-in-out; z-index: 1; }
         .promo-banner.active { opacity: 1; z-index: 2; }
@@ -83,17 +165,23 @@
         .fact-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; filter: brightness(0.65); }
         .fact-card span { position: relative; z-index: 2; font-size: 14px; font-weight: 800; line-height: 1.3; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
 
-        .update-item { display: flex; gap: 15px; padding: 20px 25px; border-bottom: 1px solid #f0f0f0; }
-        .update-icon { width: 45px; height: 45px; border-radius: 12px; background: #f0faf9; display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0; }
-        .update-info h5 { margin: 0 0 4px; font-size: 15px; font-weight: 900; color: #222; }
-        .update-info p { margin: 0 0 6px; font-size: 13px; color: #666; line-height: 1.4; }
-        .update-info span { font-size: 10px; font-weight: 800; color: #bbb; text-transform: uppercase; }
+        /* --- NOTIFICATIONS ORIGINAL STYLE --- */
+        .notif-card { background: #f9f9f9; padding: 15px; border-radius: 20px; margin-bottom: 15px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.04); }
+        .notif-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .notif-title { font-size: 14px; color: #333; font-weight: 800; }
+        .notif-time { font-size: 10px; color: #999; font-weight: 800; text-transform: uppercase; }
+        .notif-desc { font-size: 12px; color: #666; margin: 0; line-height: 1.4; font-weight: 400; }
 
         /* --- NAVIGATION --- */
-        .main-navigation-bar { position: fixed; bottom: 0; left: 0; right: 0; height: calc(90px + var(--safe-bottom)); background: #fff; z-index: 5000; display: flex; justify-content: space-around; align-items: center; padding: 0 15px var(--safe-bottom); box-shadow: 0 -10px 30px rgba(0,0,0,0.05); transition: 0.4s; }
-        .nav-item { color: #ccc; flex: 1; display: flex; justify-content: center; padding: 10px; }
+        .main-navigation-bar { position: fixed; bottom: 0; left: 0; right: 0; height: calc(var(--nav-height) + var(--safe-bottom)); background: #fff; z-index: 5000; display: flex; justify-content: space-around; align-items: center; padding: 0 10px var(--safe-bottom); box-shadow: 0 -10px 30px rgba(0,0,0,0.05); transition: 0.4s; }
+        .nav-item { color: #ccc; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 5px; gap: 4px; }
         .nav-item.active { color: var(--accent); }
-        .nav-item-center { width: 65px; height: 65px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -45px; border: 6px solid #fff; box-shadow: 0 10px 25px rgba(0,166,153,0.3); }
+        .nav-item span { font-size: 8.5px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .nav-item-center-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .nav-item-center { width: 62px; height: 62px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -55px; border: 6px solid #fff; box-shadow: 0 10px 25px rgba(0,166,153,0.3); }
+        .nav-item-center-label { font-size: 8.5px; font-weight: 900; text-transform: uppercase; color: #ccc; margin-top: 4px; letter-spacing: 0.5px; }
+        .nav-item-center-wrapper.active .nav-item-center-label { color: var(--accent); }
 
         #tour-modal { position: fixed; inset: 0; z-index: 9000; background: #111; transform: translateY(100%); transition: 0.5s; overflow: hidden; }
         #tour-modal.visible { transform: translateY(0); }
@@ -104,11 +192,9 @@
         @keyframes spin { to { transform: rotate(360deg); } }
 
         .scans-info { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--accent); font-weight: 800; text-transform: uppercase; margin-top: 6px; }
-        .scans-info svg { flex-shrink: 0; }
         
         a-scene { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
         
-        /* EXIT BUTTON - TOP RIGHT POSITION */
         #tour-back-btn { position: fixed; top: 30px; right: 20px; z-index: 9999; display: none; pointer-events: auto; }
         #tour-back-btn button { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 12px 20px; border-radius: 50px; font-weight: 900; font-size: 11px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-transform: uppercase; flex-direction: row-reverse; }
     </style>
@@ -116,13 +202,40 @@
 <body>
     <audio id="match-sound" src="https://cdn.pixabay.com/audio/2021/08/04/audio_bb630cc098.mp3" preload="auto"></audio>
 
-    <div id="splash-screen" style="position:fixed; inset:0; z-index:9999; background:#00A699; display:flex; align-items:center; justify-content:center; transition:0.6s;">
+    <div id="splash-screen" style="position:fixed; inset:0; z-index:12000; background:#00A699; display:flex; align-items:center; justify-content:center; transition:0.6s;">
         <img src="Assets/Logo_Icon.png" width="100" style="filter:brightness(0) invert(1);">
+    </div>
+
+    <div id="tour-choice-overlay" class="hidden">
+        <div class="choice-card">
+            <h2>Welcome, Explorer!</h2>
+            <p>Would you like a quick tour of the app before you start exploring Baguio?</p>
+            <button class="btn-start-tour" onclick="app.confirmTour(true)">START TOUR</button>
+            <button class="btn-skip-tour" onclick="app.confirmTour(false)">SKIP & EXPLORE</button>
+        </div>
+    </div>
+
+    <div id="instruction-bubble" class="hidden">
+        <div class="bubble-main" onclick="app.tutorialNext()">
+            <div class="inst-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            </div>
+            <div style="flex: 1;">
+                <div class="inst-text" id="inst-content">...</div>
+                <div class="next-prompt" id="next-prompt">NEXT STEP 
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </div>
+            </div>
+        </div>
+        <div class="skip-tour-link" onclick="app.endTour()">Skip Tour</div>
     </div>
 
     <div id="tour-back-btn">
         <button onclick="app.closeInternalPage()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
             Exit Experience
         </button>
     </div>
@@ -151,12 +264,12 @@
     </div>
 
     <div id="home-page" class="overlay-screen">
-        <div class="user-greeting"><h3>Hi, Explorer!</h3><h2>Let’s Discover Baguio</h2></div>
+        <div class="user-greeting" id="welcome-text"><h3>Hi, Explorer!</h3><h2>Let's Discover Baguio</h2></div>
         
-        <div class="hero-slider-container">
+        <div class="hero-slider-container" id="hero-slider">
             <div class="hero-wrapper" id="hero-wrapper">
                 <div class="promo-banner active"><h1>Discover Hidden Eco-Trails</h1><button onclick="app.startScanner()">Explore Now</button></div>
-                <div class="promo-banner" style="background: #008f84"><h1>Discover New Plants</h1><button onclick="app.startScanner()">Scan Marker</button></div>
+                <div class="promo-banner" style="background: #008f84"><h1>Unlock 3D Plant Models</h1><button onclick="app.startScanner()">Scan Marker</button></div>
                 <div class="promo-banner" style="background: #007a71"><h1>Virtual Heritage Tours</h1><button onclick="app.startScanner()">Find Marker</button></div>
                 <div class="promo-banner" style="background: #00665e"><h1>Interactive Botanical Map</h1><button onclick="app.startScanner()">Scan for Map</button></div>
             </div>
@@ -165,14 +278,14 @@
             </div>
         </div>
 
-        <div class="section-header"><h4>Most Scanned Station</h4></div>
+        <div class="section-header" id="most-scanned-header"><h4>Most Scanned Station</h4></div>
         <div id="most-scanned-list" style="display:flex; gap:15px; overflow-x:auto; padding:0 25px 30px; scrollbar-width:none;"></div>
 
         <div class="section-header">
             <h4>Did You Know?</h4>
             <a href="#" class="explore-link">Explore Articles</a>
         </div>
-        <div class="did-you-know-scroll">
+        <div class="did-you-know-scroll" id="fact-section">
             <div class="fact-card"><img src="Assets/History.png"><span>Learn more about Baguio Botanical Garden History.</span></div>
             <div class="fact-card"><img src="Assets/Eco%20Tips.png"><span>How to be a responsible tourist Travel Info and entrance fees.</span></div>
             <div class="fact-card"><img src="Assets/Eco%20Awareness.png"><span>Learn about conservatioon and sustainability.</span></div>
@@ -181,12 +294,30 @@
 
     <div id="notifications-page" class="overlay-screen hidden">
         <div class="user-greeting"><h2>Updates</h2></div>
-        <div class="update-item">
-            <div class="update-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
-            <div class="update-info">
-                <h5>New AR Station Spotted!</h5>
-                <p>The Korean Pavilion is now active. Scan the entrance sign for a new virtual experience.</p>
-                <span>2 HOURS AGO</span>
+        
+        <div class="notifications-list" style="padding: 0 25px;">
+            <div class="notif-card" style="border-left: 4px solid var(--accent);">
+                <div class="notif-header">
+                    <span class="notif-title">New Bloom Alert! 🌸</span>
+                    <span class="notif-time">2H AGO</span>
+                </div>
+                <p class="notif-desc">The Dahlias in the Centennial Garden are now in full bloom. Don't forget to scan the marker for a 3D growth time-lapse!</p>
+            </div>
+
+            <div class="notif-card" style="border-left: 4px solid #FFC107;">
+                <div class="notif-header">
+                    <span class="notif-title">Trail Maintenance 🚧</span>
+                    <span class="notif-time">5H AGO</span>
+                </div>
+                <p class="notif-desc">The Japanese Tunnel lower path is temporarily closed for maintenance. Please follow the upper trail signs.</p>
+            </div>
+
+            <div class="notif-card" style="background: var(--accent-soft);">
+                <div class="notif-header">
+                    <span class="notif-title" style="color: var(--accent);">Eco-Explorer Tip 💡</span>
+                    <span class="notif-time" style="color: #666;">YESTERDAY</span>
+                </div>
+                <p class="notif-desc" style="color: #333;">Did you know? Baguio Botanical Garden is home to over 150 species of flora. Use your AR scanner to identify rare pine varieties!</p>
             </div>
         </div>
     </div>
@@ -197,13 +328,30 @@
     </div>
 
     <nav class="main-navigation-bar" id="main-nav">
-        <div class="nav-item active" id="nav-home" onclick="app.nav('home')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
-        <div class="nav-item" id="nav-search" onclick="app.nav('search')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
-        <div class="nav-item-center" onclick="app.startScanner()">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="9" y="9" width="6" height="6"></rect></svg>
+        <div class="nav-item active" id="nav-home" onclick="app.nav('home')">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+            <span>Home</span>
         </div>
-        <div class="nav-item" id="nav-notifications" onclick="app.nav('notifications')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
-        <div class="nav-item" onclick="app.resetApp()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></div>
+        <div class="nav-item" id="nav-search" onclick="app.nav('search')">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <span>Search</span>
+        </div>
+        
+        <div class="nav-item-center-wrapper" id="nav-ar">
+            <div class="nav-item-center" onclick="app.startScanner()">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="9" y="9" width="6" height="6"></rect></svg>
+            </div>
+            <div class="nav-item-center-label">Scan AR</div>
+        </div>
+
+        <div class="nav-item" id="nav-notifications" onclick="app.nav('notifications')">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span>Updates</span>
+        </div>
+        <div class="nav-item" id="nav-reset" onclick="app.resetApp()">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+            <span>Reset</span>
+        </div>
     </nav>
 
     <div id="tour-modal">
@@ -222,6 +370,9 @@
 <script>
 const app = {
     currentHero: 0, 
+    tutorialStep: 0,
+    sliderTimer: null,
+    isTourActive: false,
     dockState: { startY: 0, currentY: 0, isDragging: false, isOpen: true },
     stations: [
         { id: 0, name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/Interactive_Map/", scans: 1240 },
@@ -240,7 +391,7 @@ const app = {
         { id: 13, name: "Korea Garden", thumb: "Assets/Korea%20Garden.png", link: "https://tour.panoee.net/korea-garden/1", scans: 580 },
         { id: 14, name: "Orchidarium", thumb: "Assets/Orchidarium.png", link: "https://tour.panoee.net/orchidarium/1", scans: 390 },
         { id: 15, name: "Friendship Garden", thumb: "Assets/Philippine-Thailand Frienship Garden.png", link: "https://tour.panoee.net/philippine-thailand-friendship-garden/7-1", scans: 270 },
-        { id: 16, name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.png", link: "https://tour.panoee.net/pmseagarden/1", scans: 150 }
+        { id: 16, name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.png", link: "https://tour.panoee.net/pmsea-garden", scans: 150 }
     ],
 
     init: function() {
@@ -265,8 +416,76 @@ const app = {
 
         setTimeout(() => { 
             const splash = document.getElementById('splash-screen');
-            if(splash) { splash.style.opacity = '0'; setTimeout(() => splash.style.display='none', 600); }
+            if(splash) { 
+                splash.style.opacity = '0'; 
+                setTimeout(() => {
+                    splash.style.display='none';
+                    document.getElementById('tour-choice-overlay').classList.remove('hidden');
+                }, 600); 
+            }
         }, 1500);
+    },
+
+    confirmTour: function(wantTour) {
+        document.getElementById('tour-choice-overlay').classList.add('hidden');
+        if (wantTour) {
+            this.startWalkthrough();
+        }
+    },
+
+    startWalkthrough: function() {
+        this.isTourActive = true;
+        this.tutorialStep = 0;
+        this.tutorialNext();
+    },
+
+    endTour: function() {
+        this.isTourActive = false;
+        document.getElementById('instruction-bubble').classList.add('hidden');
+        document.querySelectorAll('.tutorial-highlight').forEach(el => el.classList.remove('tutorial-highlight'));
+    },
+
+    tutorialNext: function() {
+        if (!this.isTourActive) return;
+
+        const bubble = document.getElementById('instruction-bubble');
+        const content = document.getElementById('inst-content');
+        const nextPrompt = document.getElementById('next-prompt');
+        
+        const tourSteps = [
+            { text: "Welcome! Let's explore Baguio with a quick tour!", target: "welcome-text", pos: "top: 220px;", arrow: "point-up" },
+            { text: "Check here for the latest highlights and news!", target: "hero-slider", pos: "top: 410px;", arrow: "point-up" },
+            { text: "See which stations are the most scanned right now.", target: "most-scanned-header", pos: "top: 550px;", arrow: "point-up" },
+            { text: "Learn fun facts about Baguio's history and nature.", target: "fact-section", pos: "top: 58%;", arrow: "point-up" },
+            { text: "Tap here to search for specific flowers or areas.", target: "nav-search", pos: "bottom: 110px;", arrow: "point-down" },
+            { text: "The magic happens here! Tap to start AR scanning.", target: "nav-ar", pos: "bottom: 125px;", arrow: "point-down" },
+            { text: "You're all set! Ready to start exploring?", target: null, pos: "top: 40%;", arrow: "" }
+        ];
+
+        document.querySelectorAll('.tutorial-highlight').forEach(el => el.classList.remove('tutorial-highlight'));
+
+        if (this.tutorialStep < tourSteps.length) {
+            const step = tourSteps[this.tutorialStep];
+            content.innerText = step.text;
+            bubble.className = step.arrow;
+            bubble.classList.remove('hidden');
+            bubble.style.cssText = `left:50%; transform:translateX(-50%); ${step.pos}`;
+
+            if (this.tutorialStep === tourSteps.length - 1) {
+                nextPrompt.innerHTML = `FINISH TOUR <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+            } else {
+                nextPrompt.innerHTML = `NEXT STEP <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+            }
+            
+            if (step.target) {
+                const targetEl = document.getElementById(step.target);
+                targetEl.classList.add('tutorial-highlight');
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            this.tutorialStep++;
+        } else {
+            this.endTour();
+        }
     },
 
     initDockDraggable: function() {
@@ -295,19 +514,13 @@ const app = {
             <div style="flex:0 0 200px; background:white; border-radius:25px; padding:12px; box-shadow:var(--card-shadow);">
                 <img src="${s.thumb}" style="width:100%; height:120px; border-radius:18px; object-fit:cover;">
                 <b style="font-size:14px; display:block; margin-top:10px;">${s.name}</b>
-                <div class="scans-info">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                    <span>${s.scans} SCANS</span>
-                </div>
+                <div class="scans-info"><span>${s.scans} SCANS</span></div>
             </div>`).join('');
     },
 
     renderDock: function() {
         const dock = document.getElementById('gallery-dock');
-        dock.innerHTML = this.stations.map(s => `<div class="gallery-item" data-station-id="${s.id}" onclick="app.selectReference(${s.id}, '${s.name}', this)"><div class="gallery-img-wrap"><img src="${s.thumb}"><div class="dock-view-tag">👁 ${s.scans}</div></div><span>${s.name}</span></div>`).join('');
+        dock.innerHTML = this.stations.map(s => `<div class="gallery-item" data-station-id="${s.id}" onclick="app.selectReference(${s.id}, '${s.name}', this)"><div class="gallery-img-wrap"><img src="${s.thumb}"><div class="dock-view-tag">👁‍🗨 ${s.scans}</div></div><span>${s.name}</span></div>`).join('');
     },
 
     selectReference: function(id, name, el) {
@@ -317,6 +530,7 @@ const app = {
     },
 
     startScanner: function() {
+        if (this.isTourActive) return;
         document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
         document.getElementById('main-nav').style.transform = "translateY(150%)";
         document.getElementById('ar-top-layer').style.opacity = "1";
@@ -328,10 +542,15 @@ const app = {
     },
 
     nav: function(page, isHardwareBack = false) {
+        if (this.isTourActive) return;
         document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
         document.getElementById(page + '-page').classList.remove('hidden');
+        
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        document.getElementById('nav-ar').classList.remove('active');
+        
         if (document.getElementById('nav-' + page)) document.getElementById('nav-' + page).classList.add('active');
+        
         document.getElementById('main-nav').style.transform = "translateY(0)";
         document.getElementById('ar-top-layer').style.opacity = "0";
         document.getElementById('ar-reticle').style.opacity = "0";
@@ -363,6 +582,7 @@ const app = {
     },
 
     openInternalPage: function(url, stationId) { 
+        document.getElementById('instruction-bubble').classList.add('hidden');
         const sceneEl = document.querySelector('a-scene');
         if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
         const loader = document.getElementById('tour-loader');
@@ -381,23 +601,42 @@ const app = {
         document.getElementById('tour-iframe').src = ""; 
         const sceneEl = document.querySelector('a-scene');
         if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].start(); }
-        if (!isHardwareBack) {
-            history.back();
-        }
+        if (!isHardwareBack) history.back();
     },
 
     startHeroSlider: function() { 
-        setInterval(() => { 
+        const slider = document.getElementById('hero-slider');
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        slider.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+        slider.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; this.handleHeroSwipe(touchStartX, touchEndX); }, { passive: true });
+
+        this.handleHeroSwipe = (start, end) => {
+            const threshold = 50; 
+            if (end < start - threshold) { this.moveSlider(1); } 
+            else if (end > start + threshold) { this.moveSlider(-1); }
+        };
+
+        this.moveSlider = (direction) => {
             const banners = document.querySelectorAll('.promo-banner'); 
             const dots = document.querySelectorAll('.dot');
             if(banners.length > 0) {
                 banners[this.currentHero].classList.remove('active'); 
                 dots[this.currentHero].classList.remove('active');
-                this.currentHero = (this.currentHero + 1) % banners.length; 
+                this.currentHero = (this.currentHero + direction + banners.length) % banners.length; 
                 banners[this.currentHero].classList.add('active'); 
                 dots[this.currentHero].classList.add('active');
+                this.resetSliderTimer();
             }
-        }, 4000); 
+        };
+
+        this.resetSliderTimer = () => {
+            clearInterval(this.sliderTimer);
+            this.sliderTimer = setInterval(() => this.moveSlider(1), 4000);
+        };
+
+        this.resetSliderTimer();
     },
 
     resetApp: function() { window.location.reload(); }
