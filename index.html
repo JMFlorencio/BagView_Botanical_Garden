@@ -15,7 +15,7 @@
             --accent-soft: rgba(0, 166, 153, 0.2);
             --bg-page: #ffffff; 
             --transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1); 
-            --nav-height: 95px; 
+            --nav-height: 80px; 
             --safe-bottom: env(safe-area-inset-bottom, 0px); 
             --card-shadow: 0 10px 30px rgba(0,0,0,0.08); 
         }
@@ -165,7 +165,7 @@
         .fact-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; filter: brightness(0.65); }
         .fact-card span { position: relative; z-index: 2; font-size: 14px; font-weight: 800; line-height: 1.3; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
 
-        /* --- NOTIFICATIONS ORIGINAL STYLE --- */
+        /* --- NOTIFICATIONS --- */
         .notif-card { background: #f9f9f9; padding: 15px; border-radius: 20px; margin-bottom: 15px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.04); }
         .notif-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
         .notif-title { font-size: 14px; color: #333; font-weight: 800; }
@@ -173,15 +173,10 @@
         .notif-desc { font-size: 12px; color: #666; margin: 0; line-height: 1.4; font-weight: 400; }
 
         /* --- NAVIGATION --- */
-        .main-navigation-bar { position: fixed; bottom: 0; left: 0; right: 0; height: calc(var(--nav-height) + var(--safe-bottom)); background: #fff; z-index: 5000; display: flex; justify-content: space-around; align-items: center; padding: 0 10px var(--safe-bottom); box-shadow: 0 -10px 30px rgba(0,0,0,0.05); transition: 0.4s; }
-        .nav-item { color: #ccc; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 5px; gap: 4px; }
+        .main-navigation-bar { position: fixed; bottom: 0; left: 0; right: 0; height: calc(90px + var(--safe-bottom)); background: #fff; z-index: 5000; display: flex; justify-content: space-around; align-items: center; padding: 0 15px var(--safe-bottom); box-shadow: 0 -10px 30px rgba(0,0,0,0.05); transition: 0.4s; }
+        .nav-item { color: #ccc; flex: 1; display: flex; justify-content: center; padding: 10px; }
         .nav-item.active { color: var(--accent); }
-        .nav-item span { font-size: 8.5px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        .nav-item-center-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        .nav-item-center { width: 62px; height: 62px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -55px; border: 6px solid #fff; box-shadow: 0 10px 25px rgba(0,166,153,0.3); }
-        .nav-item-center-label { font-size: 8.5px; font-weight: 900; text-transform: uppercase; color: #ccc; margin-top: 4px; letter-spacing: 0.5px; }
-        .nav-item-center-wrapper.active .nav-item-center-label { color: var(--accent); }
+        .nav-item-center { width: 65px; height: 65px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -45px; border: 6px solid #fff; box-shadow: 0 10px 25px rgba(0,166,153,0.3); }
 
         #tour-modal { position: fixed; inset: 0; z-index: 9000; background: #111; transform: translateY(100%); transition: 0.5s; overflow: hidden; }
         #tour-modal.visible { transform: translateY(0); }
@@ -231,12 +226,12 @@
     </div>
 
     <div id="tour-back-btn">
-        <button onclick="app.closeInternalPage()">
+        <button onclick="app.closeInternalPage()" id="exit-btn-text">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
-            Exit Experience
+            <span id="label-text">Exit Experience</span>
         </button>
     </div>
 
@@ -264,7 +259,7 @@
     </div>
 
     <div id="home-page" class="overlay-screen">
-        <div class="user-greeting" id="welcome-text"><h3>Hi, Explorer!</h3><h2>Let's Discover Baguio</h2></div>
+        <div class="user-greeting" id="welcome-text"><h3>Hi, Explorer!</h3><h2>Let’s Discover Baguio</h2></div>
         
         <div class="hero-slider-container" id="hero-slider">
             <div class="hero-wrapper" id="hero-wrapper">
@@ -328,30 +323,13 @@
     </div>
 
     <nav class="main-navigation-bar" id="main-nav">
-        <div class="nav-item active" id="nav-home" onclick="app.nav('home')">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-            <span>Home</span>
+        <div class="nav-item active" id="nav-home" onclick="app.nav('home')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
+        <div class="nav-item" id="nav-search" onclick="app.nav('search')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
+        <div class="nav-item-center" id="ar-main-btn" onclick="app.startScanner()">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="9" y="9" width="6" height="6"></rect></svg>
         </div>
-        <div class="nav-item" id="nav-search" onclick="app.nav('search')">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <span>Search</span>
-        </div>
-        
-        <div class="nav-item-center-wrapper" id="nav-ar">
-            <div class="nav-item-center" onclick="app.startScanner()">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="9" y="9" width="6" height="6"></rect></svg>
-            </div>
-            <div class="nav-item-center-label">Scan AR</div>
-        </div>
-
-        <div class="nav-item" id="nav-notifications" onclick="app.nav('notifications')">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-            <span>Updates</span>
-        </div>
-        <div class="nav-item" id="nav-reset" onclick="app.resetApp()">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
-            <span>Reset</span>
-        </div>
+        <div class="nav-item" id="nav-map" onclick="app.openInternalPage('map.html', 0)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg></div>
+        <div class="nav-item" id="nav-notifications" onclick="app.nav('notifications')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
     </nav>
 
     <div id="tour-modal">
@@ -375,7 +353,7 @@ const app = {
     isTourActive: false,
     dockState: { startY: 0, currentY: 0, isDragging: false, isOpen: true },
     stations: [
-        { id: 0, name: "Map", thumb: "Assets/A1_Map.jpg", link: "https://jmflorencio.github.io/Interactive_Map/", scans: 1240 },
+        { id: 0, name: "Map", thumb: "Assets/A1_Map.jpg", link: "map.html", scans: 1240 },
         { id: 1, name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://tour.panoee.net/mainentrance/1", scans: 980 },
         { id: 2, name: "Arbor", thumb: "Assets/Arbor.png", link: "https://tour.panoee.net/arbor", scans: 340 },
         { id: 3, name: "Asian Garden", thumb: "Assets/Asian Garden.png", link: "https://tour.panoee.net/asian-garden", scans: 450 },
@@ -458,7 +436,8 @@ const app = {
             { text: "See which stations are the most scanned right now.", target: "most-scanned-header", pos: "top: 550px;", arrow: "point-up" },
             { text: "Learn fun facts about Baguio's history and nature.", target: "fact-section", pos: "top: 58%;", arrow: "point-up" },
             { text: "Tap here to search for specific flowers or areas.", target: "nav-search", pos: "bottom: 110px;", arrow: "point-down" },
-            { text: "The magic happens here! Tap to start AR scanning.", target: "nav-ar", pos: "bottom: 125px;", arrow: "point-down" },
+            { text: "The magic happens here! Tap to start AR scanning.", target: "ar-main-btn", pos: "bottom: 125px;", arrow: "point-down" },
+            { text: "New! Access the interactive map anytime from here.", target: "nav-map", pos: "bottom: 110px;", arrow: "point-down" },
             { text: "You're all set! Ready to start exploring?", target: null, pos: "top: 40%;", arrow: "" }
         ];
 
@@ -520,7 +499,7 @@ const app = {
 
     renderDock: function() {
         const dock = document.getElementById('gallery-dock');
-        dock.innerHTML = this.stations.map(s => `<div class="gallery-item" data-station-id="${s.id}" onclick="app.selectReference(${s.id}, '${s.name}', this)"><div class="gallery-img-wrap"><img src="${s.thumb}"><div class="dock-view-tag">👁‍🗨 ${s.scans}</div></div><span>${s.name}</span></div>`).join('');
+        dock.innerHTML = this.stations.map(s => `<div class="gallery-item" data-station-id="${s.id}" onclick="app.selectReference(${s.id}, '${s.name}', this)"><div class="gallery-img-wrap"><img src="${s.thumb}"><div class="dock-view-tag">👀 ${s.scans}</div></div><span>${s.name}</span></div>`).join('');
     },
 
     selectReference: function(id, name, el) {
@@ -545,12 +524,8 @@ const app = {
         if (this.isTourActive) return;
         document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
         document.getElementById(page + '-page').classList.remove('hidden');
-        
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-        document.getElementById('nav-ar').classList.remove('active');
-        
         if (document.getElementById('nav-' + page)) document.getElementById('nav-' + page).classList.add('active');
-        
         document.getElementById('main-nav').style.transform = "translateY(0)";
         document.getElementById('ar-top-layer').style.opacity = "0";
         document.getElementById('ar-reticle').style.opacity = "0";
@@ -583,15 +558,30 @@ const app = {
 
     openInternalPage: function(url, stationId) { 
         document.getElementById('instruction-bubble').classList.add('hidden');
+        
+        // Update Label Logic: Exit Map for map.html, Exit Experience for others
+        const label = document.getElementById('label-text');
+        if (url === 'map.html') {
+            label.innerText = 'Exit Map';
+        } else {
+            label.innerText = 'Exit Experience';
+        }
+
         const sceneEl = document.querySelector('a-scene');
-        if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
+        if (url !== 'map.html') {
+            if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
+        }
+
         const loader = document.getElementById('tour-loader');
         loader.style.display = 'flex';
         loader.style.opacity = '1';
-        document.getElementById('tour-iframe').src = url; 
+        
+        const iframe = document.getElementById('tour-iframe');
+        iframe.src = url; 
+        
         document.getElementById('tour-modal').classList.add('visible'); 
-        const backBtn = document.getElementById('tour-back-btn');
-        backBtn.style.display = (stationId !== 0) ? 'block' : 'none';
+        document.getElementById('tour-back-btn').style.display = 'block';
+        
         history.pushState({ modal: true }, "");
     },
 
@@ -599,8 +589,12 @@ const app = {
         document.getElementById('tour-modal').classList.remove('visible'); 
         document.getElementById('tour-back-btn').style.display = 'none'; 
         document.getElementById('tour-iframe').src = ""; 
+        
         const sceneEl = document.querySelector('a-scene');
-        if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].start(); }
+        if (document.getElementById('gallery-dock-container').classList.contains('ar-active')) {
+            if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].start(); }
+        }
+        
         if (!isHardwareBack) history.back();
     },
 
@@ -637,9 +631,7 @@ const app = {
         };
 
         this.resetSliderTimer();
-    },
-
-    resetApp: function() { window.location.reload(); }
+    }
 };
 
 window.onload = () => app.init();
