@@ -60,11 +60,10 @@
             font-size: 14px; cursor: pointer; text-transform: uppercase;
         }
 
-        .btn-login {
+        .btn-trial {
             background: #f3f4f6; color: #4b5563; border: none;
             padding: 12px; border-radius: 14px; font-weight: 700;
             font-size: 12px; cursor: pointer; text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         /* PANO OVERLAY */
@@ -151,10 +150,10 @@
         <div class="premium-card">
             <div class="premium-icon">✨</div>
             <h2>Premium Feature</h2>
-            <p>Access high-definition 360° virtual tours and exclusive content. Log in to claim your 7-day free trial!</p>
+            <p>Unlock high-definition 360° virtual tours and exclusive resort features. Start your journey today!</p>
             <div class="modal-btns">
                 <button class="btn-subscribe" onclick="alert('Redirecting to subscription...')">Get Premium Access</button>
-                <button class="btn-login" id="modal-login-btn">Login for 7-Day Trial</button>
+                <button class="btn-trial" id="modal-trial-btn">Free Trial 7 Days</button>
             </div>
         </div>
     </div>
@@ -239,9 +238,9 @@
         const sheet = document.getElementById('bottom-sheet');
         const exitBtn = document.getElementById('header-exit-btn');
         const premiumModal = document.getElementById('premium-modal-overlay');
-        const loginBtn = document.getElementById('modal-login-btn');
+        const trialBtn = document.getElementById('modal-trial-btn');
 
-        // MODAL LOGIC
+        // CUSTOM MODAL LOGIC
         let pendingPanoUrl = "";
 
         function triggerPremiumModal(url) {
@@ -249,10 +248,9 @@
             premiumModal.style.display = 'flex';
         }
 
-        loginBtn.onclick = () => {
+        trialBtn.onclick = () => {
             premiumModal.style.display = 'none';
-            alert('Redirecting to Login Page...');
-            // In a real app, you'd do: window.location.href = 'login.html';
+            openPano(pendingPanoUrl);
         };
 
         premiumModal.onclick = (e) => {
