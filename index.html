@@ -23,6 +23,70 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Agrandir', sans-serif !important; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: transparent !important; }
         
+        /* --- GLASSMORPHISM LOGIN SCREEN --- */
+        #login-screen {
+            position: fixed; inset: 0; z-index: 11500; 
+            /* Teal gradient background to make the glass effect visible */
+            background: linear-gradient(135deg, #00A699 0%, #007a71 100%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 25px; transition: 0.6s var(--transition);
+        }
+        #login-screen.hidden { transform: translateY(-100%); opacity: 0; }
+
+        .login-container { 
+            width: 100%; 
+            max-width: 360px; 
+            text-align: center; 
+            padding: 40px 30px;
+            /* Glass Core */
+            background: rgba(255, 255, 255, 0.15); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+        }
+
+        .login-container h2 { font-weight: 900; font-size: 28px; color: white; margin-bottom: 5px; }
+        .login-container p { font-size: 14px; color: rgba(255, 255, 255, 0.8); margin-bottom: 30px; }
+        
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { 
+            display: block; font-size: 10px; font-weight: 900; text-transform: uppercase; 
+            color: white; margin-bottom: 8px; margin-left: 5px; letter-spacing: 1px;
+        }
+        .input-group input { 
+            width: 100%; padding: 16px; border-radius: 18px; 
+            border: 1px solid rgba(255, 255, 255, 0.3); 
+            background: rgba(255, 255, 255, 0.1); 
+            font-size: 14px; outline: none; transition: 0.3s; color: white;
+        }
+        .input-group input::placeholder { color: rgba(255, 255, 255, 0.5); }
+        .input-group input:focus { border-color: white; background: rgba(255, 255, 255, 0.2); }
+        
+        .btn-login { 
+            background: white; color: var(--accent); border: none; width: 100%; padding: 18px; 
+            border-radius: 18px; font-weight: 900; font-size: 14px; text-transform: uppercase; 
+            margin-top: 10px; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); transition: 0.3s;
+        }
+        .btn-login:active { transform: scale(0.98); opacity: 0.9; }
+        
+        .divider { 
+            display: flex; align-items: center; margin: 25px 0; color: rgba(255, 255, 255, 0.6); 
+            font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; 
+        }
+        .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.2); }
+        .divider::before { margin-right: 15px; }
+        .divider::after { margin-left: 15px; }
+
+        .btn-google { 
+            background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.3); 
+            width: 100%; padding: 16px; border-radius: 18px; font-weight: 800; font-size: 13px; 
+            display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        .btn-google:active { background: rgba(255, 255, 255, 0.2); }
+
         /* --- TOUR CHOICE OVERLAY --- */
         #tour-choice-overlay {
             position: fixed; inset: 0; z-index: 11000; background: rgba(0,0,0,0.8);
@@ -69,81 +133,44 @@
         .gallery-img-wrap { width: 100px; height: 100px; border-radius: 20px; overflow: hidden; border: 1px solid #eee; margin-bottom: 8px; position: relative; background: #f9f9f9; }
         .gallery-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
         .gallery-item span { font-size: 9px; font-weight: 800; text-transform: uppercase; color: #444; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .dock-view-tag { position: absolute; bottom: 5px; right: 5px; background: rgba(0,0,0,0.6); color: white; font-size: 8px; padding: 3px 6px; border-radius: 10px; backdrop-filter: blur(4px); font-weight: 900; }
-
-        /* --- INTERACTIVE INSTRUCTION BALLOON --- */
-        #instruction-bubble {
-            position: fixed;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            padding: 16px 20px;
-            border-radius: 22px;
-            box-shadow: 0 15px 45px rgba(0,0,0,0.2);
-            z-index: 9999;
-            width: 85%;
-            max-width: 340px;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 2.5px solid var(--accent);
-            pointer-events: auto;
-            animation: bubbleFloat 3s ease-in-out infinite;
-        }
-
-        @keyframes bubbleFloat {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(-5px); }
-        }
-        
-        #instruction-bubble::after {
-            content: '';
-            position: absolute;
-            width: 16px; height: 16px;
-            background: white;
-            border-right: 2.5px solid var(--accent);
-            border-bottom: 2.5px solid var(--accent);
-        }
-        #instruction-bubble.point-down::after { bottom: -10px; left: 50%; transform: translateX(-50%) rotate(45deg); }
-        #instruction-bubble.point-up::after { top: -10px; left: 50%; transform: translateX(-50%) rotate(-135deg); }
-        
-        #instruction-bubble.hidden { opacity: 0; transform: translateX(-50%) translateY(30px); pointer-events: none; }
-        
-        .bubble-main { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-        .inst-icon { background: var(--accent); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .inst-text { font-size: 11px; font-weight: 800; color: #333; line-height: 1.4; text-transform: uppercase; }
-
-        .next-prompt {
-            margin-top: 8px;
-            font-size: 9px;
-            color: var(--accent);
-            font-weight: 900;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 5px;
-        }
-
-        .skip-tour-link { 
-            display: block; text-align: center; margin-top: 12px; padding-top: 8px;
-            border-top: 1px solid #eee; color: #999; font-size: 10px; font-weight: 800; 
-            text-transform: uppercase; cursor: pointer;
-        }
-
-        /* Highlight effect for walkthrough */
-        .tutorial-highlight { 
-            position: relative;
-            z-index: 9998 !important; 
-            box-shadow: 0 0 0 9999px rgba(0,0,0,0.6), 0 0 25px var(--accent) !important;
-            border-radius: 25px;
-            pointer-events: none;
-        }
 
         /* --- OVERLAYS & PAGES --- */
         .overlay-screen { position: fixed; inset: 0; z-index: 1000; background: #fff; transition: 0.4s; overflow-y: auto; padding-bottom: 140px; }
         .hidden { opacity: 0 !important; pointer-events: none !important; transform: translateY(20px); }
-        .user-greeting { padding: 45px 25px 10px; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; padding: 45px 25px 10px; }
+        .user-greeting { flex: 1; }
         .user-greeting h3 { margin: 0; font-size: 14px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
         .user-greeting h2 { margin: 0; font-size: 26px; font-weight: 900; color: #333; }
+        
+        /* --- ACTION ICON (TOP) --- */
+        .top-action-btn { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent); background: #f9f9f9; border: 1.5px solid #eee; cursor: pointer; box-shadow: var(--card-shadow); transition: 0.3s; }
+        .top-action-btn:active { transform: scale(0.95); background: #f0f0f0; }
+
+        /* --- PROFILE MENU --- */
+        #profile-overlay { position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.6); display: none; backdrop-filter: blur(5px); }
+        #profile-menu { 
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 10001; background: white; 
+            border-top-left-radius: 40px; border-top-right-radius: 40px; padding: 30px 25px calc(30px + var(--safe-bottom)); 
+            transform: translateY(100%); transition: 0.5s var(--transition); 
+        }
+        #profile-menu.open { transform: translateY(0); }
+        
+        .profile-header { text-align: center; margin-bottom: 25px; position: relative; }
+        .profile-pic-large { width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--accent); margin: 0 auto 15px; position: relative; }
+        .profile-pic-large img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        .edit-pic-btn { position: absolute; bottom: 0; right: 0; background: var(--accent); color: white; width: 32px; height: 32px; border-radius: 50%; border: 3px solid white; display: flex; align-items: center; justify-content: center; }
+        .profile-header h2 { margin: 0; font-weight: 900; font-size: 22px; color: #333; }
+        .profile-header p { margin: 5px 0 0; font-size: 13px; color: #888; font-weight: 400; }
+        
+        .menu-options { display: flex; flex-direction: column; gap: 10px; }
+        .menu-item { display: flex; align-items: center; gap: 15px; padding: 18px 20px; border-radius: 20px; background: #f9f9f9; text-decoration: none; color: #333; font-weight: 800; font-size: 14px; transition: 0.3s; }
+        .menu-item:active { background: #f0f0f0; transform: scale(0.98); }
+        .menu-item svg { color: var(--accent); width: 20px; }
+        
+        /* Logout Refinement: Neutral color with clear exit icon */
+        .menu-item.logout { background: #f4f4f4; border: 1.5px solid #eee; margin-top: 10px; }
+        .menu-item.logout svg { color: #555; }
+        .menu-item.logout:active { background: #e8e8e8; }
 
         /* --- HERO --- */
         .hero-slider-container { margin: 15px 25px; height: 190px; border-radius: 30px; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,166,153,0.25); touch-action: pan-y; }
@@ -165,13 +192,6 @@
         .fact-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; filter: brightness(0.65); }
         .fact-card span { position: relative; z-index: 2; font-size: 14px; font-weight: 800; line-height: 1.3; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
 
-        /* --- NOTIFICATIONS --- */
-        .notif-card { background: #f9f9f9; padding: 15px; border-radius: 20px; margin-bottom: 15px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.04); }
-        .notif-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-        .notif-title { font-size: 14px; color: #333; font-weight: 800; }
-        .notif-time { font-size: 10px; color: #999; font-weight: 800; text-transform: uppercase; }
-        .notif-desc { font-size: 12px; color: #666; margin: 0; line-height: 1.4; font-weight: 400; }
-
         /* --- NAVIGATION --- */
         .main-navigation-bar { position: fixed; bottom: 0; left: 0; right: 0; height: calc(90px + var(--safe-bottom)); background: #fff; z-index: 5000; display: flex; justify-content: space-around; align-items: center; padding: 0 15px var(--safe-bottom); box-shadow: 0 -10px 30px rgba(0,0,0,0.05); transition: 0.4s; }
         .nav-item { color: #ccc; flex: 1; display: flex; justify-content: center; padding: 10px; }
@@ -181,15 +201,12 @@
         #tour-modal { position: fixed; inset: 0; z-index: 9000; background: #111; transform: translateY(100%); transition: 0.5s; overflow: hidden; }
         #tour-modal.visible { transform: translateY(0); }
 
-        /* --- LOADER --- */
         #tour-loader { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; background: #111; z-index: 9001; transition: opacity 0.3s ease; }
         .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
         .scans-info { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--accent); font-weight: 800; text-transform: uppercase; margin-top: 6px; }
-        
         a-scene { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; }
-        
         #tour-back-btn { position: fixed; top: 30px; right: 20px; z-index: 9999; display: none; pointer-events: auto; }
         #tour-back-btn button { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 12px 20px; border-radius: 50px; font-weight: 900; font-size: 11px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-transform: uppercase; flex-direction: row-reverse; }
     </style>
@@ -201,28 +218,75 @@
         <img src="Assets/Logo_Icon.png" width="100" style="filter:brightness(0) invert(1);">
     </div>
 
-    <div id="tour-choice-overlay" class="hidden">
-        <div class="choice-card">
-            <h2>Welcome, Explorer!</h2>
-            <p>Would you like a quick tour of the app before you start exploring Baguio?</p>
-            <button class="btn-start-tour" onclick="app.confirmTour(true)">START TOUR</button>
-            <button class="btn-skip-tour" onclick="app.confirmTour(false)">SKIP & EXPLORE</button>
+    <div id="login-screen">
+        <div class="login-container">
+            <img src="Assets/Logo_Icon.png" width="60" style="margin-bottom: 20px; filter: brightness(0) invert(1);">
+            <h2>BagView</h2>
+            <p>Sign in to start your AR eco-adventure.</p>
+            
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" placeholder="explorer@baguio.com" id="login-email">
+            </div>
+            
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" placeholder="••••••••" id="login-pass">
+            </div>
+            
+            <button class="btn-login" onclick="app.handleLogin()">Sign In</button>
+
+            <div class="divider">or</div>
+
+            <button class="btn-google" onclick="app.handleGoogleLogin()">
+                <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path fill="white" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="white" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="white" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+                    <path fill="white" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Connect to Google
+            </button>
+            
+            <p style="margin-top: 25px; font-size: 12px; color: rgba(255,255,255,0.7);">Don't have an account? <span style="color: white; font-weight: 900; text-decoration: underline;">Sign Up</span></p>
         </div>
     </div>
 
-    <div id="instruction-bubble" class="hidden">
-        <div class="bubble-main" onclick="app.tutorialNext()">
-            <div class="inst-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-            </div>
-            <div style="flex: 1;">
-                <div class="inst-text" id="inst-content">...</div>
-                <div class="next-prompt" id="next-prompt">NEXT STEP 
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    <div id="profile-overlay" onclick="app.toggleProfile(false)"></div>
+    <div id="profile-menu">
+        <div class="profile-header">
+            <div class="profile-pic-large">
+                <img src="Assets/A1_Map.jpg" id="menu-profile-img">
+                <div class="edit-pic-btn" onclick="app.editProfilePic()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                 </div>
             </div>
+            <h2 id="menu-user-name">Explorer</h2>
+            <p id="menu-user-email">explorer@baguio.com</p>
         </div>
-        <div class="skip-tour-link" onclick="app.endTour()">Skip Tour</div>
+        <div class="menu-options">
+            <a href="#" class="menu-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                Saved Items
+            </a>
+            <a href="#" class="menu-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                Place Reviews
+            </a>
+            <div class="menu-item logout" onclick="app.logout()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                Logout Account
+            </div>
+        </div>
+    </div>
+
+    <div id="tour-choice-overlay" class="hidden">
+        <div class="choice-card">
+            <h2>Welcome, <span id="welcome-name">Explorer</span>!</h2>
+            <p>Would you like a quick tour of the app before you start exploring?</p>
+            <button class="btn-start-tour" onclick="app.confirmTour(true)">START TOUR</button>
+            <button class="btn-skip-tour" onclick="app.confirmTour(false)">SKIP & EXPLORE</button>
+        </div>
     </div>
 
     <div id="tour-back-btn">
@@ -259,7 +323,15 @@
     </div>
 
     <div id="home-page" class="overlay-screen">
-        <div class="user-greeting" id="welcome-text"><h3>Hi, Explorer!</h3><h2>Let's Discover Baguio</h2></div>
+        <div class="header-top">
+            <div class="user-greeting">
+                <h3>Hi, <span id="display-name">Explorer</span>!</h3>
+                <h2>Let's Discover Baguio</h2>
+            </div>
+            <div class="top-action-btn" onclick="app.nav('notifications')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            </div>
+        </div>
         
         <div class="hero-slider-container" id="hero-slider">
             <div class="hero-wrapper" id="hero-wrapper">
@@ -273,70 +345,45 @@
             </div>
         </div>
 
-        <div class="section-header" id="most-scanned-header"><h4>Most Scanned Station</h4></div>
+        <div class="section-header"><h4>Most Scanned Station</h4></div>
         <div id="most-scanned-list" style="display:flex; gap:15px; overflow-x:auto; padding:0 25px 30px; scrollbar-width:none;"></div>
 
         <div class="section-header">
             <h4>Did You Know?</h4>
             <a href="#" class="explore-link">Explore Articles</a>
         </div>
-        <div class="did-you-know-scroll" id="fact-section">
+        <div class="did-you-know-scroll">
             <div class="fact-card"><img src="Assets/History.png"><span>Learn more about Baguio Botanical Garden History.</span></div>
-            <div class="fact-card"><img src="Assets/Eco%20Tips.png"><span>How to be a responsible tourist Travel Info and entrance fees.</span></div>
-            <div class="fact-card"><img src="Assets/Eco%20Awareness.png"><span>Learn about conservatioon and sustainability.</span></div>
-        </div>
-    </div>
-
-    <div id="notifications-page" class="overlay-screen hidden">
-        <div class="user-greeting"><h2>Updates</h2></div>
-        
-        <div class="notifications-list" style="padding: 0 25px;">
-            <div class="notif-card" style="border-left: 4px solid var(--accent);">
-                <div class="notif-header">
-                    <span class="notif-title">New Bloom Alert! 🌸</span>
-                    <span class="notif-time">2H AGO</span>
-                </div>
-                <p class="notif-desc">The Dahlias in the Centennial Garden are now in full bloom. Don't forget to scan the marker for a 3D growth time-lapse!</p>
-            </div>
-
-            <div class="notif-card" style="border-left: 4px solid #FFC107;">
-                <div class="notif-header">
-                    <span class="notif-title">Trail Maintenance 🚧</span>
-                    <span class="notif-time">5H AGO</span>
-                </div>
-                <p class="notif-desc">The Japanese Tunnel lower path is temporarily closed for maintenance. Please follow the upper trail signs.</p>
-            </div>
-
-            <div class="notif-card" style="background: var(--accent-soft);">
-                <div class="notif-header">
-                    <span class="notif-title" style="color: var(--accent);">Eco-Explorer Tip 🌲</span>
-                    <span class="notif-time" style="color: #666;">YESTERDAY</span>
-                </div>
-                <p class="notif-desc" style="color: #333;">Did you know? Baguio Botanical Garden is home to over 150 species of flora. Use your AR scanner to identify rare pine varieties!</p>
-            </div>
+            <div class="fact-card"><img src="Assets/Eco%20Tips.png"><span>How to be a responsible tourist.</span></div>
+            <div class="fact-card"><img src="Assets/Eco%20Awareness.png"><span>Learn about conservation.</span></div>
         </div>
     </div>
 
     <div id="search-page" class="overlay-screen hidden">
-        <div class="user-greeting"><h2>Search Stations</h2></div>
+        <div class="user-greeting" style="padding:45px 25px 10px;"><h2>Search Stations</h2></div>
         <div style="padding:0 25px"><input type="text" placeholder="Find flowers, tunnels..." style="width:100%; padding:15px; border-radius:15px; border:none; background:#f4f4f4;"></div>
+    </div>
+
+    <div id="notifications-page" class="overlay-screen hidden">
+        <div class="user-greeting" style="padding:45px 25px 10px;"><h2>Updates</h2></div>
     </div>
 
     <nav class="main-navigation-bar" id="main-nav">
         <div class="nav-item active" id="nav-home" onclick="app.nav('home')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
         <div class="nav-item" id="nav-search" onclick="app.nav('search')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
-        <div class="nav-item-center" id="ar-main-btn" onclick="app.startScanner()">
+        <div class="nav-item-center" onclick="app.startScanner()">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="9" y="9" width="6" height="6"></rect></svg>
         </div>
         <div class="nav-item" id="nav-map" onclick="app.openInternalPage('map.html', 0)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg></div>
-        <div class="nav-item" id="nav-notifications" onclick="app.nav('notifications')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
+        <div class="nav-item" id="nav-profile" onclick="app.toggleProfile(true)">
+            <div style="width: 28px; height: 28px; border-radius: 50%; overflow: hidden; border: 1.5px solid currentColor;">
+                <img src="Assets/A1_Map.jpg" id="bottom-profile-img" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+        </div>
     </nav>
 
     <div id="tour-modal">
-        <div id="tour-loader">
-            <div class="spinner"></div>
-            <span style="font-size: 10px; font-weight: 800; letter-spacing: 2px;">LOADING EXPERIENCE...</span>
-        </div>
+        <div id="tour-loader"><div class="spinner"></div><span style="font-size: 10px; font-weight: 800; letter-spacing: 2px;">LOADING EXPERIENCE...</span></div>
         <iframe id="tour-iframe" style="width:100%; height:100%; border:none;"></iframe>
     </div>
 
@@ -348,9 +395,9 @@
 <script>
 const app = {
     currentHero: 0, 
-    tutorialStep: 0,
     sliderTimer: null,
-    isTourActive: false,
+    userName: "Explorer",
+    userEmail: "explorer@baguio.com",
     dockState: { startY: 0, currentY: 0, isDragging: false, isOpen: true },
     stations: [
         { id: 0, name: "Map", thumb: "Assets/A1_Map.jpg", link: "map.html", scans: 1240 },
@@ -375,14 +422,10 @@ const app = {
     init: function() {
         this.renderMostScanned(); this.renderDock(); this.initAR(); this.initDockDraggable(); this.startHeroSlider();
         
-        // Listener for Panoee integration from map.html
         window.addEventListener('message', (event) => {
             const exitBtn = document.getElementById('tour-back-btn');
-            if (event.data === 'hideExitBtn') {
-                exitBtn.style.display = 'none';
-            } else if (event.data === 'showExitBtn') {
-                exitBtn.style.display = 'block';
-            }
+            if (event.data === 'hideExitBtn') exitBtn.style.display = 'none';
+            else if (event.data === 'showExitBtn') exitBtn.style.display = 'block';
         });
 
         document.getElementById('tour-iframe').onload = () => {
@@ -392,89 +435,72 @@ const app = {
         };
 
         window.addEventListener('popstate', (event) => {
-            const isModalOpen = document.getElementById('tour-modal').classList.contains('visible');
-            const isARActive = document.getElementById('gallery-dock-container').classList.contains('ar-active');
-            
-            if (isModalOpen) {
-                this.closeInternalPage(true); 
-            } else if (isARActive) {
-                this.nav('home', true);
-            }
+            if (document.getElementById('tour-modal').classList.contains('visible')) this.closeInternalPage(true); 
+            else if (document.getElementById('gallery-dock-container').classList.contains('ar-active')) this.nav('home', true);
         });
 
         setTimeout(() => { 
             const splash = document.getElementById('splash-screen');
             if(splash) { 
                 splash.style.opacity = '0'; 
-                setTimeout(() => {
-                    splash.style.display='none';
-                    document.getElementById('tour-choice-overlay').classList.remove('hidden');
-                }, 600); 
+                setTimeout(() => splash.style.display='none', 600); 
             }
-        }, 1500);
+        }, 2000);
+    },
+
+    updateUserUI: function(name, email) {
+        this.userName = name || "Explorer";
+        this.userEmail = email || "explorer@baguio.com";
+        document.getElementById('display-name').innerText = this.userName;
+        document.getElementById('welcome-name').innerText = this.userName;
+        document.getElementById('menu-user-name').innerText = this.userName;
+        document.getElementById('menu-user-email').innerText = this.userEmail;
+    },
+
+    handleLogin: function() {
+        const emailInput = document.getElementById('login-email').value;
+        const namePart = emailInput ? emailInput.split('@')[0] : "Explorer";
+        const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+        
+        this.updateUserUI(formattedName, emailInput || "explorer@baguio.com");
+        
+        document.getElementById('login-screen').classList.add('hidden');
+        setTimeout(() => document.getElementById('tour-choice-overlay').classList.remove('hidden'), 600);
+    },
+
+    handleGoogleLogin: function() {
+        this.updateUserUI("John", "john@gmail.com");
+        document.getElementById('login-screen').classList.add('hidden');
+        setTimeout(() => document.getElementById('tour-choice-overlay').classList.remove('hidden'), 600);
+    },
+
+    toggleProfile: function(show) {
+        const overlay = document.getElementById('profile-overlay');
+        const menu = document.getElementById('profile-menu');
+        if (show) {
+            overlay.style.display = 'block';
+            setTimeout(() => menu.classList.add('open'), 10);
+        } else {
+            menu.classList.remove('open');
+            setTimeout(() => overlay.style.display = 'none', 500);
+        }
+    },
+
+    editProfilePic: function() {
+        alert("Upload feature coming soon!");
+    },
+
+    logout: function() {
+        this.toggleProfile(false);
+        setTimeout(() => {
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('login-email').value = "";
+            document.getElementById('login-pass').value = "";
+        }, 500);
     },
 
     confirmTour: function(wantTour) {
         document.getElementById('tour-choice-overlay').classList.add('hidden');
-        if (wantTour) {
-            this.startWalkthrough();
-        }
-    },
-
-    startWalkthrough: function() {
-        this.isTourActive = true;
-        this.tutorialStep = 0;
-        this.tutorialNext();
-    },
-
-    endTour: function() {
-        this.isTourActive = false;
-        document.getElementById('instruction-bubble').classList.add('hidden');
-        document.querySelectorAll('.tutorial-highlight').forEach(el => el.classList.remove('tutorial-highlight'));
-    },
-
-    tutorialNext: function() {
-        if (!this.isTourActive) return;
-
-        const bubble = document.getElementById('instruction-bubble');
-        const content = document.getElementById('inst-content');
-        const nextPrompt = document.getElementById('next-prompt');
-        
-        const tourSteps = [
-            { text: "Welcome! Let's explore Baguio with a quick tour!", target: "welcome-text", pos: "top: 220px;", arrow: "point-up" },
-            { text: "Check here for the latest highlights and news!", target: "hero-slider", pos: "top: 410px;", arrow: "point-up" },
-            { text: "See which stations are the most scanned right now.", target: "most-scanned-header", pos: "top: 550px;", arrow: "point-up" },
-            { text: "Learn fun facts about Baguio's history and nature.", target: "fact-section", pos: "top: 58%;", arrow: "point-up" },
-            { text: "Tap here to search for specific flowers or areas.", target: "nav-search", pos: "bottom: 110px;", arrow: "point-down" },
-            { text: "The magic happens here! Tap to start AR scanning.", target: "ar-main-btn", pos: "bottom: 125px;", arrow: "point-down" },
-            { text: "New! Access the interactive map anytime from here.", target: "nav-map", pos: "bottom: 110px;", arrow: "point-down" },
-            { text: "You're all set! Ready to start exploring?", target: null, pos: "top: 40%;", arrow: "" }
-        ];
-
-        document.querySelectorAll('.tutorial-highlight').forEach(el => el.classList.remove('tutorial-highlight'));
-
-        if (this.tutorialStep < tourSteps.length) {
-            const step = tourSteps[this.tutorialStep];
-            content.innerText = step.text;
-            bubble.className = step.arrow;
-            bubble.classList.remove('hidden');
-            bubble.style.cssText = `left:50%; transform:translateX(-50%); ${step.pos}`;
-
-            if (this.tutorialStep === tourSteps.length - 1) {
-                nextPrompt.innerHTML = `FINISH TOUR <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-            } else {
-                nextPrompt.innerHTML = `NEXT STEP <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
-            }
-            
-            if (step.target) {
-                const targetEl = document.getElementById(step.target);
-                targetEl.classList.add('tutorial-highlight');
-                targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-            this.tutorialStep++;
-        } else {
-            this.endTour();
-        }
     },
 
     initDockDraggable: function() {
@@ -509,7 +535,7 @@ const app = {
 
     renderDock: function() {
         const dock = document.getElementById('gallery-dock');
-        dock.innerHTML = this.stations.map(s => `<div class="gallery-item" data-station-id="${s.id}" onclick="app.selectReference(${s.id}, '${s.name}', this)"><div class="gallery-img-wrap"><img src="${s.thumb}"><div class="dock-view-tag">👀 ${s.scans}</div></div><span>${s.name}</span></div>`).join('');
+        dock.innerHTML = this.stations.map(s => `<div class="gallery-item" onclick="app.selectReference(${s.id}, '${s.name}', this)"><div class="gallery-img-wrap"><img src="${s.thumb}"></div><span>${s.name}</span></div>`).join('');
     },
 
     selectReference: function(id, name, el) {
@@ -519,7 +545,6 @@ const app = {
     },
 
     startScanner: function() {
-        if (this.isTourActive) return;
         document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
         document.getElementById('main-nav').style.transform = "translateY(150%)";
         document.getElementById('ar-top-layer').style.opacity = "1";
@@ -527,11 +552,10 @@ const app = {
         document.getElementById('gallery-dock-container').classList.add('ar-active');
         history.pushState({ ar: true }, "");
         const sceneEl = document.querySelector('a-scene');
-        if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].start(); }
+        if (sceneEl.systems['mindar-image-system']) sceneEl.systems['mindar-image-system'].start();
     },
 
     nav: function(page, isHardwareBack = false) {
-        if (this.isTourActive) return;
         document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
         document.getElementById(page + '-page').classList.remove('hidden');
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -541,7 +565,7 @@ const app = {
         document.getElementById('ar-reticle').style.opacity = "0";
         document.getElementById('gallery-dock-container').classList.remove('ar-active');
         const sceneEl = document.querySelector('a-scene');
-        if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
+        if (sceneEl.systems['mindar-image-system']) sceneEl.systems['mindar-image-system'].stop();
     },
 
     initAR: function() {
@@ -567,37 +591,20 @@ const app = {
     },
 
     openInternalPage: function(url, stationId) { 
-        document.getElementById('instruction-bubble').classList.add('hidden');
-        
-        // Update Label Logic: Exit Map for map.html, Exit Experience for others
         const label = document.getElementById('label-text');
-        if (url === 'map.html') {
-            label.innerText = 'Exit Map';
-        } else {
-            label.innerText = 'Exit Experience';
-        }
-
-        const sceneEl = document.querySelector('a-scene');
-        if (url !== 'map.html') {
-            if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
-        }
-
         const loader = document.getElementById('tour-loader');
-        loader.style.display = 'flex';
-        loader.style.opacity = '1';
         
-        const iframe = document.getElementById('tour-iframe');
-        iframe.src = url; 
-        
-        document.getElementById('tour-modal').classList.add('visible'); 
+        if (url === 'map.html') { label.innerText = 'Exit Map'; loader.style.display = 'none'; } 
+        else { label.innerText = 'Exit Experience'; loader.style.display = 'flex'; loader.style.opacity = '1'; }
 
-        // Change: Hide this button if we are opening the Map, since the Map has its own back button
-        if (url === 'map.html') {
-            document.getElementById('tour-back-btn').style.display = 'none';
-        } else {
-            document.getElementById('tour-back-btn').style.display = 'block';
+        if (url !== 'map.html') {
+            const sceneEl = document.querySelector('a-scene');
+            if (sceneEl.systems['mindar-image-system']) sceneEl.systems['mindar-image-system'].stop();
         }
         
+        document.getElementById('tour-iframe').src = url; 
+        document.getElementById('tour-modal').classList.add('visible'); 
+        document.getElementById('tour-back-btn').style.display = url === 'map.html' ? 'none' : 'block';
         history.pushState({ modal: true }, "");
     },
 
@@ -605,12 +612,10 @@ const app = {
         document.getElementById('tour-modal').classList.remove('visible'); 
         document.getElementById('tour-back-btn').style.display = 'none'; 
         document.getElementById('tour-iframe').src = ""; 
-        
-        const sceneEl = document.querySelector('a-scene');
         if (document.getElementById('gallery-dock-container').classList.contains('ar-active')) {
-            if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].start(); }
+            const sceneEl = document.querySelector('a-scene');
+            if (sceneEl.systems['mindar-image-system']) sceneEl.systems['mindar-image-system'].start();
         }
-        
         if (!isHardwareBack) history.back();
     },
 
@@ -618,16 +623,12 @@ const app = {
         const slider = document.getElementById('hero-slider');
         let touchStartX = 0;
         let touchEndX = 0;
-
         slider.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
         slider.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; this.handleHeroSwipe(touchStartX, touchEndX); }, { passive: true });
-
         this.handleHeroSwipe = (start, end) => {
-            const threshold = 50; 
-            if (end < start - threshold) { this.moveSlider(1); } 
-            else if (end > start + threshold) { this.moveSlider(-1); }
+            if (end < start - 50) this.moveSlider(1); 
+            else if (end > start + 50) this.moveSlider(-1);
         };
-
         this.moveSlider = (direction) => {
             const banners = document.querySelectorAll('.promo-banner'); 
             const dots = document.querySelectorAll('.dot');
@@ -640,12 +641,7 @@ const app = {
                 this.resetSliderTimer();
             }
         };
-
-        this.resetSliderTimer = () => {
-            clearInterval(this.sliderTimer);
-            this.sliderTimer = setInterval(() => this.moveSlider(1), 4000);
-        };
-
+        this.resetSliderTimer = () => { clearInterval(this.sliderTimer); this.sliderTimer = setInterval(() => this.moveSlider(1), 4000); };
         this.resetSliderTimer();
     }
 };
