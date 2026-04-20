@@ -166,7 +166,8 @@
         .section-header h4 { margin: 0; font-size: 16px; font-weight: 900; color: #222; }
         .section-header .explore-link { font-size: 11px; color: var(--accent); font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .did-you-know-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 5px 25px 25px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-        .fact-card { flex: 0 0 260px; height: 150px; border-radius: 25px; position: relative; overflow: hidden; color: white; padding: 20px; display: flex; align-items: flex-end; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .fact-card { flex: 0 0 260px; height: 150px; border-radius: 25px; position: relative; overflow: hidden; color: white; padding: 20px; display: flex; align-items: flex-end; box-shadow: 0 8px 20px rgba(0,0,0,0.1); transition: 0.3s; }
+        .fact-card:active { transform: scale(0.96); }
         .fact-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; filter: brightness(0.65); }
         .fact-card span { position: relative; z-index: 2; font-size: 14px; font-weight: 800; line-height: 1.3; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
 
@@ -278,22 +279,23 @@
             </div>
         </div>
 
-        <div class="section-header" id="most-scanned-header"><h4>Most Scanned Station</h4></div>
-        <div id="most-scanned-list" style="display:flex; gap:15px; overflow-x:auto; padding:0 25px 30px; scrollbar-width:none;"></div>
-
-        <div class="section-header">
-            <h4>Did You Know?</h4>
-            <a href="#" class="explore-link">Explore Articles</a>
+        <div id="most-scanned-container">
+            <div class="section-header"><h4>Most Scanned Station</h4></div>
+            <div id="most-scanned-list" style="display:flex; gap:15px; overflow-x:auto; padding:0 25px 30px; scrollbar-width:none;"></div>
         </div>
-        <div class="did-you-know-scroll" id="fact-section">
-            <div class="fact-card"><img src="Assets/History.png"><span>Learn more about Baguio Botanical Garden History.</span></div>
-            <div class="fact-card"><img src="Assets/Eco%20Tips.png"><span>How to be a responsible tourist Travel Info and entrance fees.</span></div>
-            <div class="fact-card"><img src="Assets/Eco%20Awareness.png"><span>Learn about conservatioon and sustainability.</span></div>
+
+        <div id="did-you-know-section">
+            <div class="section-header">
+                <h4>Did You Know?</h4>
+                <a href="#" class="explore-link">Explore Articles</a>
+            </div>
+            <div class="did-you-know-scroll" id="fact-section">
+                </div>
         </div>
     </div>
 
     <div id="notifications-page" class="overlay-screen hidden">
-        <div class="user-greeting"><h2>Updates</h2></div>
+        <div class="user-greeting" id="notif-header-title"><h2>Updates</h2></div>
         
         <div class="notifications-list" style="padding: 0 25px;">
             <div class="notif-card" style="border-left: 4px solid var(--accent);">
@@ -327,7 +329,7 @@
             <div class="article-content" id="art-content">
                 Explore the rich biodiversity and unique heritage of this area.
             </div>
-            <div class="article-action">
+            <div class="article-action" id="art-action-bar">
                 <div>
                     <h6>Immerse Yourself</h6>
                     <span style="font-size: 10px; color: #999;">Step into the 360&deg; Experience</span>
@@ -367,6 +369,13 @@ const app = {
     sliderTimer: null,
     isTourActive: false,
     dockState: { startY: 0, currentY: 0, isDragging: false, isOpen: true },
+    
+    facts: [
+        { id: 'fact-history', tag: "HISTORY", title: "Baguio Botanical Garden History", thumb: "Assets/History.png", info: "Originally known as the Igorot Village, the Baguio Botanical Garden has stood as a symbol of the city's growth. It served as a experimental nursery for pine trees and other flora during the early American colonial period. Today, it preserves the cultural heritage of the Cordilleras through its diverse monuments and themed gardens." },
+        { id: 'fact-tips', tag: "TRAVEL TIPS", title: "Responsible Tourism Guide", thumb: "Assets/Eco%20Tips.png", info: "To preserve the beauty of the gardens, visitors are encouraged to follow the 'Leave No Trace' principle. Entrance fees are 10 pesos for adults and 5 pesos for children. Always stay on marked trails to protect sensitive plant species, and remember that picking flowers is strictly prohibited." },
+        { id: 'fact-eco', tag: "SUSTAINABILITY", title: "Conservation Efforts", thumb: "Assets/Eco%20Awareness.png", info: "The garden is home to several endemic plant species that are currently endangered. Our conservation team works tirelessly to rehabilitate the soil and maintain natural water filtration systems. By visiting, you support the ongoing research and protection of Northern Luzon's unique mountain biodiversity." }
+    ],
+
     stations: [
         { id: 0, name: "Map", thumb: "Assets/A1_Map.jpg", link: "map.html", scans: 1240, info: "The interactive map provides a complete bird's-eye view of the Baguio Botanical Garden, guiding you through every themed station and eco-trail." },
         { id: 1, name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://tour.panoee.net/mainentrance/1", scans: 980, info: "Welcome to the heart of nature. The main entrance showcases a massive stone sculpture depicting the diverse culture of the Cordilleras." },
@@ -388,7 +397,12 @@ const app = {
     ],
 
     init: function() {
-        this.renderMostScanned(); this.renderDock(); this.initAR(); this.initDockDraggable(); this.startHeroSlider();
+        this.renderMostScanned(); 
+        this.renderDock(); 
+        this.renderFactCards();
+        this.initAR(); 
+        this.initDockDraggable(); 
+        this.startHeroSlider();
         
         window.addEventListener('message', (event) => {
             const exitBtn = document.getElementById('tour-back-btn');
@@ -443,10 +457,14 @@ const app = {
         const nextPrompt = document.getElementById('next-prompt');
         
         const tourSteps = [
-            { text: "Welcome! Let's explore Baguio with a quick tour!", target: "welcome-text", pos: "top: 220px;", arrow: "point-up" },
-            { text: "Check here for the latest highlights and news!", target: "hero-slider", pos: "top: 410px;", arrow: "point-up" },
-            { text: "Tap here to search for specific flowers or areas.", target: "nav-search", pos: "bottom: 110px;", arrow: "point-down" },
-            { text: "The magic happens here! Tap to start AR scanning.", target: "ar-main-btn", pos: "bottom: 125px;", arrow: "point-down" }
+            { text: "Welcome! This is your main hub to explore Baguio Botanical Garden.", target: "welcome-text", pos: "top: 150px;", arrow: "point-up" },
+            { text: "Check these banners for featured activities and special news!", target: "hero-slider", pos: "top: 410px;", arrow: "point-up" },
+            { text: "See which stations other explorers are visiting the most!", target: "most-scanned-container", pos: "top: 610px;", arrow: "point-up" },
+            { text: "Learn interesting facts about the garden's history and heritage.", target: "did-you-know-section", pos: "bottom: 110px;", arrow: "point-down" },
+            { text: "Looking for a specific station? Use the search to find it instantly.", target: "nav-search", pos: "bottom: 110px;", arrow: "point-down" },
+            { text: "Tap here to start your AR Scanning adventure!", target: "ar-main-btn", pos: "bottom: 125px;", arrow: "point-down" },
+            { text: "Need directions? The interactive map will guide you.", target: "nav-map", pos: "bottom: 110px;", arrow: "point-down" },
+            { text: "Stay updated with park announcements and new blooms!", target: "nav-notifications", pos: "bottom: 110px;", arrow: "point-down" }
         ];
 
         document.querySelectorAll('.tutorial-highlight').forEach(el => el.classList.remove('tutorial-highlight'));
@@ -458,6 +476,8 @@ const app = {
             bubble.style.cssText = `left:50%; transform:translateX(-50%); ${step.pos}`;
             if (this.tutorialStep === tourSteps.length - 1) {
                 nextPrompt.innerHTML = `FINISH TOUR <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+            } else {
+                nextPrompt.innerHTML = `NEXT STEP <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
             }
             if (step.target) { document.getElementById(step.target).classList.add('tutorial-highlight'); }
             this.tutorialStep++;
@@ -466,15 +486,7 @@ const app = {
 
     filterSearch: function(query) {
         const resultsGrid = document.getElementById('search-results');
-        
-        // --- UPDATED LOGIC ---
-        // If the query is empty or just spaces, clear the results and exit.
-        if (!query || query.trim() === "") {
-            resultsGrid.innerHTML = "";
-            return;
-        }
-        // ---------------------
-
+        if (!query || query.trim() === "") { resultsGrid.innerHTML = ""; return; }
         const filtered = this.stations.filter(s => s.name.toLowerCase().includes(query.toLowerCase()));
         resultsGrid.innerHTML = filtered.map(s => `
             <div class="search-item" onclick="app.openArticle(${s.id})">
@@ -484,18 +496,40 @@ const app = {
             </div>`).join('');
     },
 
+    renderFactCards: function() {
+        const section = document.getElementById('fact-section');
+        section.innerHTML = this.facts.map(f => `
+            <div class="fact-card" onclick="app.openFactArticle('${f.id}')">
+                <img src="${f.thumb}">
+                <span>${f.title}</span>
+            </div>
+        `).join('');
+    },
+
+    openFactArticle: function(factId) {
+        const fact = this.facts.find(f => f.id === factId);
+        if(!fact) return;
+        document.getElementById('art-hero-img').src = fact.thumb;
+        document.getElementById('art-tag').innerText = fact.tag;
+        document.getElementById('art-title').innerText = fact.title;
+        document.getElementById('art-content').innerText = fact.info;
+        document.getElementById('art-action-bar').style.display = 'none';
+        document.getElementById('article-overlay').classList.add('visible');
+        history.pushState({ article: true }, "");
+    },
+
     openArticle: function(id) {
         const station = this.stations.find(s => s.id === id);
         if(!station) return;
-        
+        document.getElementById('art-action-bar').style.display = 'flex';
         document.getElementById('art-hero-img').src = station.thumb;
+        document.getElementById('art-tag').innerText = "Botanical Station";
         document.getElementById('art-title').innerText = station.name;
         document.getElementById('art-content').innerText = station.info || "Discover the beauty and history of this unique station within the Baguio Botanical Garden.";
         document.getElementById('art-tour-btn').onclick = () => {
             this.closeArticle();
             this.openInternalPage(station.link, station.id);
         };
-
         document.getElementById('article-overlay').classList.add('visible');
         history.pushState({ article: true }, "");
     },
@@ -568,14 +602,11 @@ const app = {
         document.getElementById('ar-top-layer').style.opacity = "0";
         document.getElementById('ar-reticle').style.opacity = "0";
         document.getElementById('gallery-dock-container').classList.remove('ar-active');
-        
-        // Reset the search input and clear results whenever navigating to the search page
         if (page === 'search') { 
             const searchInput = document.getElementById('station-search-input');
             if (searchInput) searchInput.value = "";
             this.filterSearch(""); 
         }
-
         const sceneEl = document.querySelector('a-scene');
         if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
     },
@@ -650,7 +681,6 @@ const app = {
         this.resetSliderTimer();
     }
 };
-
 window.onload = () => app.init();
 </script>
 </body>
