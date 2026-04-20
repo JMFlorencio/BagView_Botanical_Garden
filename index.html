@@ -73,19 +73,11 @@
 
         /* --- INTERACTIVE INSTRUCTION BALLOON --- */
         #instruction-bubble {
-            position: fixed;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            padding: 16px 20px;
-            border-radius: 22px;
-            box-shadow: 0 15px 45px rgba(0,0,0,0.2);
-            z-index: 9999;
-            width: 85%;
-            max-width: 340px;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 2.5px solid var(--accent);
-            pointer-events: auto;
+            position: fixed; left: 50%; transform: translateX(-50%);
+            background: white; padding: 16px 20px; border-radius: 22px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.2); z-index: 9999;
+            width: 85%; max-width: 340px; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2.5px solid var(--accent); pointer-events: auto;
             animation: bubbleFloat 3s ease-in-out infinite;
         }
 
@@ -95,11 +87,8 @@
         }
         
         #instruction-bubble::after {
-            content: '';
-            position: absolute;
-            width: 16px; height: 16px;
-            background: white;
-            border-right: 2.5px solid var(--accent);
+            content: ''; position: absolute; width: 16px; height: 16px;
+            background: white; border-right: 2.5px solid var(--accent);
             border-bottom: 2.5px solid var(--accent);
         }
         #instruction-bubble.point-down::after { bottom: -10px; left: 50%; transform: translateX(-50%) rotate(45deg); }
@@ -112,15 +101,8 @@
         .inst-text { font-size: 11px; font-weight: 800; color: #333; line-height: 1.4; text-transform: uppercase; }
 
         .next-prompt {
-            margin-top: 8px;
-            font-size: 9px;
-            color: var(--accent);
-            font-weight: 900;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 5px;
+            margin-top: 8px; font-size: 9px; color: var(--accent); font-weight: 900;
+            letter-spacing: 1px; display: flex; align-items: center; justify-content: flex-end; gap: 5px;
         }
 
         .skip-tour-link { 
@@ -129,13 +111,10 @@
             text-transform: uppercase; cursor: pointer;
         }
 
-        /* Highlight effect for walkthrough */
         .tutorial-highlight { 
-            position: relative;
-            z-index: 9998 !important; 
+            position: relative; z-index: 9998 !important; 
             box-shadow: 0 0 0 9999px rgba(0,0,0,0.6), 0 0 25px var(--accent) !important;
-            border-radius: 25px;
-            pointer-events: none;
+            border-radius: 25px; pointer-events: none;
         }
 
         /* --- OVERLAYS & PAGES --- */
@@ -144,6 +123,32 @@
         .user-greeting { padding: 45px 25px 10px; }
         .user-greeting h3 { margin: 0; font-size: 14px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
         .user-greeting h2 { margin: 0; font-size: 26px; font-weight: 900; color: #333; }
+
+        /* --- SEARCH PAGE STYLES --- */
+        .search-results-container { padding: 20px 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .search-item { background: white; border-radius: 20px; padding: 10px; box-shadow: var(--card-shadow); text-align: center; transition: 0.3s; }
+        .search-item:active { transform: scale(0.95); }
+        .search-item img { width: 100%; height: 100px; object-fit: cover; border-radius: 15px; }
+        .search-item h5 { margin: 10px 0 5px; font-size: 12px; font-weight: 800; color: #333; text-transform: uppercase; }
+        .search-item span { font-size: 9px; color: var(--accent); font-weight: 900; }
+        
+        .search-input-wrap { position: sticky; top: 0; background: white; z-index: 10; padding: 15px 25px; }
+        .search-input-wrap input { width:100%; padding:18px; border-radius:20px; border:2px solid #f4f4f4; background:#f4f4f4; transition: 0.3s; font-weight: 600; outline: none; }
+        .search-input-wrap input:focus { border-color: var(--accent); background: white; box-shadow: 0 10px 20px rgba(0,166,153,0.1); }
+
+        /* --- ARTICLE OVERLAY --- */
+        #article-overlay { position: fixed; inset: 0; z-index: 10000; background: white; transform: translateY(100%); transition: 0.6s var(--transition); overflow-y: auto; }
+        #article-overlay.visible { transform: translateY(0); }
+        .article-hero { width: 100%; height: 45vh; position: relative; }
+        .article-hero img { width: 100%; height: 100%; object-fit: cover; }
+        .article-close { position: absolute; top: 30px; left: 20px; width: 45px; height: 45px; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; }
+        .article-body { padding: 35px 25px; background: white; border-top-left-radius: 40px; border-top-right-radius: 40px; margin-top: -40px; position: relative; }
+        .article-tag { color: var(--accent); font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; }
+        .article-title { font-size: 28px; font-weight: 900; color: #111; margin: 10px 0 20px; line-height: 1.1; }
+        .article-content { font-size: 15px; color: #555; line-height: 1.7; font-weight: 400; }
+        .article-action { margin-top: 30px; background: #f9f9f9; padding: 25px; border-radius: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .article-action h6 { margin: 0; font-size: 13px; font-weight: 900; }
+        .btn-view-360 { background: var(--accent); color: white; border: none; padding: 12px 20px; border-radius: 50px; font-weight: 900; font-size: 10px; text-transform: uppercase; }
 
         /* --- HERO --- */
         .hero-slider-container { margin: 15px 25px; height: 190px; border-radius: 30px; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,166,153,0.25); touch-action: pan-y; }
@@ -298,28 +303,38 @@
                 </div>
                 <p class="notif-desc">The Dahlias in the Centennial Garden are now in full bloom. Don't forget to scan the marker for a 3D growth time-lapse!</p>
             </div>
-
-            <div class="notif-card" style="border-left: 4px solid #FFC107;">
-                <div class="notif-header">
-                    <span class="notif-title">Trail Maintenance 🚧</span>
-                    <span class="notif-time">5H AGO</span>
-                </div>
-                <p class="notif-desc">The Japanese Tunnel lower path is temporarily closed for maintenance. Please follow the upper trail signs.</p>
-            </div>
-
-            <div class="notif-card" style="background: var(--accent-soft);">
-                <div class="notif-header">
-                    <span class="notif-title" style="color: var(--accent);">Eco-Explorer Tip 🌲</span>
-                    <span class="notif-time" style="color: #666;">YESTERDAY</span>
-                </div>
-                <p class="notif-desc" style="color: #333;">Did you know? Baguio Botanical Garden is home to over 150 species of flora. Use your AR scanner to identify rare pine varieties!</p>
-            </div>
         </div>
     </div>
 
     <div id="search-page" class="overlay-screen hidden">
         <div class="user-greeting"><h2>Search Stations</h2></div>
-        <div style="padding:0 25px"><input type="text" placeholder="Find flowers, tunnels..." style="width:100%; padding:15px; border-radius:15px; border:none; background:#f4f4f4;"></div>
+        <div class="search-input-wrap">
+            <input type="text" id="station-search-input" placeholder="Find stations, tunnels..." oninput="app.filterSearch(this.value)">
+        </div>
+        <div id="search-results" class="search-results-container"></div>
+    </div>
+
+    <div id="article-overlay">
+        <div class="article-hero">
+            <img id="art-hero-img" src="">
+            <div class="article-close" onclick="app.closeArticle()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </div>
+        </div>
+        <div class="article-body">
+            <span class="article-tag" id="art-tag">Botanical Station</span>
+            <h1 class="article-title" id="art-title">Station Title</h1>
+            <div class="article-content" id="art-content">
+                Explore the rich biodiversity and unique heritage of this area.
+            </div>
+            <div class="article-action">
+                <div>
+                    <h6>Immerse Yourself</h6>
+                    <span style="font-size: 10px; color: #999;">Step into the 360&deg; Experience</span>
+                </div>
+                <button class="btn-view-360" id="art-tour-btn">Launch Tour</button>
+            </div>
+        </div>
     </div>
 
     <nav class="main-navigation-bar" id="main-nav">
@@ -353,36 +368,32 @@ const app = {
     isTourActive: false,
     dockState: { startY: 0, currentY: 0, isDragging: false, isOpen: true },
     stations: [
-        { id: 0, name: "Map", thumb: "Assets/A1_Map.jpg", link: "map.html", scans: 1240 },
-        { id: 1, name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://tour.panoee.net/mainentrance/1", scans: 980 },
-        { id: 2, name: "Arbor", thumb: "Assets/Arbor.png", link: "https://tour.panoee.net/arbor", scans: 340 },
-        { id: 3, name: "Asian Garden", thumb: "Assets/Asian Garden.png", link: "https://tour.panoee.net/asian-garden", scans: 450 },
-        { id: 4, name: "Cactus & Succulents", thumb: "Assets/Cactus&Succulents.png", link: "https://tour.panoee.net/cactus-succulent-garden/1-1", scans: 640 },
-        { id: 5, name: "Centennial Garden", thumb: "Assets/Centennial Garden.png", link: "https://tour.panoee.net/centennial-garden/1", scans: 210 },
-        { id: 6, name: "Chinese Garden", thumb: "Assets/Chinese%20Garden.png", link: "https://tour.panoee.net/chinese-garden/69cd28ffcd728200084a2654", scans: 520 },
-        { id: 7, name: "City of Vaughan", thumb: "Assets/City%20of%20Vaughan%20Friendship%20Garden.png", link: "https://tour.panoee.net/city-of-vaughan", scans: 180 },
-        { id: 8, name: "Cordillera Village", thumb: "Assets/Cordillera%20Village.png", link: "https://tour.panoee.net/cordillera-village/1", scans: 890 },
-        { id: 9, name: "Dahlia Garden", thumb: "Assets/Dahlia Garden.png", link: "https://tour.panoee.net/69b74a8ccd5918bff013a943", scans: 310 },
-        { id: 10, name: "Greenhouse", thumb: "Assets/Greenhouse.png", link: "https://tour.panoee.net/greenhouse/1", scans: 420 },
-        { id: 11, name: "Japanese Garden", thumb: "Assets/Japanese%20Garden.png", link: "https://tour.panoee.net/japanese-garden", scans: 760 },
-        { id: 12, name: "Japanese Tunnel", thumb: "Assets/Japanese%20Tunnel.png", link: "https://tour.panoee.net/japanese-tunnel/1", scans: 1120 },
-        { id: 13, name: "Korea Garden", thumb: "Assets/Korea%20Garden.png", link: "https://tour.panoee.net/korea-garden/1", scans: 580 },
-        { id: 14, name: "Orchidarium", thumb: "Assets/Orchidarium.png", link: "https://tour.panoee.net/orchidarium/1", scans: 390 },
-        { id: 15, name: "Friendship Garden", thumb: "Assets/Philippine-Thailand Frienship Garden.png", link: "https://tour.panoee.net/philippine-thailand-friendship-garden/7-1", scans: 270 },
-        { id: 16, name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.png", link: "https://tour.panoee.net/pmsea-garden", scans: 150 }
+        { id: 0, name: "Map", thumb: "Assets/A1_Map.jpg", link: "map.html", scans: 1240, info: "The interactive map provides a complete bird's-eye view of the Baguio Botanical Garden, guiding you through every themed station and eco-trail." },
+        { id: 1, name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://tour.panoee.net/mainentrance/1", scans: 980, info: "Welcome to the heart of nature. The main entrance showcases a massive stone sculpture depicting the diverse culture of the Cordilleras." },
+        { id: 2, name: "Arbor", thumb: "Assets/Arbor.png", link: "https://tour.panoee.net/arbor", scans: 340, info: "The Arbor is a tranquil shaded walkway, perfect for cooling down under the canopy of local tree species while enjoying the mountain breeze." },
+        { id: 3, name: "Asian Garden", thumb: "Assets/Asian Garden.png", link: "https://tour.panoee.net/asian-garden", scans: 450, info: "A tribute to international friendship, this garden features traditional structures and flora representative of neighboring Asian nations." },
+        { id: 4, name: "Cactus & Succulents", thumb: "Assets/Cactus&Succulents.png", link: "https://tour.panoee.net/cactus-succulent-garden/1-1", scans: 640, info: "Home to desert-dwelling plants, this greenhouse maintains a unique collection of cacti and succulents adapted to the Baguio climate." },
+        { id: 5, name: "Centennial Garden", thumb: "Assets/Centennial Garden.png", link: "https://tour.panoee.net/centennial-garden/1", scans: 210, info: "Commemorating 100 years of the city, this garden is meticulously landscaped to reflect the historical milestones of the Summer Capital." },
+        { id: 6, name: "Chinese Garden", thumb: "Assets/Chinese%20Garden.png", link: "https://tour.panoee.net/chinese-garden/69cd28ffcd728200084a2654", scans: 520, info: "Step through the red pagoda into a serene landscape inspired by classical Chinese aesthetics, complete with ornate bridges and stone lanterns." },
+        { id: 7, name: "City of Vaughan", thumb: "Assets/City%20of%20Vaughan%20Friendship%20Garden.png", link: "https://tour.panoee.net/city-of-vaughan", scans: 180, info: "Symbolizing the sister-city relationship between Baguio and Vaughan, Canada, this area promotes cultural exchange and environmental beauty." },
+        { id: 8, name: "Cordillera Village", thumb: "Assets/Cordillera%20Village.png", link: "https://tour.panoee.net/cordillera-village/1", scans: 890, info: "Experience the heritage of the highlands with authentic Igorot huts and traditional carvings that tell the story of the mountain people." },
+        { id: 9, name: "Dahlia Garden", thumb: "Assets/Dahlia Garden.png", link: "https://tour.panoee.net/69b74a8ccd5918bff013a943", scans: 310, info: "A seasonal favorite, the Dahlia Garden is a vibrant burst of color featuring numerous varieties of these complex and beautiful blooms." },
+        { id: 10, name: "Greenhouse", thumb: "Assets/Greenhouse.png", link: "https://tour.panoee.net/greenhouse/1", scans: 420, info: "This controlled environment is where rare and sensitive plant species are cultivated and studied by local botanists." },
+        { id: 11, name: "Japanese Garden", thumb: "Assets/Japanese%20Garden.png", link: "https://tour.panoee.net/japanese-garden", scans: 760, info: "Discover peace in the Japanese Garden, featuring Torii gates, koi ponds, and Zen-inspired rock arrangements that promote mindfulness." },
+        { id: 12, name: "Japanese Tunnel", thumb: "Assets/Japanese%20Tunnel.png", link: "https://tour.panoee.net/japanese-tunnel/1", scans: 1120, info: "A historical landmark from World War II, these tunnels were carved into the mountain and served as an underground network for soldiers." },
+        { id: 13, name: "Korea Garden", thumb: "Assets/Korea%20Garden.png", link: "https://tour.panoee.net/korea-garden/1", scans: 580, info: "Celebrating the bond with Korean visitors and residents, this garden features a pavilion and landscaping reminiscent of the Korean peninsula." },
+        { id: 14, name: "Orchidarium", thumb: "Assets/Orchidarium.png", link: "https://tour.panoee.net/orchidarium/1", scans: 390, info: "Marvel at the delicate beauty of native orchids, many of which are endemic to the high-altitude forests of the Cordillera region." },
+        { id: 15, name: "Friendship Garden", thumb: "Assets/Philippine-Thailand Frienship Garden.png", link: "https://tour.panoee.net/philippine-thailand-friendship-garden/7-1", scans: 270, info: "This garden highlights the warm relationship between the Philippines and Thailand, showcasing exotic Thai structures and plants." },
+        { id: 16, name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.png", link: "https://tour.panoee.net/pmsea-garden", scans: 150, info: "Dedicated to the Philippine Mine Safety and Environment Association, this section emphasizes environmental protection and land rehabilitation." }
     ],
 
     init: function() {
         this.renderMostScanned(); this.renderDock(); this.initAR(); this.initDockDraggable(); this.startHeroSlider();
         
-        // Listener for Panoee integration from map.html
         window.addEventListener('message', (event) => {
             const exitBtn = document.getElementById('tour-back-btn');
-            if (event.data === 'hideExitBtn') {
-                exitBtn.style.display = 'none';
-            } else if (event.data === 'showExitBtn') {
-                exitBtn.style.display = 'block';
-            }
+            if (event.data === 'hideExitBtn') { exitBtn.style.display = 'none'; } 
+            else if (event.data === 'showExitBtn') { exitBtn.style.display = 'block'; }
         });
 
         document.getElementById('tour-iframe').onload = () => {
@@ -394,12 +405,11 @@ const app = {
         window.addEventListener('popstate', (event) => {
             const isModalOpen = document.getElementById('tour-modal').classList.contains('visible');
             const isARActive = document.getElementById('gallery-dock-container').classList.contains('ar-active');
+            const isArticleOpen = document.getElementById('article-overlay').classList.contains('visible');
             
-            if (isModalOpen) {
-                this.closeInternalPage(true); 
-            } else if (isARActive) {
-                this.nav('home', true);
-            }
+            if (isArticleOpen) { this.closeArticle(true); }
+            else if (isModalOpen) { this.closeInternalPage(true); } 
+            else if (isARActive) { this.nav('home', true); }
         });
 
         setTimeout(() => { 
@@ -416,17 +426,10 @@ const app = {
 
     confirmTour: function(wantTour) {
         document.getElementById('tour-choice-overlay').classList.add('hidden');
-        if (wantTour) {
-            this.startWalkthrough();
-        }
+        if (wantTour) { this.startWalkthrough(); }
     },
 
-    startWalkthrough: function() {
-        this.isTourActive = true;
-        this.tutorialStep = 0;
-        this.tutorialNext();
-    },
-
+    startWalkthrough: function() { this.isTourActive = true; this.tutorialStep = 0; this.tutorialNext(); },
     endTour: function() {
         this.isTourActive = false;
         document.getElementById('instruction-bubble').classList.add('hidden');
@@ -435,7 +438,6 @@ const app = {
 
     tutorialNext: function() {
         if (!this.isTourActive) return;
-
         const bubble = document.getElementById('instruction-bubble');
         const content = document.getElementById('inst-content');
         const nextPrompt = document.getElementById('next-prompt');
@@ -443,38 +445,64 @@ const app = {
         const tourSteps = [
             { text: "Welcome! Let's explore Baguio with a quick tour!", target: "welcome-text", pos: "top: 220px;", arrow: "point-up" },
             { text: "Check here for the latest highlights and news!", target: "hero-slider", pos: "top: 410px;", arrow: "point-up" },
-            { text: "See which stations are the most scanned right now.", target: "most-scanned-header", pos: "top: 550px;", arrow: "point-up" },
-            { text: "Learn fun facts about Baguio's history and nature.", target: "fact-section", pos: "top: 58%;", arrow: "point-up" },
             { text: "Tap here to search for specific flowers or areas.", target: "nav-search", pos: "bottom: 110px;", arrow: "point-down" },
-            { text: "The magic happens here! Tap to start AR scanning.", target: "ar-main-btn", pos: "bottom: 125px;", arrow: "point-down" },
-            { text: "New! Access the interactive map anytime from here.", target: "nav-map", pos: "bottom: 110px;", arrow: "point-down" },
-            { text: "You're all set! Ready to start exploring?", target: null, pos: "top: 40%;", arrow: "" }
+            { text: "The magic happens here! Tap to start AR scanning.", target: "ar-main-btn", pos: "bottom: 125px;", arrow: "point-down" }
         ];
 
         document.querySelectorAll('.tutorial-highlight').forEach(el => el.classList.remove('tutorial-highlight'));
-
         if (this.tutorialStep < tourSteps.length) {
             const step = tourSteps[this.tutorialStep];
             content.innerText = step.text;
             bubble.className = step.arrow;
             bubble.classList.remove('hidden');
             bubble.style.cssText = `left:50%; transform:translateX(-50%); ${step.pos}`;
-
             if (this.tutorialStep === tourSteps.length - 1) {
                 nextPrompt.innerHTML = `FINISH TOUR <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-            } else {
-                nextPrompt.innerHTML = `NEXT STEP <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
             }
-            
-            if (step.target) {
-                const targetEl = document.getElementById(step.target);
-                targetEl.classList.add('tutorial-highlight');
-                targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
+            if (step.target) { document.getElementById(step.target).classList.add('tutorial-highlight'); }
             this.tutorialStep++;
-        } else {
-            this.endTour();
+        } else { this.endTour(); }
+    },
+
+    filterSearch: function(query) {
+        const resultsGrid = document.getElementById('search-results');
+        
+        // --- UPDATED LOGIC ---
+        // If the query is empty or just spaces, clear the results and exit.
+        if (!query || query.trim() === "") {
+            resultsGrid.innerHTML = "";
+            return;
         }
+        // ---------------------
+
+        const filtered = this.stations.filter(s => s.name.toLowerCase().includes(query.toLowerCase()));
+        resultsGrid.innerHTML = filtered.map(s => `
+            <div class="search-item" onclick="app.openArticle(${s.id})">
+                <img src="${s.thumb}">
+                <h5>${s.name}</h5>
+                <span>EXPLORE ARTICLE</span>
+            </div>`).join('');
+    },
+
+    openArticle: function(id) {
+        const station = this.stations.find(s => s.id === id);
+        if(!station) return;
+        
+        document.getElementById('art-hero-img').src = station.thumb;
+        document.getElementById('art-title').innerText = station.name;
+        document.getElementById('art-content').innerText = station.info || "Discover the beauty and history of this unique station within the Baguio Botanical Garden.";
+        document.getElementById('art-tour-btn').onclick = () => {
+            this.closeArticle();
+            this.openInternalPage(station.link, station.id);
+        };
+
+        document.getElementById('article-overlay').classList.add('visible');
+        history.pushState({ article: true }, "");
+    },
+
+    closeArticle: function(isHardwareBack = false) {
+        document.getElementById('article-overlay').classList.remove('visible');
+        if (!isHardwareBack) history.back();
     },
 
     initDockDraggable: function() {
@@ -500,7 +528,7 @@ const app = {
         const list = document.getElementById('most-scanned-list');
         const top = [...this.stations].sort((a,b) => b.scans - a.scans).slice(0, 5);
         list.innerHTML = top.map((s) => `
-            <div style="flex:0 0 200px; background:white; border-radius:25px; padding:12px; box-shadow:var(--card-shadow);">
+            <div style="flex:0 0 200px; background:white; border-radius:25px; padding:12px; box-shadow:var(--card-shadow);" onclick="app.openArticle(${s.id})">
                 <img src="${s.thumb}" style="width:100%; height:120px; border-radius:18px; object-fit:cover;">
                 <b style="font-size:14px; display:block; margin-top:10px;">${s.name}</b>
                 <div class="scans-info"><span>${s.scans} SCANS</span></div>
@@ -540,6 +568,14 @@ const app = {
         document.getElementById('ar-top-layer').style.opacity = "0";
         document.getElementById('ar-reticle').style.opacity = "0";
         document.getElementById('gallery-dock-container').classList.remove('ar-active');
+        
+        // Reset the search input and clear results whenever navigating to the search page
+        if (page === 'search') { 
+            const searchInput = document.getElementById('station-search-input');
+            if (searchInput) searchInput.value = "";
+            this.filterSearch(""); 
+        }
+
         const sceneEl = document.querySelector('a-scene');
         if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
     },
@@ -551,9 +587,7 @@ const app = {
             const entity = document.createElement('a-entity');
             entity.setAttribute('mindar-image-target', `targetIndex: ${s.id}`);
             entity.addEventListener("targetFound", () => {
-                matchSound.play();
-                s.scans++;
-                this.renderMostScanned(); 
+                matchSound.play(); s.scans++; this.renderMostScanned(); 
                 document.getElementById('ar-status-badge').classList.add('match-found');
                 document.getElementById('status-text').innerText = "Match Found!";
                 setTimeout(() => this.openInternalPage(s.link, s.id), 800);
@@ -568,36 +602,16 @@ const app = {
 
     openInternalPage: function(url, stationId) { 
         document.getElementById('instruction-bubble').classList.add('hidden');
-        
-        // Update Label Logic: Exit Map for map.html, Exit Experience for others
         const label = document.getElementById('label-text');
-        if (url === 'map.html') {
-            label.innerText = 'Exit Map';
-        } else {
-            label.innerText = 'Exit Experience';
-        }
-
+        label.innerText = (url === 'map.html') ? 'Exit Map' : 'Exit Experience';
         const sceneEl = document.querySelector('a-scene');
-        if (url !== 'map.html') {
-            if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
-        }
-
+        if (url !== 'map.html') { if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); } }
         const loader = document.getElementById('tour-loader');
-        loader.style.display = 'flex';
-        loader.style.opacity = '1';
-        
+        loader.style.display = 'flex'; loader.style.opacity = '1';
         const iframe = document.getElementById('tour-iframe');
         iframe.src = url; 
-        
         document.getElementById('tour-modal').classList.add('visible'); 
-
-        // Change: Hide this button if we are opening the Map, since the Map has its own back button
-        if (url === 'map.html') {
-            document.getElementById('tour-back-btn').style.display = 'none';
-        } else {
-            document.getElementById('tour-back-btn').style.display = 'block';
-        }
-        
+        document.getElementById('tour-back-btn').style.display = (url === 'map.html') ? 'none' : 'block';
         history.pushState({ modal: true }, "");
     },
 
@@ -605,47 +619,34 @@ const app = {
         document.getElementById('tour-modal').classList.remove('visible'); 
         document.getElementById('tour-back-btn').style.display = 'none'; 
         document.getElementById('tour-iframe').src = ""; 
-        
         const sceneEl = document.querySelector('a-scene');
         if (document.getElementById('gallery-dock-container').classList.contains('ar-active')) {
             if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].start(); }
         }
-        
         if (!isHardwareBack) history.back();
     },
 
     startHeroSlider: function() { 
         const slider = document.getElementById('hero-slider');
-        let touchStartX = 0;
-        let touchEndX = 0;
-
+        let touchStartX = 0; let touchEndX = 0;
         slider.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
         slider.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; this.handleHeroSwipe(touchStartX, touchEndX); }, { passive: true });
-
         this.handleHeroSwipe = (start, end) => {
             const threshold = 50; 
             if (end < start - threshold) { this.moveSlider(1); } 
             else if (end > start + threshold) { this.moveSlider(-1); }
         };
-
         this.moveSlider = (direction) => {
             const banners = document.querySelectorAll('.promo-banner'); 
             const dots = document.querySelectorAll('.dot');
             if(banners.length > 0) {
-                banners[this.currentHero].classList.remove('active'); 
-                dots[this.currentHero].classList.remove('active');
+                banners[this.currentHero].classList.remove('active'); dots[this.currentHero].classList.remove('active');
                 this.currentHero = (this.currentHero + direction + banners.length) % banners.length; 
-                banners[this.currentHero].classList.add('active'); 
-                dots[this.currentHero].classList.add('active');
+                banners[this.currentHero].classList.add('active'); dots[this.currentHero].classList.add('active');
                 this.resetSliderTimer();
             }
         };
-
-        this.resetSliderTimer = () => {
-            clearInterval(this.sliderTimer);
-            this.sliderTimer = setInterval(() => this.moveSlider(1), 4000);
-        };
-
+        this.resetSliderTimer = () => { clearInterval(this.sliderTimer); this.sliderTimer = setInterval(() => this.moveSlider(1), 4000); };
         this.resetSliderTimer();
     }
 };
