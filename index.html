@@ -63,12 +63,21 @@
         .dock-handle { width: 50px; height: 4px; background: #e0e0e0; border-radius: 10px; }
         #gallery-dock { display: flex; gap: 15px; overflow-x: auto; padding: 10px 25px 15px; width: 100%; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         #gallery-dock::-webkit-scrollbar { display: none; }
-        .gallery-item { flex: 0 0 100px; text-align: center; transition: 0.3s; }
+        .gallery-item { flex: 0 0 120px; text-align: center; transition: 0.3s; position: relative; }
         .gallery-item.selected .gallery-img-wrap { border: 3px solid var(--accent); transform: scale(1.05); }
-        .gallery-img-wrap { width: 100px; height: 100px; border-radius: 20px; overflow: hidden; border: 1px solid #eee; margin-bottom: 8px; position: relative; background: #f9f9f9; }
+        .gallery-img-wrap { width: 120px; height: 120px; border-radius: 20px; overflow: hidden; border: 1px solid #eee; margin-bottom: 8px; position: relative; background: #f9f9f9; }
         .gallery-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
-        .gallery-item span { font-size: 9px; font-weight: 800; text-transform: uppercase; color: #444; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .dock-view-tag { position: absolute; bottom: 5px; right: 5px; background: rgba(0,0,0,0.6); color: white; font-size: 8px; padding: 3px 6px; border-radius: 10px; backdrop-filter: blur(4px); font-weight: 900; }
+        
+        /* Inspiration Overlay Style */
+        .gallery-label-overlay {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(transparent, rgba(0,166,153,0.8));
+            backdrop-filter: blur(4px); padding: 8px 5px;
+            color: white; text-align: left; padding-left: 10px;
+        }
+        .gallery-label-overlay b { font-size: 9px; display: block; text-transform: uppercase; line-height: 1.2; letter-spacing: 0.5px; }
+
+        .dock-view-tag { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); color: white; font-size: 8px; padding: 3px 6px; border-radius: 10px; backdrop-filter: blur(4px); font-weight: 900; z-index: 10; }
 
         #instruction-bubble {
             position: fixed; left: 50%; transform: translateX(-50%);
@@ -168,7 +177,6 @@
 
         .see-more-btn { display: block; margin-top: 15px; color: var(--accent); font-weight: 900; font-size: 12px; text-transform: uppercase; cursor: pointer; text-decoration: underline; margin-bottom: 20px; }
         
-        /* Updated: Toggle text via CSS content */
         .see-more-btn::before { content: "View Full Description"; }
         .article-body.expanded .see-more-btn::before { content: "View Less Description"; }
 
@@ -767,7 +775,16 @@ const app = {
 
     renderDock: function() {
         const dock = document.getElementById('gallery-dock');
-        dock.innerHTML = this.stations.map(s => `<div class="gallery-item" data-station-id="${s.id}" onclick="app.selectReference(${s.id}, '${s.name}', this)"><div class="gallery-img-wrap"><img src="${s.thumb}"><div class="dock-view-tag"> ${s.scans}</div></div><span>${s.name}</span></div>`).join('');
+        dock.innerHTML = this.stations.map(s => `
+            <div class="gallery-item" data-station-id="${s.id}" onclick="app.selectReference(${s.id}, '${s.name}', this)">
+                <div class="gallery-img-wrap">
+                    <img src="${s.thumb}">
+                    <div class="dock-view-tag">${s.scans}</div>
+                    <div class="gallery-label-overlay">
+                        <b>${s.id}. ${s.name}</b>
+                    </div>
+                </div>
+            </div>`).join('');
     },
 
     selectReference: function(id, name, el) {
