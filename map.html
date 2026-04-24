@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Resort Map | Premium Edition</title>
+    <title>BagView Map | Premium Edition</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
@@ -31,12 +31,10 @@
         
         #map { height: 100vh; width: 100vw; z-index: 1; background: #d1d5db; }
 
-        /* UI REPOSITIONING: ZOOM TOP-RIGHT */
         .leaflet-top.leaflet-right { top: 20px !important; right: 15px !important; }
         .leaflet-bar { border: none !important; box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important; }
         .leaflet-bar a { background-color: rgba(255,255,255,0.95) !important; color: var(--dark) !important; border-bottom: 1px solid #eee !important; }
 
-        /* FLOATING LEGEND: TOP-LEFT */
         .map-legend {
             position: fixed; top: 25px; left: 15px; z-index: 1000;
             background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px);
@@ -47,7 +45,6 @@
         .legend-color { width: 32px; height: 14px; border-radius: 5px; }
         .legend-text { font-size: 10px; font-weight: 800; color: var(--dark); text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* PREMIUM MODAL */
         #premium-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); z-index: 3000;
@@ -66,31 +63,27 @@
         .btn-subscribe { background: #00A699; color: white; border: none; padding: 15px; border-radius: 14px; font-weight: 800; font-size: 14px; cursor: pointer; text-transform: uppercase; }
         .btn-trial { background: #f3f4f6; color: #4b5563; border: none; padding: 12px; border-radius: 14px; font-weight: 700; font-size: 12px; cursor: pointer; text-transform: uppercase; }
 
-        /* PANO OVERLAY */
         #pano-overlay-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; display: none; background: #000; }
         .pano-top-bar { position: absolute; top: 0; left: 0; width: 100%; height: 60px; background: var(--dark); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 2001; border-bottom: 2px solid #00A699; }
         .pano-title { color: white; font-weight: 800; font-size: 16px; }
         .exit-pill-btn { background: #00A699; color: white; border: none; padding: 10px 22px; border-radius: 50px; font-weight: 800; font-size: 12px; cursor: pointer; text-transform: uppercase; }
         #pano-frame { position: absolute; top: 60px; left: 0; width: 100%; height: calc(100% - 60px); border: none; z-index: 2000; }
 
-        /* BOTTOM SHEET */
         #bottom-sheet {
             position: absolute; bottom: 0; left: 0; right: 0; height: 50px;
             background: white; z-index: 500; border-radius: 24px 24px 0 0;
-            padding: 0 20px 20px; transition: height 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            padding: 0 20px 20px; transition: height 0.3s ease-out;
             box-shadow: 0 -5px 25px rgba(0,0,0,0.1); display: flex; flex-direction: column;
-            touch-action: pan-y; overflow: hidden;
+            touch-action: none; overflow: hidden;
         }
         .drag-handle { width: 40px; height: 5px; background: #e5e7eb; margin: 12px auto; border-radius: 10px; cursor: grab; flex-shrink: 0; }
         .sheet-label { font-size: 11px; font-weight: 900; color: var(--dark); text-transform: uppercase; margin-bottom: 15px; }
         #station-list { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 10px; scrollbar-width: none; opacity: 0; transition: opacity 0.3s ease; }
         #bottom-sheet.open #station-list { opacity: 1; }
 
-        /* STATION CARDS */
         .station-card { flex: 0 0 160px; position: relative; height: 110px; cursor: pointer; border-radius: 18px; overflow: hidden; box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
         .station-card img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* BRUSHED/GRADIENT TAIL TAG */
         .station-tag {
             position: absolute; bottom: 0; left: 0; right: 0;
             background: linear-gradient(90deg, rgba(72, 229, 194, 0.85) 0%, rgba(72, 229, 194, 0.7) 50%, rgba(72, 229, 194, 0) 95%);
@@ -102,7 +95,6 @@
             display: block; text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
-        /* PIN STYLES */
         .brand-pin-wrapper { position: relative; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; }
         .brand-pin { width: 24px; height: 24px; background: #00A699; border: 2.5px solid white; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); box-shadow: 0 4px 8px rgba(0,0,0,0.3); position: absolute; }
         .pin-number { position: relative; z-index: 2; color: white; font-size: 11px; font-weight: 900; transform: translateY(-2px); }
@@ -145,7 +137,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
-        // ALL 15 PANOEE LINKS RESTORED
         const stations = [
             { id: 1, y: 700, x: 125, name: 'Main Entrance', img: 'Assets/A2_Main Entrance.png', pano: 'https://tour.panoee.net/mainentrance/1' },
             { id: 2, y: 590, x: 135, name: 'Centennial Garden', img: 'Assets/Centennial Garden.png', pano: 'https://tour.panoee.net/centennial-garden/1' },
@@ -165,15 +156,14 @@
         ];
 
         const bounds = [[0, 0], [1000, 1000]];
-        
-        // STRICTOR BOUNDS: Prevent user from dragging map out of frame
         const map = L.map('map', { 
             crs: L.CRS.Simple, 
             zoomControl: true, 
             attributionControl: false,
             maxBounds: bounds,         
-            maxBoundsViscosity: 1.0,    // Ensures map stays locked within bounds
-            minZoom: -1.2,              // Adjusted zoom-out to prevent "tiny map" while allowing overview
+            maxBoundsViscosity: 1.0,
+            minZoom: -1.2,
+            maxZoom: 1, // LIMIT ZOOM SCALE HERE
             zoomSnap: 0.1
         });
         map.zoomControl.setPosition('topright');
@@ -189,36 +179,71 @@
                 iconSize: [30, 30], iconAnchor: [15, 30]
             });
 
-            // PIN TRIGGER & PREMIUM LOGIC
             const marker = L.marker([s.y, s.x], {icon}).addTo(map)
                 .bindPopup(`<div style="text-align:center;"><b>${s.name}</b><br><button onclick="triggerPremiumModal('${s.pano}')" class="popup-btn">Enter 360°</button></div>`);
             
             const card = document.createElement('div');
             card.className = 'station-card';
             card.innerHTML = `<img src="${s.img}"><div class="station-tag"><span>${s.id}. ${s.name}</span></div>`;
-            card.onclick = () => { marker.openPopup(); map.flyTo([s.y, s.x], 1.5, { duration: 1.5 }); };
+            card.onclick = () => { marker.openPopup(); map.flyTo([s.y, s.x], 1, { duration: 1.5 }); };
             list.appendChild(card);
         });
 
         const overlay = document.getElementById('pano-overlay-container');
         const frame = document.getElementById('pano-frame');
         const sheet = document.getElementById('bottom-sheet');
+        const handle = document.getElementById('sheet-handle');
         const premiumModal = document.getElementById('premium-modal-overlay');
         const trialBtn = document.getElementById('modal-trial-btn');
         let pendingPanoUrl = "";
 
-        // PREMIUM, 7-DAY TRIAL & PANO LOGIC RESTORED
         function triggerPremiumModal(url) { pendingPanoUrl = url; premiumModal.style.display = 'flex'; }
         trialBtn.onclick = () => { premiumModal.style.display = 'none'; openPano(pendingPanoUrl); };
         function openPano(url) { frame.src = url; overlay.style.display = 'block'; }
         document.getElementById('header-exit-btn').onclick = () => { overlay.style.display = 'none'; frame.src = ""; };
 
-        const setSheetHeight = (isOpen) => {
-            sheet.style.height = isOpen ? "260px" : "50px";
-            isOpen ? sheet.classList.add('open') : sheet.classList.remove('open');
+        let startY, startHeight;
+        const minHeight = 50;
+        const maxHeight = 260;
+
+        const setSheetHeight = (height) => {
+            sheet.style.height = height + "px";
+            if (height > 100) sheet.classList.add('open');
+            else sheet.classList.remove('open');
         };
-        document.getElementById('sheet-handle').onclick = () => setSheetHeight(!sheet.classList.contains('open'));
-        window.onload = () => setTimeout(() => setSheetHeight(true), 800);
+
+        handle.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].clientY;
+            startHeight = sheet.offsetHeight;
+            sheet.style.transition = "none";
+        });
+
+        handle.addEventListener('touchmove', (e) => {
+            const deltaY = startY - e.touches[0].clientY;
+            const newHeight = Math.min(maxHeight, Math.max(minHeight, startHeight + deltaY));
+            sheet.style.height = newHeight + "px";
+        });
+
+        handle.addEventListener('touchend', (e) => {
+            sheet.style.transition = "height 0.3s ease-out";
+            const currentHeight = sheet.offsetHeight;
+            if (currentHeight > 150) {
+                setSheetHeight(maxHeight);
+            } else {
+                setSheetHeight(minHeight);
+            }
+        });
+
+        handle.onclick = () => {
+            sheet.style.transition = "height 0.3s ease-out";
+            const isOpen = sheet.classList.contains('open');
+            setSheetHeight(isOpen ? minHeight : maxHeight);
+        };
+
+        window.onload = () => setTimeout(() => {
+            sheet.style.transition = "height 0.3s ease-out";
+            setSheetHeight(maxHeight);
+        }, 800);
     </script>
 </body>
 </html>
