@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>BagView Map | Premium Edition</title>
+    <title>Resort Map | Premium Edition</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
@@ -163,7 +163,7 @@
             maxBounds: bounds,         
             maxBoundsViscosity: 1.0,
             minZoom: -1.2,
-            maxZoom: 1, // LIMIT ZOOM SCALE HERE
+            maxZoom: 1,
             zoomSnap: 0.1
         });
         map.zoomControl.setPosition('topright');
@@ -193,6 +193,7 @@
         const frame = document.getElementById('pano-frame');
         const sheet = document.getElementById('bottom-sheet');
         const handle = document.getElementById('sheet-handle');
+        const stationList = document.getElementById('station-list');
         const premiumModal = document.getElementById('premium-modal-overlay');
         const trialBtn = document.getElementById('modal-trial-btn');
         let pendingPanoUrl = "";
@@ -212,19 +213,27 @@
             else sheet.classList.remove('open');
         };
 
-        handle.addEventListener('touchstart', (e) => {
+        // SWIPE ANYWHERE ON SHEET LOGIC
+        sheet.addEventListener('touchstart', (e) => {
+            // If user is swiping on the horizontal station list, don't trigger sheet drag
+            if (e.target.closest('#station-list')) return;
+
             startY = e.touches[0].clientY;
             startHeight = sheet.offsetHeight;
             sheet.style.transition = "none";
         });
 
-        handle.addEventListener('touchmove', (e) => {
+        sheet.addEventListener('touchmove', (e) => {
+            if (e.target.closest('#station-list')) return;
+
             const deltaY = startY - e.touches[0].clientY;
             const newHeight = Math.min(maxHeight, Math.max(minHeight, startHeight + deltaY));
             sheet.style.height = newHeight + "px";
         });
 
-        handle.addEventListener('touchend', (e) => {
+        sheet.addEventListener('touchend', (e) => {
+            if (e.target.closest('#station-list')) return;
+
             sheet.style.transition = "height 0.3s ease-out";
             const currentHeight = sheet.offsetHeight;
             if (currentHeight > 150) {
@@ -234,6 +243,7 @@
             }
         });
 
+        // Toggle on Tap (Handle only)
         handle.onclick = () => {
             sheet.style.transition = "height 0.3s ease-out";
             const isOpen = sheet.classList.contains('open');
