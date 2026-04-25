@@ -316,6 +316,10 @@
         
         <div class="hero-slider-container" id="hero-slider">
             <div class="hero-wrapper" id="hero-wrapper">
+			 <div class="promo-banner" style="background-image: url('Assets/F_3.png')">
+                    <h1>User Guide</h1>
+                    <button onclick="app.openBannerArticle('heritage')">Watch</button>
+                </div>
                 <div class="promo-banner active" style="background-image: url('Assets/F_1.png')">
                     <h1>Interactive Map Feature</h1>
                     <button onclick="app.openBannerArticle('trails')">Learn More</button>
@@ -328,6 +332,7 @@
                     <h1>Augmented Exploration</h1>
                     <button onclick="app.openBannerArticle('heritage')">Learn More</button>
                 </div>
+				
             </div>
             <div class="hero-dots" id="hero-dots">
                 <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
@@ -456,38 +461,47 @@ const app = {
     dockState: { startY: 0, lastY: 0, isDragging: false, isOpen: true },
     
     bannerContent: {
-        'trails': { title: "Guide Map", tag: "EXPLORATION", img: "Assets/F_1.png", content: "The map is populated with Interactive Pins marking every major landmark and trail within the garden.\n\nUse this tool to navigate your way through the hidden paths and ensure you don't miss any of the special garden stations.", link: "https://tour.panoee.net/arbor" },
-        'plants': { title: "3D Plant Encyclopedia", tag: "INTERACTIVE AR", img: "Assets/F_2.png", content: "By scanning the markers located near our specialized greenhouses, you can unlock detailed 3D models of rare flora.\n\nLearn about the origin, growth cycle, and care instructions for various endemic species found right here in Baguio.", link: "https://tour.panoee.net/cactus-succulent-garden/1-1" },
-        'heritage': { title: "Heritage Walk", tag: "CULTURE", img: "Assets/F_3.png", content: "Step back in time and explore the deep-rooted history of the Cordilleras. This feature uses AR to overlay historical narratives onto the existing village structures.\n\nDiscover the stories of the indigenous people and the historical evolution of the Botanical Garden over the decades.", link: "https://tour.panoee.net/cordillera-village/1" }
+        'trails': { title: "Guide Map", tag: "EXPLORATION", img: "Assets/F_1.png", content: "The interactive guide map is a sophisticated tool designed to help you navigate the sprawling landscapes of Baguio Botanical Garden without missing any of its hidden gems and trails. This map is populated with Interactive Pins marking every major landmark, themed garden, and historical site within the garden. Use this digital companion to navigate your way through the hidden paths, ensure you don't miss any of the special garden stations, and plan your journey efficiently. It provides real-time positioning and context for each station you encounter along the way." },
+        'plants': { title: "3D Plant Encyclopedia", tag: "INTERACTIVE AR", img: "Assets/F_2.png", content: "Our revolutionary 3D Plant Encyclopedia brings botanical education to life through the power of Augmented Reality technology directly on your mobile device. By scanning the markers located near our specialized greenhouses and botanical collections, you can unlock detailed 3D models of rare flora and endemic mountain species. Learn about the origin, growth cycle, and care instructions for various endemic species found right here in Baguio. The encyclopedia allows you to rotate models, zoom in on cellular structures, and observe the flowering stages of plants that might not be in season during your actual visit." },
+        'heritage': { title: "Heritage Walk", tag: "CULTURE", img: "Assets/F_3.png", content: "The Heritage Walk is a cultural deep-dive that allows you to step back in time and explore the deep-rooted history of the Cordilleras and Baguio City. This feature uses AR to overlay historical narratives and archival imagery onto the existing village structures and garden monuments. Discover the stories of the indigenous people, the construction of the garden during the mid-20th century, and the historical evolution of the Botanical Garden over the decades. It is a digital bridge connecting the modern explorer to the rich ancestral heritage that defines the spirit of the mountain provinces." }
     },
 
     facts: [
-        { id: 'fact-history', tag: "HISTORY", title: "Baguio Botanical Garden History", thumb: "Assets/History.png", info: "Originally known as the Igorot Village, the garden has served as a cultural preservation site since the mid-20th century.\n\nIt was later renamed the Baguio Botanical Garden to emphasize its role in biodiversity and botanical research." },
-        { id: 'fact-tips', tag: "TRAVEL TIPS", title: "Responsible Tourism Guide", thumb: "Assets/Eco%20Tips.png", info: "To preserve the beauty of the gardens, we encourage all visitors to follow the 'Leave No Trace' policy.\n\nPlease stay on designated paths, avoid picking flowers, and use our AR features to interact with nature digitally rather than physically." },
-        { id: 'fact-eco', tag: "SUSTAINABILITY", title: "Conservation Efforts", thumb: "Assets/Eco%20Awareness.png", info: "The garden is home to several endemic plant species that are protected under local environmental laws.\n\nOur app helps track scanning data to understand which areas of the park receive the most foot traffic, helping park rangers manage conservation zones more effectively." }
+        { id: 'fact-history', tag: "HISTORY", title: "Baguio Botanical Garden History", thumb: "Assets/History.png", info: "Originally known as the Igorot Village during the early years of its development, the garden has served as a cultural preservation site since the mid-20th century. It was designed to showcase the traditional huts and lifestyle of the different tribes in the Cordillera region, including the Ifugao, Kalinga, and Ibaloi. It was later renamed the Baguio Botanical Garden to emphasize its expanding role in biodiversity, botanical research, and environmental education for tourists and locals alike." },
+        { id: 'fact-tips', tag: "TRAVEL TIPS", title: "Responsible Tourism Guide", thumb: "Assets/Eco%20Tips.png", info: "To preserve the natural beauty and ecological integrity of the gardens, we strongly encourage all visitors to follow the 'Leave No Trace' policy during their exploration. Please stay on designated paths to avoid soil compaction, avoid picking flowers or disturbing the local wildlife, and use our AR features to interact with nature digitally rather than physically. By being a responsible tourist, you help ensure that future generations can enjoy the same vibrant colors and crisp mountain air that Baguio is famous for." },
+        { id: 'fact-eco', tag: "SUSTAINABILITY", title: "Conservation Efforts", thumb: "Assets/Eco%20Awareness.png", info: "The garden is home to several endemic and endangered plant species that are strictly protected under local environmental laws and international conservation treaties. Our app helps track scanning data to understand which areas of the park receive the most foot traffic, helping park rangers manage conservation zones more effectively. This data-driven approach allows us to balance the needs of tourism with the urgent requirement for environmental protection and habitat restoration within the city's green lung." }
     ],
 
     stations: [
         { id: 0, name: "Map", thumb: "Assets/A1_Map.jpg", link: "map.html", scans: 1240 },
-        { id: 1, name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://tour.panoee.net/mainentrance/1", scans: 980, tag: "WELCOME AREA", info: "The Main Entrance serves as the gateway to your nature journey. Admire the large sculptures representing the diverse ethnic groups of the Cordillera region before you start your walk." },
-        { id: 2, name: "Arbor", thumb: "Assets/Arbor.png", link: "https://tour.panoee.net/arbor", scans: 340, tag: "REST STATION", info: "A peaceful shaded area perfect for relaxing and taking in the panoramic views of the garden's central landscape." },
-        { id: 3, name: "Asian Garden", thumb: "Assets/Asian Garden.png", link: "https://tour.panoee.net/asian-garden", scans: 450, tag: "CULTURAL ZONE", info: "This zone showcases a mix of horticultural designs from various Asian neighbors, symbolizing the unity and friendship between nations." },
-        { id: 4, name: "Cactus & Succulents", thumb: "Assets/Cactus&Succulents.png", link: "https://tour.panoee.net/cactus-succulent-garden/1-1", scans: 640, tag: "BOTANICAL ZONE", info: "Home to a vast collection of arid plants. Scan the markers inside the greenhouse to see 3D visualizations of their flowering stages." },
-        { id: 5, name: "Centennial Garden", thumb: "Assets/Centennial Garden.png", link: "https://tour.panoee.net/centennial-garden/1", scans: 210, tag: "COMMEMORATIVE", info: "Established to celebrate Baguio's 100th year, this garden features neatly manicured lawns and vibrant flower beds." },
-        { id: 6, name: "Chinese Garden", thumb: "Assets/Chinese%20Garden.png", link: "https://tour.panoee.net/chinese-garden/69cd28ffcd728200084a2654", scans: 520, tag: "INTERNATIONAL GARDEN", info: "Characterized by its classic red architecture and stone bridges, this garden brings a touch of traditional Chinese landscape design to the highlands." },
-        { id: 7, name: "City of Vaughan", thumb: "Assets/City%20of%20Vaughan%20Friendship%20Garden.png", link: "https://tour.panoee.net/city-of-vaughan", scans: 180, tag: "FRIENDSHIP ZONE", info: "A dedicated space celebrating the sisterhood between Baguio and the City of Vaughan in Canada." },
-        { id: 8, name: "Cordillera Village", thumb: "Assets/Cordillera%20Village.png", link: "https://tour.panoee.net/cordillera-village/1", scans: 890, tag: "HERITAGE SITE", info: "The Cordillera Village offers an immersive look into the traditional architecture and lifestyle of the indigenous people of the highlands.\n\nHere, you can find authentic replicas of native huts from various provinces. Each structure tells a story of community, craftsmanship, and harmony with nature." },
-        { id: 9, name: "Dahlia Garden", thumb: "Assets/Dahlia Garden.png", link: "https://tour.panoee.net/69b74a8ccd5918bff013a943", scans: 310, tag: "FLORAL ZONE", info: "A seasonal favorite. When in bloom, this garden displays a stunning array of Dahlias in every color imaginable." },
-        { id: 10, name: "Greenhouse", thumb: "Assets/Greenhouse.png", link: "https://tour.panoee.net/greenhouse/1", scans: 420, tag: "RESEARCH AREA", info: "Our primary facility for nursery management and plant propagation. Many of the seedlings for the entire garden start their life here." },
-        { id: 11, name: "Japanese Garden", thumb: "Assets/Japanese%20Garden.png", link: "https://tour.panoee.net/japanese-garden", scans: 760, tag: "INTERNATIONAL GARDEN", info: "Known for its tranquility, the Japanese Garden features stone lanterns, torii gates, and serene ponds." },
-        { id: 12, name: "Japanese Tunnel", thumb: "Assets/Japanese%20Tunnel.png", link: "https://tour.panoee.net/japanese-tunnel/1", scans: 1120, tag: "HISTORICAL SITE", info: "The Japanese Tunnel is one of the most intriguing historical landmarks within the garden. Constructed during World War II by Japanese forces, this subterranean network served as a vital shelter and storage facility.\n\nToday, visitors can walk through the reinforced pathways and experience a literal piece of history. The air grows cooler as you descend, and the dim lighting recreates the atmosphere of the 1940s." },
-        { id: 13, name: "Korea Garden", thumb: "Assets/Korea%20Garden.png", link: "https://tour.panoee.net/korea-garden/1", scans: 580, tag: "INTERNATIONAL GARDEN", info: "A beautiful area filled with Korean-inspired structures and flora, representing the strong ties between the local community and South Korea." },
-        { id: 14, name: "Orchidarium", thumb: "Assets/Orchidarium.png", link: "https://tour.panoee.net/orchidarium/1", scans: 390, tag: "FLORAL ZONE", info: "A haven for orchid lovers, housing several species found only in the Philippine highlands." },
-        { id: 15, name: "Friendship Garden", thumb: "Assets/Philippine-Thailand Frienship Garden.png", link: "https://tour.panoee.net/philippine-thailand-friendship-garden/7-1", scans: 270, tag: "INTERNATIONAL GARDEN", info: "A joint project between the Philippines and Thailand, featuring beautiful tropical landscaping and symbolic statues." },
-        { id: 16, name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.png", link: "https://tour.panoee.net/pmsea-garden", scans: 150, tag: "COMMEMORATIVE", info: "Sponsored by the Philippine Mine Safety and Environment Association, this area emphasizes the balance between development and nature." }
+        { id: 1, name: "Main Entrance", thumb: "Assets/A2_Main Entrance.png", link: "https://tour.panoee.net/mainentrance/1", scans: 980, tag: "WELCOME AREA", info: "The main entrance is a paved area with a defined gateway where visitors first enter the garden. It has manicured lawns, low‑growing plants, and a straight path leading inward, giving a formal, organized first impression.Signage and decorative plant beds are centered around the entry point, making it easy to orient and photograph. The layout is open and symmetrical, with clear lines that guide movement toward the inner sections." },
+        { id: 2, name: "Arbor", thumb: "Assets/Arbor.png", link: "https://tour.panoee.net/arbor", scans: 340, tag: "REST STATION", info: "The Arbor is a shaded retreat characterized by its towering trees and lush overhead canopy. It provides a cool, natural shelter that is perfect for resting after exploring the more sun-exposed sections of the park.This area emphasizes the importance of forest conservation and the city's unique high-altitude ecosystem. It remains one of the most refreshing and quietest corridors for a leisurely stroll."
+		},
+        { id: 3, name: "Asian Garden", thumb: "Assets/Asian Garden.png", link: "https://tour.panoee.net/asian-garden", scans: 450, tag: "CULTURAL ZONE", info: "The Asian Garden brings together diverse architectural styles and floral displays from various neighboring nations. It creates a unified space where visitors can appreciate the shared aesthetic values of the continent in one peaceful setting.This section features iconic landmarks like the ornate Thai pavilion and various Buddhist-inspired sculptures. It serves as a central hub for celebrating regional unity and cultural diversity." 
+		},
+        { id: 4, name: "Cactus & Succulents", thumb: "Assets/Cactus&Succulents.png", link: "https://tour.panoee.net/cactus-succulent-garden/1-1", scans: 640, tag: "BOTANICAL ZONE", info: "The Cactus and Succulent Garden is a specialized area showcasing a vast array of desert-dwelling plants in various shapes and sizes. It features everything from tiny, intricate succulents to large, imposing cacti arranged in artistic rock gardens.This section is particularly popular for its unique, low-maintenance flora that thrives in well-drained environments. It remains a favorite spot for plant enthusiasts looking for modern landscaping inspiration."
+		},
+        { id: 5, name: "Centennial Garden", thumb: "Assets/Centennial Garden.png", link: "https://tour.panoee.net/centennial-garden/1", scans: 210, tag: "COMMEMORATIVE", info: "The Centennial Garden holds a large bronze sculpture by Ben Hur Villanueva showing Indigenous Cordillerans, Americans, Japanese, and Chinese kneeling around a circular base. The sculpture stands on a wide grassy lawn edged with trimmed hedges and simple ground cover, creating a clear central focus.The surrounding space is kept open with benches and short paths that allow people to gather, sit, and view the monument from different angles." },
+        { id: 6, name: "Chinese Garden", thumb: "Assets/Chinese%20Garden.png", link: "https://tour.panoee.net/chinese-garden/69cd28ffcd728200084a2654", scans: 520, tag: "INTERNATIONAL GARDEN", info: "Characterized by its classic red architecture, ornate pavilions, and stone bridges, this garden brings a touch of traditional Chinese landscape design to the highlands. The orientation of the structures follows traditional principles of Feng Shui to promote tranquility and a sense of balance. Visitors can enjoy the sound of the stream as they walk through the circular gates, a hallmark of Chinese aesthetic philosophy. The garden serves as a symbol of the long-standing friendship between the Filipino and Chinese communities in the city." },
+        { id: 7, name: "City of Vaughan", thumb: "Assets/City%20of%20Vaughan%20Friendship%20Garden.png", link: "https://tour.panoee.net/city-of-vaughan", scans: 180, tag: "FRIENDSHIP ZONE", info: "The City of Vaughan Friendship Garden celebrates the sister-city relationship between Baguio and Vaughan, Ontario, Canada. It features symbolic Canadian elements, including a prominent totem pole and landscaping that represents the strong ties between the two communities.This section honors the shared values and cultural exchanges between the Philippines and Canada. It remains a unique international corner of the park for visitors to explore." },
+        { id: 8, name: "Cordillera Village", thumb: "Assets/Cordillera%20Village.png", link: "https://tour.panoee.net/cordillera-village/1", scans: 890, tag: "HERITAGE SITE", info: "The Cordillera Village offers an immersive look into the traditional architecture and lifestyle of the indigenous people of the Philippine highlands. Here, you can find authentic replicas of native huts from various provinces like Benguet, Ifugao, and Mountain Province. Each structure tells a story of community, craftsmanship, and harmony with nature. These huts are constructed using ancient engineering skills, showcasing a way of life that has survived for centuries in the rugged mountains. Scanning markers here will unlock digital stories about ancestral rituals." },
+        { id: 9, name: "Dahlia Garden", thumb: "Assets/Dahlia Garden.png", link: "https://tour.panoee.net/69b74a8ccd5918bff013a943", scans: 310, tag: "FLORAL ZONE", info: "A seasonal favorite for all flower enthusiasts. When in full bloom, this garden displays a stunning array of Dahlias in every color and size imaginable. The garden is meticulously cared for by specialized horticulturists who ensure the blooms are at their peak for the Panagbenga Festival and other city events. The sheer variety of petal shapes makes it a must-visit for photographers. It is one of the most colorful sections of the park, representing the floral diversity that thrives in high-altitude climates." },
+        { id: 10, name: "Greenhouse", thumb: "Assets/Greenhouse.png", link: "https://tour.panoee.net/greenhouse/1", scans: 420, tag: "RESEARCH AREA", info: "The Greenhouse is a climate-controlled sanctuary housing a diverse collection of delicate indoor plants, including rare cacti and succulents. It offers visitors a chance to see exotic flora that thrives in specialized environments away from the outdoor elements.This indoor space is a favorite for enthusiasts of unique plant species and garden photography. It remains one of the most organized and educational sections within the facility."},  
+
+        { id: 11, name: "Japanese Garden", thumb: "Assets/Japanese%20Garden.png", link: "https://tour.panoee.net/japanese-garden", scans: 760, tag: "INTERNATIONAL GARDEN", info: "The Japanese Garden area is a themed section designed to celebrate the cultural friendship between  the Philippines and Japan. It features iconic Japanese aesthetic elements, including a row of mini-Buddha statues, traditional stone lanterns, and serene landscaping that reflects a classic Japanese garden style."},
+		
+        { id: 12, name: "Japanese Tunnel", thumb: "Assets/Japanese%20Tunnel.png", link: "https://tour.panoee.net/japanese-tunnel/1", scans: 1120, tag: "HISTORICAL SITE", info: "The Japanese Tunnel is a 150-meter underground passage used by the Imperial Japanese Army during World War II. Originally built as a strategic bunker and medical facility, it served as a critical storage area for military supplies and weapons.The tunnel has been renovated with modern LED lighting to make the narrow stone corridors safe for visitors to explore. It offers a unique historical experience allowing you to walk through the same hand-dug routes used by soldiers decades ago.,"},
+
+        { id: 13, name: "Korea Garden", thumb: "Assets/Korea%20Garden.png", link: "https://tour.panoee.net/korea-garden/1", scans: 580, tag: "INTERNATIONAL GARDEN", info: "The Korean Garden highlights the friendship between the Philippines and South Korea with traditional Korean-style pagodas and wooden sculptures. The vibrant colors and distinct architecture provide a unique cultural atmosphere compared to the surrounding greenery.This section celebrates modern diplomatic ties and shared history between the two nations. It remains a popular spot for photos and cultural appreciation."},
+
+
+        { id: 14, name: "Orchidarium", thumb: "Assets/Orchidarium.png", link: "https://tour.panoee.net/orchidarium/1", scans: 390, tag: "FLORAL ZONE", info: "a specialized conservatory designed to showcase the Cordillera region's high-altitude flora. It features a greenhouse-style layout with orchids mounted on walls, hanging from the ceiling, and arranged on central wood displays alongside other epiphytes like ferns and mosses. The space is encircled by benches, providing a quiet area for visitors to observe the intricate blooms or photograph the vibrant, fragrant displays in a structured, tranquil setting." },
+        { id: 15, name: "Friendship Garden", thumb: "Assets/Philippine-Thailand Frienship Garden.png", link: "https://tour.panoee.net/philippine-thailand-friendship-garden/7-1", scans: 270, tag: "INTERNATIONAL GARDEN", info: "The Philippine-Thailand Friendship Garden is easily identified by its stunning, ornate Thai pavilion and golden architectural details. The area is decorated with traditional sculptures and vibrant floral arrangements that reflect authentic Thai aesthetic styles.This garden serves as a colorful tribute to the enduring diplomatic relationship and mutual respect between both nations. It is widely considered one of the most picturesque and photographed spots in the area." },
+        { id: 16, name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.png", link: "https://tour.panoee.net/pmsea-garden", scans: 150, tag: "COMMEMORATIVE", info: "SThe PMSEA Botanical Garden is a serene 5,000-square-meter sanctuary nestled within the larger Baguio Botanical Garden complex. Maintained by the Philippine Mine Safety and Environment Association, it serves as a peaceful retreat dedicated to environmental conservation and responsible mining awareness.Explore over 1,500 plants, including many species endemic to the Philippines. Quiet walking paths and charming bridges make this one of the city's most tranquil spots." },
+
     ],
 
-    init: function() {
+       init: function() {
         this.renderMostScanned(); 
         this.renderDock(); 
         this.renderFactCards(false);
@@ -626,17 +640,34 @@ const app = {
             `).join('');
         }
     },
+   // Helper function to get exactly X words
+    getLimitedWords: function(text, wordLimit) {
+        const words = text.split(/\s+/);
+        if (words.length <= wordLimit) return text;
+        return words.slice(0, wordLimit).join(' ') + '...';
+    },
 
     openFactArticle: function(factId) {
         const fact = this.facts.find(f => f.id === factId);
         if(!fact) return;
         this.resetArticleExpansion();
+        const contentEl = document.getElementById('art-content');
+        const fullText = fact.info;
+        contentEl.setAttribute('data-full', fullText);
+        
+        const words = fullText.split(/\s+/);
+        if (words.length > 30) {
+            contentEl.innerText = this.getLimitedWords(fullText, 30);
+            document.getElementById('see-more-trigger').style.display = 'block';
+        } else {
+            contentEl.innerText = fullText;
+            document.getElementById('see-more-trigger').style.display = 'none';
+        }
+
         document.getElementById('art-hero-img').src = fact.thumb;
         document.getElementById('art-tag').innerText = fact.tag;
         document.getElementById('art-title').innerText = fact.title;
-        document.getElementById('art-content').innerText = fact.info;
         document.getElementById('art-action-bar').style.display = 'none';
-        document.getElementById('see-more-trigger').style.display = 'block';
         document.getElementById('article-overlay').classList.add('visible');
     },
 
@@ -644,12 +675,23 @@ const app = {
         const data = this.bannerContent[key];
         if(!data) return;
         this.resetArticleExpansion();
+        const contentEl = document.getElementById('art-content');
+        const fullText = data.content;
+        contentEl.setAttribute('data-full', fullText);
+        
+        const words = fullText.split(/\s+/);
+        if (words.length > 30) {
+            contentEl.innerText = this.getLimitedWords(fullText, 30);
+            document.getElementById('see-more-trigger').style.display = 'block';
+        } else {
+            contentEl.innerText = fullText;
+            document.getElementById('see-more-trigger').style.display = 'none';
+        }
+
         document.getElementById('art-action-bar').style.display = 'flex';
         document.getElementById('art-hero-img').src = data.img;
         document.getElementById('art-tag').innerText = data.tag;
         document.getElementById('art-title').innerText = data.title;
-        document.getElementById('art-content').innerText = data.content;
-        document.getElementById('see-more-trigger').style.display = 'block';
         document.getElementById('art-tour-btn').onclick = () => {
             this.closeArticle();
             this.startScanner();
@@ -661,12 +703,24 @@ const app = {
         const station = this.stations.find(s => s.id === id);
         if(!station) return;
         this.resetArticleExpansion();
+        
+        const contentEl = document.getElementById('art-content');
+        const fullText = station.info || "Explore the rich biodiversity and unique heritage of this area.";
+        contentEl.setAttribute('data-full', fullText);
+
+        const words = fullText.split(/\s+/);
+        if (words.length > 30) {
+            contentEl.innerText = this.getLimitedWords(fullText, 30);
+            document.getElementById('see-more-trigger').style.display = 'block';
+        } else {
+            contentEl.innerText = fullText;
+            document.getElementById('see-more-trigger').style.display = 'none';
+        }
+
         document.getElementById('art-action-bar').style.display = 'flex';
         document.getElementById('art-hero-img').src = station.thumb;
         document.getElementById('art-tag').innerText = station.tag || "Botanical Station";
         document.getElementById('art-title').innerText = station.name;
-        document.getElementById('art-content').innerText = station.info || "Discover the beauty and history of this unique station within the Baguio Botanical Garden. Immerse yourself in the flora and unique landscape.";
-        document.getElementById('see-more-trigger').style.display = 'block';
         document.getElementById('art-tour-btn').onclick = () => {
             this.closeArticle();
             this.startScanner();
@@ -677,12 +731,16 @@ const app = {
     toggleArticleExpansion: function() {
         const body = document.getElementById('art-body');
         const hero = document.querySelector('.article-hero');
+        const contentEl = document.getElementById('art-content');
+        const fullText = contentEl.getAttribute('data-full');
         
         if (body.classList.contains('expanded')) {
             this.resetArticleExpansion();
+            contentEl.innerText = this.getLimitedWords(fullText, 30);
         } else {
             body.classList.add('expanded');
             hero.classList.add('shrunk');
+            contentEl.innerText = fullText;
             body.scrollTop = 0;
         }
     },
