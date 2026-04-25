@@ -956,8 +956,16 @@ const app = {
         }
     },
 
+  /* --- Replace the startHeroSlider and add these swipe handlers in your script --- */
+
     startHeroSlider: function() { 
         const slider = document.getElementById('hero-slider');
+        const wrapper = document.getElementById('hero-wrapper');
+        
+        // --- Swipe Logic Variables ---
+        let touchStartX = 0;
+        let touchEndX = 0;
+
         this.moveSlider = (direction) => {
             const banners = document.querySelectorAll('.promo-banner'); 
             const dots = document.querySelectorAll('.dot');
@@ -969,8 +977,44 @@ const app = {
                 dots[this.currentHero].classList.add('active');
             }
         };
-        this.sliderTimer = setInterval(() => this.moveSlider(1), 4000); 
-    }
+
+        // Reset and start auto-timer
+        const startTimer = () => {
+            this.sliderTimer = setInterval(() => this.moveSlider(1), 4000);
+        };
+
+        const resetTimer = () => {
+            clearInterval(this.sliderTimer);
+            startTimer();
+        };
+
+        // --- Swipe Event Listeners ---
+        slider.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            clearInterval(this.sliderTimer); // Pause auto-slide while touching
+        }, {passive: true});
+
+        slider.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+            resetTimer(); // Resume auto-slide after swipe
+        }, {passive: true});
+
+        const handleSwipe = () => {
+            const swipeThreshold = 50; // minimum distance for a swipe
+            if (touchEndX < touchStartX - swipeThreshold) {
+                // Swiped Left -> Show Next
+                this.moveSlider(1);
+            }
+            if (touchEndX > touchStartX + swipeThreshold) {
+                // Swiped Right -> Show Previous
+                this.moveSlider(-1);
+            }
+        };
+
+        // Initial Start
+        startTimer();
+    },
 };
 window.onload = () => app.init();
 </script>
