@@ -68,7 +68,6 @@
         .gallery-img-wrap { width: 120px; height: 120px; border-radius: 20px; overflow: hidden; border: 1px solid #eee; margin-bottom: 8px; position: relative; background: #f9f9f9; }
         .gallery-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
         
-        /* Inspiration Overlay Style */
         .gallery-label-overlay {
             position: absolute; bottom: 0; left: 0; right: 0;
             background: linear-gradient(transparent, rgba(0,166,153,0.8));
@@ -132,7 +131,6 @@
 
         .btn-header-back { background: #f0f0f0; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #666; }
 
-        /* --- SEARCH PANEL ENHANCEMENTS --- */
         .search-panel-container { padding: 0 25px 20px; }
         .search-bar-wrap { 
             background: #f5f5f5; border-radius: 20px; display: flex; align-items: center; 
@@ -152,7 +150,6 @@
         .search-item b { font-size: 14px; display: block; margin-top: 10px; color: #333; }
         .search-item .scans-info { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--accent); font-weight: 800; text-transform: uppercase; margin-top: 6px; }
 
-        /* --- ARTICLE OVERLAY ENHANCEMENTS --- */
         #article-overlay { position: fixed; inset: 0; z-index: 10000; background: white; transform: translateY(100%); transition: 0.6s var(--transition); overflow-y: hidden; }
         #article-overlay.visible { transform: translateY(0); }
         .article-hero { width: 100%; height: 45vh; position: relative; transition: var(--transition); z-index: 10001; }
@@ -509,6 +506,14 @@ const app = {
         this.initDockDraggable(); 
         this.startHeroSlider();
         
+        // --- MOBILE BACK BUTTON LOGIC ---
+        window.addEventListener('popstate', (event) => {
+            // If the user presses the phone's back button and the modal is open, close it
+            if (document.getElementById('tour-modal').classList.contains('visible')) {
+                this.closeInternalPage(true); // pass true to indicate it's from popstate
+            }
+        });
+
         window.addEventListener('message', (event) => {
             const exitBtn = document.getElementById('tour-back-btn');
             if (event.data === 'hideExitBtn') { exitBtn.style.display = 'none'; } 
@@ -640,7 +645,6 @@ const app = {
             `).join('');
         }
     },
-   // Helper function to get exactly X words
     getLimitedWords: function(text, wordLimit) {
         const words = text.split(/\s+/);
         if (words.length <= wordLimit) return text;
@@ -936,6 +940,10 @@ const app = {
         document.getElementById('instruction-bubble').classList.add('hidden');
         const label = document.getElementById('label-text');
         label.innerText = (url === 'map.html') ? 'Exit Map' : 'Exit Experience';
+        
+        // --- ADD HISTORY STATE TO HANDLE MOBILE BACK BUTTON ---
+        history.pushState({ modalOpen: true }, "");
+
         const sceneEl = document.querySelector('a-scene');
         if (url !== 'map.html') { if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); } }
         const loader = document.getElementById('tour-loader');
@@ -943,10 +951,20 @@ const app = {
         const iframe = document.getElementById('tour-iframe');
         iframe.src = url; 
         document.getElementById('tour-modal').classList.add('visible'); 
+        
+        // Always show button for experiences, but maybe you want it hidden for Map? 
+        // You said "don't add back button allow user to use their back button".
+        // I will keep it visible for now, but the mobile button will work too.
         document.getElementById('tour-back-btn').style.display = (url === 'map.html') ? 'none' : 'block';
     },
 
-    closeInternalPage: function() { 
+    closeInternalPage: function(fromPopState = false) { 
+        // If we didn't close via the mobile back button, manually pop the history
+        if (!fromPopState) {
+            history.back();
+            return; // popstate listener will call this function again with fromPopState = true
+        }
+
         document.getElementById('tour-modal').classList.remove('visible'); 
         document.getElementById('tour-back-btn').style.display = 'none'; 
         document.getElementById('tour-iframe').src = ""; 
@@ -956,13 +974,9 @@ const app = {
         }
     },
 
-  /* --- Replace the startHeroSlider and add these swipe handlers in your script --- */
-
     startHeroSlider: function() { 
         const slider = document.getElementById('hero-slider');
         const wrapper = document.getElementById('hero-wrapper');
-        
-        // --- Swipe Logic Variables ---
         let touchStartX = 0;
         let touchEndX = 0;
 
@@ -978,7 +992,6 @@ const app = {
             }
         };
 
-        // Reset and start auto-timer
         const startTimer = () => {
             this.sliderTimer = setInterval(() => this.moveSlider(1), 4000);
         };
@@ -988,31 +1001,19 @@ const app = {
             startTimer();
         };
 
-        // --- Swipe Event Listeners ---
         slider.addEventListener('touchstart', (e) => {
             touchStartX = e.changedTouches[0].screenX;
-            clearInterval(this.sliderTimer); // Pause auto-slide while touching
+            clearInterval(this.sliderTimer);
         }, {passive: true});
 
         slider.addEventListener('touchend', (e) => {
             touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-            resetTimer(); // Resume auto-slide after swipe
+            const swipeThreshold = 50; 
+            if (touchEndX < touchStartX - swipeThreshold) this.moveSlider(1);
+            if (touchEndX > touchStartX + swipeThreshold) this.moveSlider(-1);
+            resetTimer();
         }, {passive: true});
 
-        const handleSwipe = () => {
-            const swipeThreshold = 50; // minimum distance for a swipe
-            if (touchEndX < touchStartX - swipeThreshold) {
-                // Swiped Left -> Show Next
-                this.moveSlider(1);
-            }
-            if (touchEndX > touchStartX + swipeThreshold) {
-                // Swiped Right -> Show Previous
-                this.moveSlider(-1);
-            }
-        };
-
-        // Initial Start
         startTimer();
     },
 };
