@@ -840,7 +840,8 @@ const app = {
         dock.innerHTML = this.stations.map(s => `
             <div class="gallery-item" data-station-id="${s.id}" onclick="app.selectReference(${s.id}, '${s.name}', this)">
                 <div class="gallery-img-wrap">
-                    <img src="${s.thumb}"
+                    <img src="${s.thumb}">
+                    <div class="dock-view-tag">${s.scans}</div>
                     <div class="gallery-label-overlay">
                         <b>${s.id}. ${s.name}</b>
                     </div>
