@@ -835,19 +835,19 @@ const app = {
             </div>`).join('');
     },
 
-    renderDock: function() {
-        const dock = document.getElementById('gallery-dock');
-        dock.innerHTML = this.stations.map(s => `
-            <div class="gallery-item" data-station-id="${s.id}" onclick="app.selectReference(${s.id}, '${s.name}', this)">
-                <div class="gallery-img-wrap">
-                    <img src="${s.thumb}">
-                    <div class="dock-view-tag">${s.scans}</div>
-                    <div class="gallery-label-overlay">
-                        <b>${s.id}. ${s.name}</b>
-                    </div>
+   renderDock: function() {
+    const dock = document.getElementById('gallery-dock');
+    dock.innerHTML = this.stations.map(s => `
+        <div class="gallery-item" data-station-id="${s.id}" onclick="app.selectReference(${s.id}, '${s.name}', this)">
+            <div class="gallery-img-wrap">
+                <img src="${s.thumb}">
+                <!-- REMOVED THE VIEW TAG FROM HERE -->
+                <div class="gallery-label-overlay">
+                    <b>${s.id}. ${s.name}</b>
                 </div>
-            </div>`).join('');
-    },
+            </div>
+        </div>`).join('');
+},
 
     selectReference: function(id, name, el) {
         document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('selected'));
