@@ -32,6 +32,7 @@
             display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px);
             transition: 0.4s;
         }
+        #tour-choice-overlay.visible { display: flex; }
         .choice-card {
             background: white; width: 85%; max-width: 320px; padding: 30px; border-radius: 30px; text-align: center;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3);
@@ -103,6 +104,7 @@
         #instruction-bubble.point-up::after { top: -10px; left: 50%; transform: translateX(-50%) rotate(-135deg); }
         
         #instruction-bubble.hidden { opacity: 0 !important; transform: translateX(-50%) translateY(30px) !important; pointer-events: none; }
+        #instruction-bubble:not(.hidden) { display: block !important; }
         
         .bubble-main { display: flex; align-items: center; gap: 12px; cursor: pointer; }
         .inst-icon { background: var(--accent); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -125,7 +127,8 @@
             border-radius: 25px; pointer-events: none;
         }
 
-        .overlay-screen { position: fixed; inset: 0; z-index: 1000; background: #fff; transition: 0.4s; overflow-y: auto; padding-bottom: 140px; }
+        .overlay-screen { position: fixed; inset: 0; z-index: 1000; background: #fff; overflow-y: auto; padding-bottom: 140px; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .overlay-screen.active { opacity: 1; pointer-events: auto; }
         .hidden { opacity: 0 !important; pointer-events: none !important; transform: translateY(20px); }
         .user-greeting { padding: 45px 25px 10px; display: flex; justify-content: space-between; align-items: center; }
         .user-greeting h3 { margin: 0; font-size: 14px; color: var(--accent); font-weight: 800; text-transform: uppercase; }
@@ -244,6 +247,284 @@
         
         #tour-back-btn { position: fixed; top: 30px; right: 20px; z-index: 9999; display: none; pointer-events: auto; }
         #tour-back-btn button { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 12px 20px; border-radius: 50px; font-weight: 900; font-size: 11px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-transform: uppercase; flex-direction: row-reverse; }
+		
+		
+        /* Login Screen Styles */
+        #login-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 11500;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .login-top-bg {
+            background: var(--accent);
+            padding: 60px 30px 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+        }
+        .login-top-bg h2 { font-size: 28px; font-weight: 900; color: white; margin: 14px 0 6px; }
+        .login-top-bg p { color: rgba(255,255,255,0.8); font-size: 13px; margin: 0; }
+
+        .login-body { padding: 30px 30px 40px; flex: 1; }
+
+        .auth-tab-row {
+            display: flex;
+            background: #f0f0f0;
+            border-radius: 14px;
+            padding: 4px;
+            margin-bottom: 28px;
+        }
+        .auth-tab {
+            flex: 1; text-align: center; padding: 12px;
+            border-radius: 11px; font-size: 13px; font-weight: 900;
+            color: #999; cursor: pointer; transition: 0.3s;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .auth-tab.active { background: white; color: var(--accent); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+        .auth-form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 22px; }
+        .auth-input {
+            width: 100%; padding: 15px 18px; border-radius: 14px;
+            border: 1.5px solid #eee; background: #f9f9f9;
+            font-size: 14px; font-weight: 700; color: #333; outline: none;
+            font-family: 'Agrandir', sans-serif; transition: 0.3s;
+        }
+        .auth-input:focus { border-color: var(--accent); background: white; box-shadow: 0 6px 16px rgba(0,166,153,0.1); }
+        .auth-input::placeholder { color: #bbb; font-weight: 400; }
+
+        .btn-auth-primary {
+            width: 100%; padding: 16px; border-radius: 14px;
+            background: var(--accent); color: white; border: none;
+            font-weight: 900; font-size: 14px; text-transform: uppercase;
+            letter-spacing: 1px; cursor: pointer; transition: 0.3s;
+        }
+        .btn-auth-primary:active { transform: scale(0.97); }
+
+        .auth-divider {
+            display: flex; align-items: center; gap: 12px;
+            margin: 20px 0; color: #ccc; font-size: 12px; font-weight: 800; text-transform: uppercase;
+        }
+        .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: #eee; }
+
+        .social-buttons { display: flex; flex-direction: column; gap: 12px; }
+        .btn-social {
+            width: 100%; padding: 14px 18px; border-radius: 14px;
+            font-weight: 800; font-size: 13px;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            border: 1.5px solid #eee; cursor: pointer; transition: 0.3s; background: #fff; color: #444;
+        }
+        .btn-social:active { transform: scale(0.97); }
+        .btn-social.facebook { background: #1877F2; color: white; border-color: #1877F2; }
+        .btn-social svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+        /* Circular social icon buttons */
+        .social-buttons-row {
+            display: flex; justify-content: center; gap: 20px; margin: 8px 0 6px;
+        }
+        .btn-social-circle {
+            width: 52px; height: 52px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            border: none; cursor: pointer; transition: 0.25s; color: white;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+        }
+        .btn-social-circle:active { transform: scale(0.92); }
+        .btn-social-circle.facebook { background: #1877F2; }
+        .btn-social-circle.google { background: #fff; border: 1.5px solid #eee; }
+
+        .login-guest-link {
+            text-align: center; margin-top: 22px;
+            font-size: 12px; color: #aaa; font-weight: 800; text-transform: uppercase;
+            cursor: pointer; text-decoration: underline;
+        }
+
+        /* Profile Page Styles */
+        .profile-header-section {
+            padding: 40px 25px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .profile-header-section h2 { margin: 0; font-size: 26px; font-weight: 900; color: #333; }
+
+        .profile-avatar-card {
+            margin: 0 25px 25px;
+            background: linear-gradient(135deg, var(--accent), #00c4b5);
+            border-radius: 28px;
+            padding: 28px 25px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            box-shadow: 0 12px 30px rgba(0,166,153,0.3);
+        }
+        .avatar-circle {
+            width: 64px; height: 64px; border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; border: 2.5px solid rgba(255,255,255,0.5);
+        }
+        .avatar-info h3 { margin: 0 0 4px; font-size: 18px; font-weight: 900; color: white; }
+        .avatar-info p { margin: 0; font-size: 12px; color: rgba(255,255,255,0.8); font-weight: 600; }
+        .avatar-edit-btn {
+            margin-left: auto; background: rgba(255,255,255,0.2); border: 1.5px solid rgba(255,255,255,0.4);
+            color: white; padding: 8px 14px; border-radius: 20px; font-size: 11px; font-weight: 800;
+            text-transform: uppercase; cursor: pointer; flex-shrink: 0;
+        }
+
+        .profile-section-label {
+            padding: 5px 25px 12px;
+            font-size: 11px; font-weight: 900; color: #aaa; text-transform: uppercase; letter-spacing: 1.5px;
+        }
+
+        .profile-menu-group {
+            margin: 0 25px 20px;
+            background: white;
+            border-radius: 22px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+        .profile-menu-item {
+            display: flex; align-items: center; gap: 16px;
+            padding: 17px 20px; cursor: pointer; transition: 0.2s;
+            border-bottom: 1px solid #f5f5f5;
+            position: relative;
+        }
+        .profile-menu-item:last-child { border-bottom: none; }
+        .profile-menu-item:active { background: #f9f9f9; }
+        .menu-icon {
+            width: 40px; height: 40px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .menu-icon.green { background: rgba(0,166,153,0.12); color: var(--accent); }
+        .menu-icon.orange { background: rgba(255,160,50,0.12); color: #F5A623; }
+        .menu-icon.blue { background: rgba(66,133,244,0.12); color: #4285F4; }
+        .menu-icon.purple { background: rgba(155,89,182,0.12); color: #9B59B6; }
+        .menu-icon.red { background: rgba(235,77,75,0.12); color: #EB4D4B; }
+
+        .menu-item-text { flex: 1; }
+        .menu-item-text b { display: block; font-size: 14px; font-weight: 800; color: #333; }
+        .menu-item-text span { font-size: 11px; color: #aaa; font-weight: 600; }
+        .menu-chevron { color: #ccc; }
+
+        .profile-stats-row {
+            display: flex; gap: 12px; margin: 0 25px 20px;
+        }
+        .stat-card {
+            flex: 1; background: white; border-radius: 18px; padding: 16px 12px;
+            text-align: center; box-shadow: var(--card-shadow);
+        }
+        .stat-card .stat-num { font-size: 22px; font-weight: 900; color: var(--accent); display: block; }
+        .stat-card .stat-label { font-size: 10px; font-weight: 800; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-top: 2px; }
+
+        .logout-btn-row { padding: 5px 25px 40px; }
+        .btn-logout {
+            width: 100%; padding: 16px; border-radius: 16px;
+            background: #fff5f5; color: #EB4D4B; border: 1.5px solid #fdd;
+            font-weight: 900; font-size: 14px; text-transform: uppercase;
+            letter-spacing: 1px; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; gap: 10px; transition: 0.2s;
+        }
+        .btn-logout:active { background: #ffe8e8; }
+
+        .home-notif-btn {
+            width: 40px; height: 40px; background: #f0f0f0;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; color: #666; cursor: pointer; flex-shrink: 0;
+            border: none; position: relative;
+        }
+        .home-notif-btn:active { background: #e0e0e0; }
+
+        .home-user-btn {
+            width: 40px; height: 40px; background: var(--accent);
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; color: white; cursor: pointer; flex-shrink: 0;
+            border: none; box-shadow: 0 4px 12px rgba(0,166,153,0.3);
+        }
+        .home-user-btn:active { opacity: 0.85; }
+
+        /* Home search panel - FoodPanda style */
+        .home-search-panel {
+            padding: 0 25px 18px;
+        }
+        .home-search-bar {
+            background: #f5f5f5; border-radius: 20px; display: flex; align-items: center;
+            padding: 13px 20px; border: 1.5px solid transparent; transition: 0.3s;
+            cursor: pointer;
+        }
+        .home-search-bar:focus-within { border-color: var(--accent); background: white; box-shadow: 0 10px 20px rgba(0,166,153,0.1); }
+        .home-search-bar input {
+            border: none; background: transparent; width: 100%; margin-left: 10px;
+            font-size: 14px; font-weight: 700; color: #333; outline: none;
+            font-family: 'Agrandir', sans-serif;
+        }
+        .home-search-bar input::placeholder { color: #aaa; font-weight: 400; }
+        .home-search-map-btn {
+            width: 36px; height: 36px; background: var(--accent); border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+            margin-left: 8px; cursor: pointer; border: none;
+        }
+
+        /* Notif badge on nav */
+        .notif-badge {
+            position: absolute; top: 6px; right: 6px; width: 8px; height: 8px;
+            background: #F5A623; border-radius: 50%; border: 1.5px solid white;
+        }
+
+        /* Login slide-in panel */
+        #login-screen {
+            transform: translateY(100%);
+            transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        #login-screen.visible {
+            transform: translateY(0);
+        }
+        .login-close-btn {
+            position: absolute; top: 20px; right: 20px;
+            width: 36px; height: 36px; border-radius: 50%;
+            background: rgba(255,255,255,0.25); border: none;
+            color: white; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 10;
+        }
+
+        /* Profile icon in nav */
+        .nav-item-profile svg { color: inherit; }
+
+        /* Persistent help/tour button */
+        #help-tour-btn {
+            position: fixed; bottom: calc(105px + var(--safe-bottom)); right: 18px;
+            z-index: 4999; width: 42px; height: 42px; border-radius: 50%;
+            background: var(--accent); color: white; border: none;
+            box-shadow: 0 4px 15px rgba(0,166,153,0.45);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 900; cursor: pointer;
+            transition: transform 0.2s, opacity 0.3s;
+        }
+        #help-tour-btn:active { transform: scale(0.92); }
+        #help-tour-btn.hidden { opacity: 0; pointer-events: none; }
+
+        /* Nav tooltip on long-press / hover */
+        .nav-tooltip {
+            position: fixed; bottom: calc(95px + var(--safe-bottom));
+            background: #222; color: white; font-size: 10px; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 7px 14px; border-radius: 20px; white-space: nowrap;
+            pointer-events: none; opacity: 0; transform: translateY(6px);
+            transition: opacity 0.2s, transform 0.2s; z-index: 5100;
+        }
+        .nav-tooltip::after {
+            content: ''; position: absolute; bottom: -6px; left: 50%;
+            transform: translateX(-50%); border: 6px solid transparent;
+            border-top-color: #222; border-bottom: none;
+        }
+        .nav-tooltip.show { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body class="">
@@ -252,6 +533,53 @@
     <div id="splash-screen" style="position:fixed; inset:0; z-index:12000; background:#00A699; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:0.6s;">
         <img src="Assets/Logo_Icon.png" width="100" style="filter:brightness(0) invert(1);">
         <h1 style="color:white; font-weight:900; letter-spacing:4px; text-transform:uppercase; margin-top:20px; font-size:24px;">Bagview</h1>
+    </div>
+	
+	
+    <div id="login-screen">
+        <div class="login-top-bg" style="position:relative;">
+            <img src="Assets/Logo_Icon.png" width="64" style="filter: brightness(0) invert(1);">
+            <h2>Welcome to BagView</h2>
+            <p>Your AR Eco-Tourism companion for Baguio</p>
+        </div>
+
+        <div class="login-body">
+            <div class="auth-tab-row">
+                <div class="auth-tab active" id="tab-login" onclick="app.switchAuthTab('login')">Login</div>
+                <div class="auth-tab" id="tab-signup" onclick="app.switchAuthTab('signup')">Sign Up</div>
+            </div>
+
+            <div id="auth-form-login">
+                <div class="auth-form">
+                    <input class="auth-input" type="email" placeholder="Email address">
+                    <input class="auth-input" type="password" placeholder="Password">
+                </div>
+                <button class="btn-auth-primary" onclick="app.completeLogin()">Login</button>
+            </div>
+
+            <div id="auth-form-signup" style="display:none;">
+                <div class="auth-form">
+                    <input class="auth-input" type="text" placeholder="Full name">
+                    <input class="auth-input" type="email" placeholder="Email address">
+                    <input class="auth-input" type="password" placeholder="Create password">
+                </div>
+                <button class="btn-auth-primary" onclick="app.completeLogin()">Create Account</button>
+            </div>
+
+            <div class="auth-divider">Or Sign Up Using</div>
+
+            <div class="social-buttons-row">
+                <button class="btn-social-circle facebook" onclick="app.completeLogin()">
+                    <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                </button>
+                </button>
+                <button class="btn-social-circle google" onclick="app.completeLogin()">
+                    <svg width="22" height="22" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.5l3.1-3.1C17.2 1.5 14.8 1 12 1 7.3 1 3.4 3.7 1.6 7.6l3.6 2.8C6.1 7.2 8.8 5 12 5z"/><path fill="#FBBC05" d="M1 12c0-.9.1-1.7.4-2.6L1.6 7.6c-.4 1.3-.6 2.9-.6 4.4 0 1.5.2 3.1.6 4.4l3.6-2.8C5.1 13.7 5 12.9 5 12z"/><path fill="#4285F4" d="M12 23c2.8 0 5.2-.5 7.2-2.4l-3.3-2.6c-1.1.7-2.4 1-3.9 1-3.2 0-5.9-2.2-6.8-5.4l-3.6 2.8C3.4 20.3 7.3 23 12 23z"/><path fill="#34A853" d="M22.6 11.4c.1.2.1.4.1.6 0 3.1-1.1 5.7-3.2 7.6l3.3 2.6c2.5-2.3 3.9-5.7 3.9-9.8 0-.3 0-.7-.1-1H12v4h6.6z"/></svg>
+                </button>
+            </div>
+
+            <div class="login-guest-link" onclick="app.completeLogin()">Continue as Guest</div>
+        </div>
     </div>
 
     <div id="tour-choice-overlay" class="hidden">
@@ -311,8 +639,27 @@
         <div id="gallery-dock"></div>
     </div>
 
-    <div id="home-page" class="overlay-screen">
-        <div class="user-greeting" id="welcome-text"><div><h3>Hi, Explorer!</h3><h2>Let's Discover Baguio</h2></div></div>
+    <div id="home-page" class="overlay-screen active">
+        <div class="user-greeting" id="welcome-text">
+            <div><h3>Hi, Explorer!</h3><h2>Let's Discover Baguio</h2></div>
+            <button class="home-notif-btn" onclick="app.nav('notifications')" style="position:relative;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <span class="notif-badge"></span>
+            </button>
+        </div>
+
+        <!--Search panel -->
+        <div class="home-search-panel">
+            <div class="home-search-bar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="3"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" placeholder="Search stations, gardens..." oninput="app.homeSearchInput(this.value)" onfocus="app.homeSearchFocus()" id="home-search-input">
+            </div>
+        </div>
+
+        <!-- Inline search results overlay (hidden by default) -->
+        <div id="home-search-results" style="display:none; padding:0 25px 10px;">
+            <div id="home-search-grid" class="search-results-container" style="padding:0; margin-top:0;"></div>
+        </div>
         
         <div class="hero-slider-container" id="hero-slider">
             <div class="hero-wrapper" id="hero-wrapper">
@@ -358,31 +705,166 @@
         </div>
     </div>
 
-    <div id="notifications-page" class="overlay-screen hidden">
-        <div class="user-greeting" id="notif-header-title"><h2>Updates</h2></div>
-        
-        <div class="notifications-list" style="padding: 0 25px;">
+    <div id="notifications-page" class="overlay-screen">
+        <div class="user-greeting" id="notif-header-title">
+            <h2>Updates</h2>
+            <span style="font-size:11px; color:var(--accent); font-weight:800; text-transform:uppercase; cursor:pointer;">Mark all read</span>
+        </div>
+
+        <div style="padding: 0 25px 20px;">
+
+            <div style="font-size:11px; font-weight:900; color:#aaa; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:12px;">Today</div>
+
             <div class="notif-card" style="border-left: 4px solid var(--accent);">
                 <div class="notif-header">
-                    <span class="notif-title">New Bloom Alert! </span>
+                    <span class="notif-title">🌸 New Bloom Alert!</span>
                     <span class="notif-time">2H AGO</span>
                 </div>
                 <p class="notif-desc">The Dahlias in the Centennial Garden are now in full bloom. Don't forget to scan the marker for a 3D growth time-lapse!</p>
             </div>
-        </div>
-		
-		<div class="notifications-list" style="padding: 0 25px;">
+
             <div class="notif-card" style="border-left: 4px solid var(--accent);">
                 <div class="notif-header">
-                    <span class="notif-title">BagView Magazine Version. 2: Out Now! </span>
+                    <span class="notif-title">📖 BagView Magazine v2: Out Now!</span>
                     <span class="notif-time">5H AGO</span>
                 </div>
-                <p class="notif-desc">Discover our new version featuring a fully interactive layout. Exceed your expectations with AR-powered stories  </p>
+                <p class="notif-desc">Discover our new version featuring a fully interactive layout. Exceed your expectations with AR-powered stories.</p>
             </div>
+
+            <div class="notif-card" style="border-left: 4px solid #F5A623;">
+                <div class="notif-header">
+                    <span class="notif-title">🗺️ New Station Unlocked</span>
+                    <span class="notif-time">8H AGO</span>
+                </div>
+                <p class="notif-desc">The Philippine-Thailand Friendship Garden now has a new AR marker. Head over and scan it to explore a virtual cultural exhibit!</p>
+            </div>
+
+            <div style="font-size:11px; font-weight:900; color:#aaa; text-transform:uppercase; letter-spacing:1.5px; margin: 20px 0 12px;">Yesterday</div>
+
+            <div class="notif-card" style="border-left: 4px solid #4285F4;">
+                <div class="notif-header">
+                    <span class="notif-title">🏆 You're on the Leaderboard!</span>
+                    <span class="notif-time">1D AGO</span>
+                </div>
+                <p class="notif-desc">You've scanned 5 stations and entered the Top Explorer leaderboard. Keep scanning to climb higher!</p>
+            </div>
+
+            <div class="notif-card" style="border-left: 4px solid #9B59B6;">
+                <div class="notif-header">
+                    <span class="notif-title">🌿 Conservation Tip of the Day</span>
+                    <span class="notif-time">1D AGO</span>
+                </div>
+                <p class="notif-desc">Did you know? Staying on designated paths prevents soil compaction and protects the root systems of Baguio's endemic plant species.</p>
+            </div>
+
+            <div class="notif-card" style="border-left: 4px solid var(--accent);">
+                <div class="notif-header">
+                    <span class="notif-title">📍 Japanese Tunnel Now Open</span>
+                    <span class="notif-time">1D AGO</span>
+                </div>
+                <p class="notif-desc">The Japanese Tunnel station has resumed full AR experience after maintenance. Visit and scan to relive the WWII history!</p>
+            </div>
+
+            <div style="font-size:11px; font-weight:900; color:#aaa; text-transform:uppercase; letter-spacing:1.5px; margin: 20px 0 12px;">This Week</div>
+
+            <div class="notif-card">
+                <div class="notif-header">
+                    <span class="notif-title">🎉 Welcome to BagView!</span>
+                    <span class="notif-time">3D AGO</span>
+                </div>
+                <p class="notif-desc">Thank you for joining BagView! Start your AR eco-tourism adventure by scanning any marker inside the Baguio Botanical Garden.</p>
+            </div>
+
         </div>
     </div>
 
-    <div id="search-page" class="overlay-screen hidden">
+    <!-- Profile Page -->
+    <div id="profile-page" class="overlay-screen">
+        <div class="profile-header-section">
+            <h2>My Profile</h2>
+        </div>
+
+        <!-- Avatar card -->
+        <div class="profile-avatar-card">
+            <div class="avatar-circle">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </div>
+            <div class="avatar-info">
+                <h3>Explorer</h3>
+                <p>explorer@bagview.app</p>
+            </div>
+            <button class="avatar-edit-btn">Edit</button>
+        </div>
+
+        <!-- Stats -->
+        <div class="profile-stats-row">
+            <div class="stat-card"><span class="stat-num">12</span><span class="stat-label">Scanned</span></div>
+            <div class="stat-card"><span class="stat-num">5</span><span class="stat-label">Favorites</span></div>
+            <div class="stat-card"><span class="stat-num">3</span><span class="stat-label">Reviews</span></div>
+        </div>
+
+        <!-- Activity -->
+        <div class="profile-section-label">My Activity</div>
+        <div class="profile-menu-group">
+            <div class="profile-menu-item">
+                <div class="menu-icon green">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                </div>
+                <div class="menu-item-text"><b>My Favorites</b><span>Stations you've hearted</span></div>
+                <svg class="menu-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+            <div class="profile-menu-item">
+                <div class="menu-icon orange">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                </div>
+                <div class="menu-item-text"><b>My Reviews</b><span>Share your experience</span></div>
+                <svg class="menu-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+            <div class="profile-menu-item">
+                <div class="menu-icon blue">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                </div>
+                <div class="menu-item-text"><b>Saved Places</b><span>Your bookmarked stations</span></div>
+                <svg class="menu-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+            <div class="profile-menu-item">
+                <div class="menu-icon purple">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                </div>
+                <div class="menu-item-text"><b>Visited Stations</b><span>Your exploration history</span></div>
+                <svg class="menu-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="profile-section-label">Settings</div>
+        <div class="profile-menu-group">
+            <div class="profile-menu-item">
+                <div class="menu-icon green">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </div>
+                <div class="menu-item-text"><b>App Preferences</b><span>Notifications & display</span></div>
+                <svg class="menu-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+            <div class="profile-menu-item">
+                <div class="menu-icon blue">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                </div>
+                <div class="menu-item-text"><b>About BagView</b><span>Version 2.0</span></div>
+                <svg class="menu-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+        </div>
+
+        <!-- Logout -->
+        <div class="logout-btn-row">
+            <button class="btn-logout" onclick="app.logout()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <div id="search-page" class="overlay-screen">
         <div class="user-greeting">
             <h2 id="search-page-title">Explore</h2>
             <button class="btn-header-back" onclick="app.nav('home')">
@@ -428,21 +910,29 @@
     </div>
 
     <nav class="main-navigation-bar" id="main-nav">
-        <div class="nav-item active" id="nav-home" onclick="app.nav('home')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
-        <div class="nav-item" id="nav-search" onclick="app.nav('search')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
-        <div class="nav-item-center" id="ar-main-btn" onclick="app.startScanner()">
+        <div class="nav-item active" id="nav-home" onclick="app.nav('home')" data-tip="Home"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
+        <div class="nav-item" id="nav-search" onclick="app.nav('search')" data-tip="Explore Stations"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
+        <div class="nav-item-center" id="ar-main-btn" onclick="app.startScanner()" data-tip="AR Scanner">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="9" y="9" width="6" height="6"></rect></svg>
         </div>
-        <div class="nav-item" id="nav-map" onclick="app.openInternalPage('map.html', 0)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg></div>
-        <div class="nav-item" id="nav-notifications" onclick="app.nav('notifications')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>
+        <div class="nav-item" id="nav-map" onclick="app.openInternalPage('map.html', 0)" data-tip="Garden Map"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg></div>
+        <div class="nav-item" id="nav-profile" onclick="app.navProfile()" data-tip="My Profile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
     </nav>
+
+    <!-- Persistent help/tour button -->
+    <button id="help-tour-btn" onclick="app.startWalkthrough()" title="Replay Tour">?</button>
+
+    <!-- Nav tooltip -->
+    <div class="nav-tooltip" id="nav-tooltip"></div>
 
     <div id="tour-modal">
         <div id="tour-loader">
             <div class="spinner"></div>
             <span style="font-size: 10px; font-weight: 800; letter-spacing: 2px;">LOADING EXPERIENCE...</span>
         </div>
-        <iframe id="tour-iframe" style="width:100%; height:100%; border:none;"></iframe>
+        <iframe id="tour-iframe" style="width:100%; height:100%; border:none;"
+            allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking; fullscreen; camera; microphone"
+            allowfullscreen></iframe>
     </div>
 
     <a-scene id="ar-scene" mindar-image="imageTargetSrc: targets.mind; autoStart: false; uiLoading: no; uiScanning: no;" embedded vr-mode-ui="enabled: false">
@@ -455,6 +945,8 @@ const app = {
     currentHero: 0, 
     tutorialStep: 0,
     sliderTimer: null,
+    isLoggedIn: false,
+    currentUser: null,
     isTourActive: false,
     isSliderPaused: false,
     pauseHoldTimer: null,
@@ -473,7 +965,7 @@ const app = {
     ],
 
     stations: [
-        { id: 0, name: "Map", thumb: "Assets/A1_Map.png", link: "map.html", scans: 1240 },
+        { id: 0, name: "Map", thumb: "Assets/A1_Map.webp", link: "map.html", scans: 1240 },
         { id: 1, name: "Main Entrance", thumb: "Assets/A2_Main Entrance.webp", link: "https://tour.panoee.net/mainentrance/1", scans: 980, tag: "WELCOME AREA", info: "The main entrance is a paved area with a defined gateway where visitors first enter the garden. It has manicured lawns, low‑growing plants, and a straight path leading inward, giving a formal, organized first impression.Signage and decorative plant beds are centered around the entry point, making it easy to orient and photograph. The layout is open and symmetrical, with clear lines that guide movement toward the inner sections." },
         { id: 2, name: "Arbor", thumb: "Assets/Arbor.webp", link: "https://tour.panoee.net/arbor", scans: 340, tag: "REST STATION", info: "The Arbor is a shaded retreat characterized by its towering trees and lush overhead canopy. It provides a cool, natural shelter that is perfect for resting after exploring the more sun-exposed sections of the park.This area emphasizes the importance of forest conservation and the city's unique high-altitude ecosystem. It remains one of the most refreshing and quietest corridors for a leisurely stroll."
 		},
@@ -496,18 +988,127 @@ const app = {
 
 
         { id: 14, name: "Orchidarium", thumb: "Assets/Orchidarium.webp", link: "https://tour.panoee.net/orchidarium/1", scans: 390, tag: "FLORAL ZONE", info: "a specialized conservatory designed to showcase the Cordillera region's high-altitude flora. It features a greenhouse-style layout with orchids mounted on walls, hanging from the ceiling, and arranged on central wood displays alongside other epiphytes like ferns and mosses. The space is encircled by benches, providing a quiet area for visitors to observe the intricate blooms or photograph the vibrant, fragrant displays in a structured, tranquil setting." },
-        { id: 15, name: "Friendship Garden", thumb: "Assets/Philippine-Thailand Friendship Garden.webp", link: "https://tour.panoee.net/philippine-thailand-friendship-garden/7-1", scans: 270, tag: "INTERNATIONAL GARDEN", info: "The Philippine-Thailand Friendship Garden is easily identified by its stunning, ornate Thai pavilion and golden architectural details. The area is decorated with traditional sculptures and vibrant floral arrangements that reflect authentic Thai aesthetic styles.This garden serves as a colorful tribute to the enduring diplomatic relationship and mutual respect between both nations. It is widely considered one of the most picturesque and photographed spots in the area." },
+        { id: 15, name: "Friendship Garden", thumb: "Assets/Philippine-Thailand Frienship Garden.webp", link: "https://tour.panoee.net/philippine-thailand-friendship-garden/7-1", scans: 270, tag: "INTERNATIONAL GARDEN", info: "The Philippine-Thailand Friendship Garden is easily identified by its stunning, ornate Thai pavilion and golden architectural details. The area is decorated with traditional sculptures and vibrant floral arrangements that reflect authentic Thai aesthetic styles.This garden serves as a colorful tribute to the enduring diplomatic relationship and mutual respect between both nations. It is widely considered one of the most picturesque and photographed spots in the area." },
         { id: 16, name: "PMSEA Garden", thumb: "Assets/PMSEA%20Garden.webp", link: "https://tour.panoee.net/pmsea-garden", scans: 150, tag: "COMMEMORATIVE", info: "SThe PMSEA Botanical Garden is a serene 5,000-square-meter sanctuary nestled within the larger Baguio Botanical Garden complex. Maintained by the Philippine Mine Safety and Environment Association, it serves as a peaceful retreat dedicated to environmental conservation and responsible mining awareness.Explore over 1,500 plants, including many species endemic to the Philippines. Quiet walking paths and charming bridges make this one of the city's most tranquil spots." },
 
     ],
+	
+    applyUserUI: function() {
+        const name = this.currentUser ? this.currentUser.name : 'Explorer';
+        const email = this.currentUser ? (this.currentUser.email || 'explorer@bagview.app') : 'explorer@bagview.app';
+        const firstName = name.split(' ')[0];
+
+        // Home page greeting
+        const greetEl = document.querySelector('#welcome-text h3');
+        if (greetEl) greetEl.innerText = `Hi, ${firstName}! 👋`;
+
+        // Profile avatar card
+        const avatarName = document.querySelector('.avatar-info h3');
+        const avatarEmail = document.querySelector('.avatar-info p');
+        if (avatarName) avatarName.innerText = name;
+        if (avatarEmail) avatarEmail.innerText = email;
+    },
+
+    switchAuthTab: function(tab) {
+        document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+        document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+        document.getElementById('auth-form-login').style.display = tab === 'login' ? 'block' : 'none';
+        document.getElementById('auth-form-signup').style.display = tab === 'signup' ? 'block' : 'none';
+    },
+
+    openLogin: function() {
+        const ls = document.getElementById('login-screen');
+        ls.style.display = 'flex';
+        setTimeout(() => ls.classList.add('visible'), 10);
+    },
+
+    closeLogin: function() {
+        const ls = document.getElementById('login-screen');
+        ls.classList.remove('visible');
+        setTimeout(() => { ls.style.display = 'none'; }, 600);
+    },
+
+    navProfile: function() {
+        if (this.isLoggedIn) {
+            this.nav('profile');
+        } else {
+            this.openLogin();
+        }
+    },
+
+    logout: function() {
+        this.isLoggedIn = false;
+        this.currentUser = null;
+        sessionStorage.removeItem('bv_user_name');
+        sessionStorage.removeItem('bv_user_email');
+        sessionStorage.removeItem('bv_logged_in');
+
+        // Reset home greeting
+        const greetEl = document.querySelector('#welcome-text h3');
+        if (greetEl) greetEl.innerText = 'Hi, Explorer!';
+
+        // Reset profile card
+        const avatarName = document.querySelector('.avatar-info h3');
+        const avatarEmail = document.querySelector('.avatar-info p');
+        if (avatarName) avatarName.innerText = 'Explorer';
+        if (avatarEmail) avatarEmail.innerText = 'explorer@bagview.app';
+
+        this.nav('home');
+        this.openLogin();
+    },
+
+    completeLogin() {
+        this.isLoggedIn = true;
+
+        // Try to get name from the in-app sign-up form, fall back to email-derived name
+        const nameInput = document.querySelector('#auth-form-signup input[type="text"]');
+        const emailLoginInput = document.querySelector('#auth-form-login input[type="email"]');
+        let name = 'Explorer';
+        let email = '';
+
+        if (nameInput && nameInput.value.trim()) {
+            name = nameInput.value.trim();
+            const emailInput = document.querySelector('#auth-form-signup input[type="email"]');
+            email = emailInput ? emailInput.value : '';
+        } else if (emailLoginInput && emailLoginInput.value.trim()) {
+            email = emailLoginInput.value.trim();
+            name = email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        }
+
+        this.currentUser = { name, email };
+        sessionStorage.setItem('bv_user_name', name);
+        sessionStorage.setItem('bv_user_email', email);
+        sessionStorage.setItem('bv_logged_in', 'true');
+
+        this.applyUserUI();
+        this.closeLogin();
+
+        // Notify the map iframe (if open) to reload now that login is complete
+        const iframe = document.getElementById('tour-iframe');
+        if (iframe && iframe.contentWindow && iframe.src) {
+            iframe.contentWindow.postMessage('loginComplete', '*');
+        }
+
+        this.nav('profile');
+    },
 
        init: function() {
+        // --- RESTORE SESSION FROM Login_page.html ---
+        const savedName = sessionStorage.getItem('bv_user_name');
+        const savedEmail = sessionStorage.getItem('bv_user_email');
+        if (sessionStorage.getItem('bv_logged_in') === 'true' && savedName) {
+            this.isLoggedIn = true;
+            this.currentUser = { name: savedName, email: savedEmail || '' };
+            this.applyUserUI();
+        }
+
         this.renderMostScanned(); 
         this.renderDock(); 
         this.renderFactCards(false);
         this.initAR(); 
         this.initDockDraggable(); 
         this.startHeroSlider();
+        this.initNavTooltips();
         
         // --- MOBILE BACK BUTTON LOGIC ---
         window.addEventListener('popstate', (event) => {
@@ -521,12 +1122,40 @@ const app = {
             const exitBtn = document.getElementById('tour-back-btn');
             if (event.data === 'hideExitBtn') { exitBtn.style.display = 'none'; } 
             else if (event.data === 'showExitBtn') { exitBtn.style.display = 'block'; }
+            else if (event.data === 'openLogin' || event.data === 'openPremium' || event.data === 'openFreeTrial') {
+                // Only show login if the user is not already logged in
+                if (!app.isLoggedIn) {
+                    app.openLogin();
+                }
+                // If already logged in, do nothing — they already have access
+            }
         });
 
         document.getElementById('tour-iframe').onload = () => {
             const loader = document.getElementById('tour-loader');
             loader.style.opacity = '0';
             setTimeout(() => { loader.style.display = 'none'; }, 300);
+
+            // Inject click listener into iframe to catch "Get Premium" / "Free Trial" buttons
+            try {
+                const iframeDoc = document.getElementById('tour-iframe').contentDocument || document.getElementById('tour-iframe').contentWindow.document;
+                const script = iframeDoc.createElement('script');
+                script.textContent = `
+                    document.addEventListener('click', function(e) {
+                        const el = e.target.closest('a, button, [role="button"]');
+                        if (!el) return;
+                        const text = el.innerText.toLowerCase();
+                        if (text.includes('free trial') || text.includes('get premium') || text.includes('premium') || text.includes('subscribe') || text.includes('upgrade')) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            window.parent.postMessage('openLogin', '*');
+                        }
+                    }, true);
+                `;
+                iframeDoc.head.appendChild(script);
+            } catch(e) {
+                // Cross-origin iframe — use postMessage from within the 360 page instead
+            }
         };
 
         setTimeout(() => { 
@@ -534,7 +1163,7 @@ const app = {
             if(splash) { 
                 splash.style.opacity = '0'; 
                 setTimeout(() => {
-                    splash.style.display='none';
+                    splash.style.display = 'none';
                     document.getElementById('tour-choice-overlay').classList.remove('hidden');
                 }, 600); 
             }
@@ -543,14 +1172,51 @@ const app = {
 
     confirmTour: function(wantTour) {
         document.getElementById('tour-choice-overlay').classList.add('hidden');
+        // Make home page active directly (without going through nav() which blocks during tour)
+        document.querySelectorAll('.overlay-screen').forEach(p => p.classList.remove('active'));
+        document.getElementById('home-page').classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        document.getElementById('nav-home').classList.add('active');
         if (wantTour) { this.startWalkthrough(); }
     },
 
-    startWalkthrough: function() { this.isTourActive = true; this.tutorialStep = 0; this.tutorialNext(); },
+    startWalkthrough: function() { 
+        this.isTourActive = true; 
+        this.tutorialStep = 0; 
+        document.getElementById('help-tour-btn').classList.add('hidden');
+        this.tutorialNext(); 
+    },
+
     endTour: function() {
         this.isTourActive = false;
         document.getElementById('instruction-bubble').classList.add('hidden');
+        document.getElementById('help-tour-btn').classList.remove('hidden');
         document.querySelectorAll('.tutorial-highlight').forEach(el => el.classList.remove('tutorial-highlight'));
+    },
+
+    initNavTooltips: function() {
+        const tooltip = document.getElementById('nav-tooltip');
+        const navItems = document.querySelectorAll('.nav-item[data-tip], .nav-item-center[data-tip]');
+        let holdTimer = null;
+
+        navItems.forEach(item => {
+            const showTip = () => {
+                const tip = item.getAttribute('data-tip');
+                if (!tip) return;
+                const rect = item.getBoundingClientRect();
+                tooltip.innerText = tip;
+                tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+                tooltip.style.transform = 'translateX(-50%) translateY(0)';
+                tooltip.classList.add('show');
+                setTimeout(() => tooltip.classList.remove('show'), 1800);
+            };
+
+            item.addEventListener('touchstart', () => {
+                holdTimer = setTimeout(showTip, 400);
+            }, { passive: true });
+            item.addEventListener('touchend', () => clearTimeout(holdTimer), { passive: true });
+            item.addEventListener('touchmove', () => clearTimeout(holdTimer), { passive: true });
+        });
     },
 
     tutorialNext: function() {
@@ -560,20 +1226,23 @@ const app = {
         const nextPrompt = document.getElementById('next-prompt');
         
         const tourSteps = [
-            { text: "Welcome! This is your main hub to explore Baguio Botanical Garden.", target: "welcome-text", pos: "top: 150px;", arrow: "point-up" },
-            { text: "Check these banners for featured activities and special news!", target: "hero-slider", pos: "top: 410px;", arrow: "point-up" },
-            { text: "See which stations other explorers are visiting the most!", target: "most-scanned-container", pos: "top: 610px;", arrow: "point-up" },
-            { text: "Learn interesting facts about the garden's history and heritage.", target: "did-you-know-section", pos: "bottom: 110px;", arrow: "point-down" },
-            { text: "Looking for a specific station? Use the search to find it instantly.", target: "nav-search", pos: "bottom: 110px;", arrow: "point-down" },
-            { text: "Tap here to start your AR Scanning adventure!", target: "ar-main-btn", pos: "bottom: 125px;", arrow: "point-down" },
-            { text: "Need directions? The interactive map will guide you.", target: "nav-map", pos: "bottom: 110px;", arrow: "point-down" },
-            { text: "Stay updated with park announcements and new blooms!", target: "nav-notifications", pos: "bottom: 110px;", arrow: "point-down" }
+            { text: "Your Home screen. Browse stations, articles & AR experiences.", target: "welcome-text", pos: "top: 150px;", arrow: "point-up" },
+            { text: "Bell icon — tap for updates, bloom alerts & announcements.", target: "welcome-text", pos: "top: 150px;", arrow: "point-up" },
+            { text: "Search bar — type a station name to find it instantly.", target: "home-search-input", pos: "top: 250px;", arrow: "point-up" },
+            { text: "Banners — swipe to browse featured guides & activities.", target: "hero-slider", pos: "top: 440px;", arrow: "point-up" },
+            { text: "Top stations ranked by explorer scans. Tap to read more.", target: "most-scanned-container", pos: "top: 580px;", arrow: "point-up" },
+            { text: "Did You Know? — tap a card to read garden facts & history.", target: "did-you-know-section", pos: "bottom: 120px;", arrow: "point-down" },
+            { text: "Home — returns you to this screen anytime.", target: "nav-home", pos: "bottom: 120px;", arrow: "point-down" },
+            { text: "Explore — search & browse all garden stations.", target: "nav-search", pos: "bottom: 120px;", arrow: "point-down" },
+            { text: "AR Scanner — point at any marker to unlock an AR experience!", target: "ar-main-btn", pos: "bottom: 135px;", arrow: "point-down" },
+            { text: "Map — navigate the garden & find stations near you.", target: "nav-map", pos: "bottom: 120px;", arrow: "point-down" },
+            { text: "Profile — sign in to track scans, favorites & saved places.", target: "nav-profile", pos: "bottom: 120px;", arrow: "point-down" }
         ];
 
         document.querySelectorAll('.tutorial-highlight').forEach(el => el.classList.remove('tutorial-highlight'));
         if (this.tutorialStep < tourSteps.length) {
             const step = tourSteps[this.tutorialStep];
-            content.innerText = step.text;
+            content.innerHTML = step.icon ? `<span style="margin-right:6px;font-size:14px;">${step.icon}</span>${step.text}` : step.text;
             bubble.className = step.arrow;
             bubble.classList.remove('hidden');
             bubble.style.cssText = `left:50%; transform:translateX(-50%); ${step.pos}`;
@@ -585,6 +1254,46 @@ const app = {
             if (step.target) { document.getElementById(step.target).classList.add('tutorial-highlight'); }
             this.tutorialStep++;
         } else { this.endTour(); }
+    },
+
+    homeSearchInput: function(value) {
+        const resultsEl = document.getElementById('home-search-results');
+        const grid = document.getElementById('home-search-grid');
+        const homeContent = document.getElementById('most-scanned-container');
+        const didYouKnow = document.getElementById('did-you-know-section');
+        const heroSlider = document.querySelector('.hero-slider-container');
+
+        if (value.trim() === '') {
+            resultsEl.style.display = 'none';
+            if (homeContent) homeContent.style.display = '';
+            if (didYouKnow) didYouKnow.style.display = '';
+            if (heroSlider) heroSlider.style.display = '';
+            return;
+        }
+
+        resultsEl.style.display = 'block';
+        if (homeContent) homeContent.style.display = 'none';
+        if (didYouKnow) didYouKnow.style.display = 'none';
+        if (heroSlider) heroSlider.style.display = 'none';
+
+        const filtered = this.stations.filter(s => s.id !== 0 && s.name.toLowerCase().includes(value.toLowerCase()));
+        if (filtered.length === 0) {
+            grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:30px; color:#aaa; font-size:13px; font-weight:800;">No stations found</div>`;
+        } else {
+            grid.innerHTML = filtered.map(s => `
+                <div class="search-item" onclick="app.openArticle(${s.id})">
+                    <img src="${s.thumb}" alt="${s.name}">
+                    <b>${s.name}</b>
+                    <div class="scans-info">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        ${s.scans.toLocaleString()} SCANS
+                    </div>
+                </div>`).join('');
+        }
+    },
+
+    homeSearchFocus: function() {
+        // Nothing needed, just clear results when empty
     },
 
     renderRankedPage: function(filter = "", showAll = false) {
@@ -861,7 +1570,7 @@ const app = {
     startScanner: function() {
         if (this.isTourActive) return;
         document.body.classList.add('scanning-active');
-        document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
+        document.querySelectorAll('.overlay-screen').forEach(p => p.classList.remove('active'));
         document.getElementById('main-nav').style.transform = "translateY(150%)";
         document.getElementById('ar-top-layer').style.opacity = "1";
         document.getElementById('ar-reticle').style.opacity = "1";
@@ -878,30 +1587,33 @@ const app = {
     nav: function(page) {
         if (this.isTourActive) return;
         document.body.classList.remove('scanning-active');
-        document.querySelectorAll('.overlay-screen').forEach(p => p.classList.add('hidden'));
-        
+
+        // Hide all overlay screens
+        document.querySelectorAll('.overlay-screen').forEach(p => p.classList.remove('active'));
+
         const titleEl = document.getElementById('search-page-title');
         const panelEl = document.getElementById('search-panel-wrap');
 
         if (page === 'search') {
-            document.getElementById('search-page').classList.remove('hidden');
+            document.getElementById('search-page').classList.add('active');
             titleEl.innerText = "Explore";
-            panelEl.style.display = "block"; 
+            panelEl.style.display = "block";
             const searchInput = document.getElementById('station-search-input');
-            searchInput.value = ""; 
-            this.renderRankedPage("", false); 
+            searchInput.value = "";
+            this.renderRankedPage("", false);
         } else if (page === 'ranked') {
-            document.getElementById('search-page').classList.remove('hidden');
+            document.getElementById('search-page').classList.add('active');
             titleEl.innerText = "Most Scanned Station";
-            panelEl.style.display = "none"; 
-            this.renderRankedPage("", true); 
+            panelEl.style.display = "none";
+            this.renderRankedPage("", true);
         } else if (page === 'articles') {
-            document.getElementById('search-page').classList.remove('hidden');
+            document.getElementById('search-page').classList.add('active');
             titleEl.innerText = "Did You Know?";
-            panelEl.style.display = "none"; 
+            panelEl.style.display = "none";
             this.renderFactCards(true);
         } else {
-            document.getElementById(page + '-page').classList.remove('hidden');
+            const el = document.getElementById(page + '-page');
+            if (el) el.classList.add('active');
         }
 
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -912,9 +1624,9 @@ const app = {
         document.getElementById('ar-top-layer').style.opacity = "0";
         document.getElementById('ar-reticle').style.opacity = "0";
         document.getElementById('gallery-dock-container').classList.remove('ar-active');
-        
+
         const sceneEl = document.querySelector('a-scene');
-        if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
+        if (sceneEl && sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].stop(); }
     },
 
     initAR: function() {
