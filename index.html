@@ -185,11 +185,173 @@
         .article-tag { color: var(--accent); font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; }
         .article-title { font-size: 28px; font-weight: 900; color: #111; margin: 10px 0 20px; line-height: 1.1; }
         .article-content { font-size: 15px; color: #555; line-height: 1.7; font-weight: 400; white-space: pre-line; margin-bottom: 20px; }
-        .article-action { margin-top: 10px; background: #f9f9f9; padding: 25px; border-radius: 25px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .article-action { margin-top: 10px; background: #f9f9f9; padding: 25px; border-radius: 25px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .article-action h6 { margin: 0; font-size: 13px; font-weight: 900; }
         .btn-view-360 { background: var(--accent); color: white; border: none; padding: 12px 20px; border-radius: 50px; font-weight: 900; font-size: 10px; text-transform: uppercase; }
 
+        /* Favorite button on hero image */
+        .btn-favorite {
+            position: absolute; top: 30px; right: 20px; z-index: 100;
+            width: 45px; height: 45px; border-radius: 50%;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(10px);
+            border: none; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: transform 0.2s, background 0.3s;
+        }
+        .btn-favorite:active { transform: scale(0.88); }
+        .btn-favorite svg { transition: fill 0.25s, stroke 0.25s; }
+        .btn-favorite.favorited { background: rgba(235,77,75,0.85); }
+        .btn-favorite.favorited svg { fill: white; stroke: white; }
+
+        /* ── Reviews section ── */
+        .reviews-section { margin-top: 10px; padding-bottom: 60px; }
+
+        /* Big score + bar breakdown card */
+        .rating-summary-card {
+            background: #f9f9f9; border-radius: 24px; padding: 20px;
+            display: flex; gap: 16px; align-items: center; margin-bottom: 16px;
+        }
+        .rating-big-score {
+            display: flex; flex-direction: column; align-items: center;
+            min-width: 64px;
+        }
+        .rating-big-num {
+            font-size: 44px; font-weight: 900; color: #222; line-height: 1;
+        }
+        .rating-big-stars { display: flex; gap: 2px; margin: 4px 0 2px; }
+        .rating-big-stars span { font-size: 14px; color: #F5A623; }
+        .rating-total-label { font-size: 10px; color: #aaa; font-weight: 800; text-transform: uppercase; }
+
+        .rating-bars { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+        .rating-bar-row {
+            display: flex; align-items: center; gap: 8px; cursor: pointer;
+        }
+        .rating-bar-row:active .rating-bar-fill { opacity: 0.7; }
+        .rating-bar-label { font-size: 11px; font-weight: 900; color: #555; width: 10px; text-align: right; flex-shrink: 0; }
+        .rating-bar-star { font-size: 11px; color: #F5A623; flex-shrink: 0; }
+        .rating-bar-track {
+            flex: 1; height: 7px; background: #e8e8e8; border-radius: 10px; overflow: hidden;
+        }
+        .rating-bar-fill {
+            height: 100%; background: #F5A623; border-radius: 10px;
+            transition: width 0.5s cubic-bezier(0.19,1,0.22,1);
+        }
+        .rating-bar-count { font-size: 10px; font-weight: 800; color: #aaa; width: 20px; text-align: right; flex-shrink: 0; }
+
+        /* Star filter chips */
+        .star-filter-row {
+            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;
+            scrollbar-width: none; margin-bottom: 14px;
+        }
+        .star-filter-row::-webkit-scrollbar { display: none; }
+        .star-chip {
+            flex-shrink: 0; display: flex; align-items: center; gap: 4px;
+            background: #f0f0f0; border: 1.5px solid transparent;
+            border-radius: 50px; padding: 6px 14px;
+            font-size: 12px; font-weight: 900; color: #666;
+            cursor: pointer; transition: 0.2s; white-space: nowrap;
+        }
+        .star-chip.active { background: #fff8ec; border-color: #F5A623; color: #d48700; }
+        .star-chip span { color: #F5A623; font-size: 13px; }
+
+        /* Star picker for writing a review */
+        .star-picker { display: flex; gap: 6px; margin-bottom: 10px; }
+        .star-pick-btn {
+            font-size: 26px; color: #ddd; background: none; border: none;
+            cursor: pointer; padding: 0; line-height: 1; transition: transform 0.15s, color 0.15s;
+        }
+        .star-pick-btn.lit { color: #F5A623; }
+        .star-pick-btn:active { transform: scale(1.25); }
+
+        .reviews-count-label {
+            font-size: 11px; color: #aaa; font-weight: 800;
+            text-transform: uppercase; margin-bottom: 14px;
+        }
+
+        .comment-card {
+            background: #f9f9f9; border-radius: 20px; padding: 16px 18px;
+            margin-bottom: 12px; transition: 0.2s;
+        }
+        .comment-card:active { background: #f0f0f0; }
+        .comment-top {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+        }
+        .comment-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: var(--accent); display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 900; color: white; flex-shrink: 0;
+        }
+        .comment-meta { flex: 1; }
+        .comment-name { font-size: 13px; font-weight: 900; color: #333; }
+        .comment-date { font-size: 10px; color: #aaa; font-weight: 700; text-transform: uppercase; }
+        .comment-stars { display: flex; gap: 2px; font-size: 11px; }
+        .comment-text { font-size: 13px; color: #555; line-height: 1.5; font-weight: 400; }
+
+        .no-reviews-msg {
+            text-align: center; padding: 28px 0; color: #bbb;
+            font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        /* Write a review input */
+        .review-write-section { margin-top: 8px; }
+        .review-write-label { font-size: 12px; font-weight: 900; color: #555; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .review-input-wrap {
+            display: flex; align-items: center; gap: 10px;
+            background: #f5f5f5; border-radius: 20px; padding: 10px 16px;
+            border: 1.5px solid transparent; transition: 0.3s;
+        }
+        .review-input-wrap:focus-within { border-color: var(--accent); background: white; box-shadow: 0 6px 18px rgba(0,166,153,0.1); }
+        .review-input-wrap input {
+            flex: 1; border: none; background: transparent; font-size: 13px;
+            font-weight: 700; color: #333; outline: none; font-family: 'Agrandir', sans-serif;
+        }
+        .review-input-wrap input::placeholder { color: #bbb; font-weight: 400; }
+        .btn-send-review {
+            width: 34px; height: 34px; border-radius: 50%; background: var(--accent);
+            border: none; display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; cursor: pointer; transition: transform 0.2s;
+        }
+        .btn-send-review:active { transform: scale(0.88); }
+
         .hero-slider-container { margin: 15px 25px; height: 190px; border-radius: 30px; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,166,153,0.25); touch-action: pan-y; transition: opacity 0.3s ease; }
+
+        /* ── Favorites overlay ── */
+        #favorites-overlay {
+            position: fixed; inset: 0; z-index: 9500; background: #fff;
+            transform: translateX(100%);
+            transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+            overflow-y: auto; padding-bottom: 120px;
+        }
+        #favorites-overlay.visible { transform: translateX(0); }
+        .fav-header {
+            padding: 50px 25px 18px; display: flex; align-items: center; gap: 14px;
+        }
+        .fav-header h2 { margin: 0; font-size: 24px; font-weight: 900; color: #222; flex: 1; }
+        .fav-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 25px 20px;
+        }
+        .fav-card {
+            background: white; border-radius: 25px; padding: 12px;
+            box-shadow: var(--card-shadow); position: relative; transition: 0.25s;
+        }
+        .fav-card:active { transform: scale(0.96); }
+        .fav-card img { width: 100%; height: 110px; object-fit: cover; border-radius: 18px; display: block; }
+        .fav-card-name { font-size: 13px; font-weight: 900; color: #333; margin-top: 9px; display: block; }
+        .fav-card-tag { font-size: 10px; color: var(--accent); font-weight: 800; text-transform: uppercase; margin-top: 4px; display: block; }
+        .fav-remove-btn {
+            position: absolute; top: 18px; right: 18px;
+            width: 28px; height: 28px; border-radius: 50%;
+            background: rgba(235,77,75,0.85); border: none;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: transform 0.2s;
+        }
+        .fav-remove-btn:active { transform: scale(0.85); }
+        .fav-empty {
+            text-align: center; padding: 60px 25px;
+            color: #bbb; font-size: 14px; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            display: flex; flex-direction: column; align-items: center; gap: 14px;
+        }
+        .fav-empty svg { opacity: 0.25; }
         .hero-slider-container.paused { opacity: 0.85; }
         .hero-wrapper { width: 100%; height: 100%; position: relative; }
         
@@ -713,7 +875,7 @@
 
             <div class="notif-card" style="border-left: 4px solid var(--accent);">
                 <div class="notif-header">
-                    <span class="notif-title">🌸 New Bloom Alert!</span>
+                    <span class="notif-title"> New Bloom Alert!</span>
                     <span class="notif-time">2H AGO</span>
                 </div>
                 <p class="notif-desc">The Dahlias in the Centennial Garden are now in full bloom. Don't forget to scan the marker for a 3D growth time-lapse!</p>
@@ -721,54 +883,10 @@
 
             <div class="notif-card" style="border-left: 4px solid var(--accent);">
                 <div class="notif-header">
-                    <span class="notif-title">📖 BagView Magazine v2: Out Now!</span>
+                    <span class="notif-title">BagView Magazine v2: Out Now!</span>
                     <span class="notif-time">5H AGO</span>
                 </div>
                 <p class="notif-desc">Discover our new version featuring a fully interactive layout. Exceed your expectations with AR-powered stories.</p>
-            </div>
-
-            <div class="notif-card" style="border-left: 4px solid #F5A623;">
-                <div class="notif-header">
-                    <span class="notif-title">🗺️ New Station Unlocked</span>
-                    <span class="notif-time">8H AGO</span>
-                </div>
-                <p class="notif-desc">The Philippine-Thailand Friendship Garden now has a new AR marker. Head over and scan it to explore a virtual cultural exhibit!</p>
-            </div>
-
-            <div style="font-size:11px; font-weight:900; color:#aaa; text-transform:uppercase; letter-spacing:1.5px; margin: 20px 0 12px;">Yesterday</div>
-
-            <div class="notif-card" style="border-left: 4px solid #4285F4;">
-                <div class="notif-header">
-                    <span class="notif-title">🏆 You're on the Leaderboard!</span>
-                    <span class="notif-time">1D AGO</span>
-                </div>
-                <p class="notif-desc">You've scanned 5 stations and entered the Top Explorer leaderboard. Keep scanning to climb higher!</p>
-            </div>
-
-            <div class="notif-card" style="border-left: 4px solid #9B59B6;">
-                <div class="notif-header">
-                    <span class="notif-title">🌿 Conservation Tip of the Day</span>
-                    <span class="notif-time">1D AGO</span>
-                </div>
-                <p class="notif-desc">Did you know? Staying on designated paths prevents soil compaction and protects the root systems of Baguio's endemic plant species.</p>
-            </div>
-
-            <div class="notif-card" style="border-left: 4px solid var(--accent);">
-                <div class="notif-header">
-                    <span class="notif-title">📍 Japanese Tunnel Now Open</span>
-                    <span class="notif-time">1D AGO</span>
-                </div>
-                <p class="notif-desc">The Japanese Tunnel station has resumed full AR experience after maintenance. Visit and scan to relive the WWII history!</p>
-            </div>
-
-            <div style="font-size:11px; font-weight:900; color:#aaa; text-transform:uppercase; letter-spacing:1.5px; margin: 20px 0 12px;">This Week</div>
-
-            <div class="notif-card">
-                <div class="notif-header">
-                    <span class="notif-title">🎉 Welcome to BagView!</span>
-                    <span class="notif-time">3D AGO</span>
-                </div>
-                <p class="notif-desc">Thank you for joining BagView! Start your AR eco-tourism adventure by scanning any marker inside the Baguio Botanical Garden.</p>
             </div>
 
         </div>
@@ -795,14 +913,14 @@
         <!-- Stats -->
         <div class="profile-stats-row">
             <div class="stat-card"><span class="stat-num">12</span><span class="stat-label">Scanned</span></div>
-            <div class="stat-card"><span class="stat-num">5</span><span class="stat-label">Favorites</span></div>
+            <div class="stat-card" onclick="app.openFavorites()" style="cursor:pointer;"><span class="stat-num" id="profile-fav-count">0</span><span class="stat-label">Favorites</span></div>
             <div class="stat-card"><span class="stat-num">3</span><span class="stat-label">Reviews</span></div>
         </div>
 
         <!-- Activity -->
         <div class="profile-section-label">My Activity</div>
         <div class="profile-menu-group">
-            <div class="profile-menu-item">
+            <div class="profile-menu-item" onclick="app.openFavorites()">
                 <div class="menu-icon green">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                 </div>
@@ -884,6 +1002,9 @@
             <div class="article-close" onclick="app.closeArticle()">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </div>
+            <button class="btn-favorite" id="btn-favorite" onclick="app.toggleFavorite()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            </button>
         </div>
         <div class="article-body" id="art-body">
             <span class="article-tag" id="art-tag">Botanical Station</span>
@@ -902,7 +1023,54 @@
                 </div>
                 <button class="btn-view-360" id="art-tour-btn">Launch AR</button>
             </div>
+
+            <!-- Reviews & Comments Section -->
+            <div class="reviews-section" id="art-reviews-section">
+
+                <!-- Big score + bar breakdown -->
+                <div class="rating-summary-card">
+                    <div class="rating-big-score">
+                        <div class="rating-big-num" id="art-avg-score">—</div>
+                        <div class="rating-big-stars" id="art-avg-stars"></div>
+                        <div class="rating-total-label" id="art-total-label">0 reviews</div>
+                    </div>
+                    <div class="rating-bars" id="art-rating-bars"></div>
+                </div>
+
+                <!-- Filter chips: All / 5★ / 4★ / 3★ / 2★ / 1★ -->
+                <div class="star-filter-row" id="art-star-filters"></div>
+
+                <!-- Filtered count label -->
+                <div class="reviews-count-label" id="art-filtered-label"></div>
+
+                <!-- Comment cards -->
+                <div id="art-comments-list"></div>
+
+                <!-- Write a review -->
+                <div class="review-write-section">
+                    <div class="review-write-label">Rate &amp; Review</div>
+                    <div class="star-picker" id="art-star-picker"></div>
+                    <div class="review-input-wrap">
+                        <input type="text" id="art-review-input" placeholder="Share your experience...">
+                        <button class="btn-send-review" onclick="app.submitReview()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
+
+    <!-- Favorites Overlay -->
+    <div id="favorites-overlay">
+        <div class="fav-header">
+            <button class="btn-header-back" onclick="app.closeFavorites()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            </button>
+            <h2>My Favorites</h2>
+            <span id="fav-count-badge" style="font-size:11px; color:var(--accent); font-weight:900; text-transform:uppercase;"></span>
+        </div>
+        <div id="fav-grid-container"></div>
     </div>
 
     <nav class="main-navigation-bar" id="main-nav">
@@ -1365,6 +1533,9 @@ const app = {
         const fact = this.facts.find(f => f.id === factId);
         if(!fact) return;
         this.resetArticleExpansion();
+        this.currentArticleId = null;
+        document.getElementById('btn-favorite').style.display = 'none';
+        document.getElementById('art-reviews-section').style.display = 'none';
         const contentEl = document.getElementById('art-content');
         const fullText = fact.info;
         contentEl.setAttribute('data-full', fullText);
@@ -1389,6 +1560,9 @@ const app = {
         const data = this.bannerContent[key];
         if(!data) return;
         this.resetArticleExpansion();
+        this.currentArticleId = null;
+        document.getElementById('btn-favorite').style.display = 'none';
+        document.getElementById('art-reviews-section').style.display = 'none';
         const contentEl = document.getElementById('art-content');
         const fullText = data.content;
         contentEl.setAttribute('data-full', fullText);
@@ -1413,10 +1587,318 @@ const app = {
         document.getElementById('article-overlay').classList.add('visible');
     },
 
+    favorites: new Set(),
+    currentArticleId: null,
+    currentStarFilter: 0,  // 0 = all
+    pendingStarRating: 5,
+
+    stationReviews: {
+        1:  [
+            { name: "Maria S.",  avatar: "MS", stars: 5, date: "2 days ago",  text: "Absolutely stunning entrance! The manicured lawns welcomed us perfectly. Great place to start your garden tour." },
+            { name: "Jake R.",   avatar: "JR", stars: 4, date: "1 week ago",  text: "Very organized and clean. The signage helps a lot. Wished the entry path was a bit wider during peak hours." },
+            { name: "Ana P.",    avatar: "AP", stars: 5, date: "2 weeks ago", text: "Loved the decorative plant beds near the gate. My kids were already excited just seeing the entrance!" }
+        ],
+        2:  [
+            { name: "Carlo M.", avatar: "CM", stars: 5, date: "3 days ago",  text: "The canopy here is magical. So cool and peaceful — perfect escape from the summer heat." },
+            { name: "Bea T.",   avatar: "BT", stars: 4, date: "5 days ago",  text: "One of the quietest spots in the garden. The towering trees make you feel so small in the best way." },
+            { name: "Luis G.",  avatar: "LG", stars: 5, date: "3 weeks ago", text: "Great for a relaxing walk. Highly recommend visiting after the busier sections of the garden." }
+        ],
+        3:  [
+            { name: "Sofia N.", avatar: "SN", stars: 4, date: "1 day ago",   text: "The Asian Garden smells incredible in the morning. A must-visit for any culture lover!" },
+            { name: "Renz A.",  avatar: "RA", stars: 5, date: "4 days ago",  text: "Beautifully maintained. The variety here is impressive and the architecture is vibrant." },
+            { name: "Lyn O.",   avatar: "LO", stars: 3, date: "1 week ago",  text: "Nice but some sections felt a bit crowded during our visit. Still worth a stop." }
+        ],
+        4:  [
+            { name: "Toni B.",  avatar: "TB", stars: 5, date: "2 days ago",  text: "The Cactus Garden is so unique! You can sense the careful curation of every plant here." },
+            { name: "Marco D.", avatar: "MD", stars: 5, date: "1 week ago",  text: "Peaceful and well-kept. The rock arrangements are perfect for a relaxing stroll." },
+            { name: "Cris V.",  avatar: "CV", stars: 4, date: "2 weeks ago", text: "Loved the variety. Wish there were more labels identifying the rarer species." }
+        ],
+        5:  [
+            { name: "Eli F.",   avatar: "EF", stars: 4, date: "3 days ago",  text: "The Centennial Garden is educational and refreshing. Kids loved the open lawn space." },
+            { name: "Dana C.",  avatar: "DC", stars: 5, date: "6 days ago",  text: "Such a historic area. The bronze sculpture really gives you a sense of Baguio's heritage." },
+            { name: "Sam H.",   avatar: "SH", stars: 4, date: "3 weeks ago", text: "Very informative. Would be even better with more seating around the monument." }
+        ],
+        6:  [
+            { name: "Pia L.",   avatar: "PL", stars: 5, date: "1 day ago",   text: "The Chinese Garden is so culturally rich. The pavilions and stone bridges are fascinating." },
+            { name: "Noel T.",  avatar: "NT", stars: 5, date: "5 days ago",  text: "Incredible design. The Feng Shui layout creates such a calm and balanced atmosphere." },
+            { name: "Rosa M.",  avatar: "RM", stars: 4, date: "2 weeks ago", text: "Loved the architecture. The circular gate is a great photo opportunity." }
+        ],
+        7:  [
+            { name: "Gab W.",   avatar: "GW", stars: 5, date: "4 days ago",  text: "The totem pole is a fantastic tribute to the Baguio-Vaughan friendship. Unique spot!" },
+            { name: "Isa R.",   avatar: "IR", stars: 4, date: "1 week ago",  text: "Lovely cultural garden. My family was fascinated by the Canadian elements here." },
+            { name: "Fred K.",  avatar: "FK", stars: 3, date: "3 weeks ago", text: "Interesting concept but could use more landscaping around the main structures." }
+        ],
+        8:  [
+            { name: "Mia C.",   avatar: "MC", stars: 5, date: "2 days ago",  text: "The Cordillera Village is stunning. The traditional hut replicas feel incredibly authentic." },
+            { name: "Kevin S.", avatar: "KS", stars: 5, date: "1 week ago",  text: "Best cultural stop in the whole garden. The craftsmanship of the huts is remarkable." },
+            { name: "Pat E.",   avatar: "PE", stars: 4, date: "2 weeks ago", text: "Very educational and immersive. The AR markers added so much to the experience." }
+        ],
+        9:  [
+            { name: "Jay N.",   avatar: "JN", stars: 4, date: "1 day ago",   text: "The Dahlia Garden is gorgeous when in bloom. A riot of colors and shapes!" },
+            { name: "Luz A.",   avatar: "LA", stars: 5, date: "3 days ago",  text: "Peak bloom season is absolutely magical here. The horticulturists do an amazing job." },
+            { name: "Vince P.", avatar: "VP", stars: 3, date: "1 week ago",  text: "Beautiful, but we visited off-season so not all dahlias were blooming. Check timing!" }
+        ],
+        10: [
+            { name: "Nena G.",  avatar: "NG", stars: 4, date: "2 days ago",  text: "Great greenhouse! Loved seeing the cacti and succulents up close. Very photogenic too." },
+            { name: "Leo B.",   avatar: "LB", stars: 5, date: "5 days ago",  text: "The greenhouse is a botanical treasure. The rare plant collection is impressive and well-labelled." },
+            { name: "Chloe F.", avatar: "CF", stars: 4, date: "2 weeks ago", text: "Climate-controlled and very clean. A hidden gem inside the main garden." }
+        ],
+        11: [
+            { name: "Kenji T.", avatar: "KT", stars: 5, date: "3 days ago",  text: "The Buddha statues and lanterns give this section such a calming atmosphere. Truly beautiful." },
+            { name: "Aileen R.",avatar: "AR", stars: 5, date: "1 week ago",  text: "A lovely tribute to Filipino-Japanese friendship. Very tranquil and thoughtfully designed." },
+            { name: "Ben O.",   avatar: "BO", stars: 4, date: "3 weeks ago", text: "One of my favorite sections. The Japanese aesthetic is very well-executed here." }
+        ],
+        12: [
+            { name: "Rex D.",   avatar: "RD", stars: 5, date: "1 day ago",   text: "Walking through this tunnel sent chills down my spine. Such a powerful piece of history." },
+            { name: "Gina M.",  avatar: "GM", stars: 5, date: "4 days ago",  text: "The LED lighting makes it accessible and safe to walk through. Very eerie and educational." },
+            { name: "Hiro S.",  avatar: "HS", stars: 4, date: "2 weeks ago", text: "A sobering historical experience. Everyone should walk through at least once." }
+        ],
+        13: [
+            { name: "Chae W.",  avatar: "CW", stars: 5, date: "2 days ago",  text: "The Korean pagodas are gorgeous! Great photo spot and a lovely tribute to both nations." },
+            { name: "Mark T.",  avatar: "MT", stars: 4, date: "6 days ago",  text: "Vibrant colors and interesting wooden sculptures. Really stands out in the garden." },
+            { name: "Joy L.",   avatar: "JL", stars: 5, date: "3 weeks ago", text: "Beautifully done. The cultural design elements feel very authentic." }
+        ],
+        14: [
+            { name: "Lara V.",  avatar: "LV", stars: 5, date: "1 day ago",   text: "The orchids here are absolutely breathtaking. So many varieties, all perfectly displayed." },
+            { name: "Nico H.",  avatar: "NH", stars: 5, date: "3 days ago",  text: "Best stop in the whole garden for me. The fragrance and colors are unforgettable." },
+            { name: "Trish A.", avatar: "TA", stars: 4, date: "1 week ago",  text: "Stunning collection. The epiphyte walls are something you truly have to see in person." }
+        ],
+        15: [
+            { name: "Aree P.",  avatar: "AP", stars: 5, date: "2 days ago",  text: "The Thai pavilion is stunning! The golden details are so intricate and beautiful." },
+            { name: "Dino C.",  avatar: "DC", stars: 4, date: "1 week ago",  text: "A vibrant and photogenic section. The Thai aesthetic is very distinctly captured here." },
+            { name: "Mae S.",   avatar: "MS", stars: 5, date: "2 weeks ago", text: "One of the most photographed spots and for good reason. Absolutely gorgeous." }
+        ],
+        16: [
+            { name: "Ray G.",   avatar: "RG", stars: 4, date: "3 days ago",  text: "Such a peaceful spot. The walking paths and little bridges are very relaxing." },
+            { name: "Nina A.",  avatar: "NA", stars: 5, date: "1 week ago",  text: "Loved the 5,000 sqm sanctuary vibe. Over 1,500 plants and so much to explore." },
+            { name: "Paul E.",  avatar: "PE", stars: 4, date: "3 weeks ago", text: "Great environmental message behind this garden. Well-maintained and very educational." }
+        ]
+    },
+
+    toggleFavorite: function() {
+        const btn = document.getElementById('btn-favorite');
+        const id = this.currentArticleId;
+        if (id === null) return;
+        if (this.favorites.has(id)) {
+            this.favorites.delete(id);
+            btn.classList.remove('favorited');
+        } else {
+            this.favorites.add(id);
+            btn.classList.add('favorited');
+            btn.style.transform = 'scale(1.3)';
+            setTimeout(() => btn.style.transform = '', 250);
+        }
+        this._syncFavCount();
+    },
+
+    _syncFavCount: function() {
+        const count = this.favorites.size;
+        const el = document.getElementById('profile-fav-count');
+        if (el) el.innerText = count;
+    },
+
+    openFavorites: function() {
+        this.renderFavoritesPage();
+        document.getElementById('favorites-overlay').classList.add('visible');
+    },
+
+    closeFavorites: function() {
+        document.getElementById('favorites-overlay').classList.remove('visible');
+    },
+
+    renderFavoritesPage: function() {
+        const container = document.getElementById('fav-grid-container');
+        const badge = document.getElementById('fav-count-badge');
+        const count = this.favorites.size;
+        badge.innerText = count ? `${count} saved` : '';
+
+        if (count === 0) {
+            container.innerHTML = `
+                <div class="fav-empty">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    <span>No favorites yet</span>
+                    <span style="font-size:12px; font-weight:400; color:#ccc; text-transform:none;">Tap the heart on any station to save it here</span>
+                </div>`;
+            return;
+        }
+
+        const favStations = [...this.favorites]
+            .map(id => this.stations.find(s => s.id === id))
+            .filter(Boolean);
+
+        container.innerHTML = `<div class="fav-grid">${
+            favStations.map(s => `
+                <div class="fav-card" onclick="app.openArticleFromFavorites(${s.id})">
+                    <img src="${s.thumb}" alt="${s.name}">
+                    <button class="fav-remove-btn" onclick="event.stopPropagation(); app.removeFavorite(${s.id})">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                    <span class="fav-card-name">${s.name}</span>
+                    <span class="fav-card-tag">${s.tag || 'Station'}</span>
+                </div>
+            `).join('')
+        }</div>`;
+    },
+
+    removeFavorite: function(id) {
+        this.favorites.delete(id);
+        this._syncFavCount();
+        this.renderFavoritesPage();
+        // Also sync the heart button if the article overlay is open for this station
+        if (this.currentArticleId === id) {
+            document.getElementById('btn-favorite').classList.remove('favorited');
+        }
+    },
+
+    openArticleFromFavorites: function(id) {
+        this.closeFavorites();
+        setTimeout(() => this.openArticle(id), 300);
+    },
+
+    renderReviews: function(stationId) {
+        const allReviews = this.stationReviews[stationId] || [];
+        const section = document.getElementById('art-reviews-section');
+        section.style.display = stationId ? 'block' : 'none';
+        if (!stationId) return;
+
+        const total = allReviews.length;
+        const avg = total ? (allReviews.reduce((s, r) => s + r.stars, 0) / total) : 0;
+        const avgStr = total ? avg.toFixed(1) : '—';
+
+        // ── Big score
+        document.getElementById('art-avg-score').innerText = avgStr;
+        document.getElementById('art-total-label').innerText = total + (total === 1 ? ' review' : ' reviews');
+        const bigStars = document.getElementById('art-avg-stars');
+        bigStars.innerHTML = [1,2,3,4,5].map(i =>
+            `<span style="color:${i <= Math.round(avg) ? '#F5A623' : '#ddd'}; font-size:14px;">★</span>`
+        ).join('');
+
+        // ── Bar breakdown (5 down to 1)
+        const counts = [5,4,3,2,1].map(s => allReviews.filter(r => r.stars === s).length);
+        const maxCount = Math.max(...counts, 1);
+        document.getElementById('art-rating-bars').innerHTML = [5,4,3,2,1].map((s, i) => `
+            <div class="rating-bar-row" onclick="app.filterByStar(${s})">
+                <span class="rating-bar-label">${s}</span>
+                <span class="rating-bar-star">★</span>
+                <div class="rating-bar-track">
+                    <div class="rating-bar-fill" style="width:${total ? (counts[i]/maxCount*100) : 0}%"></div>
+                </div>
+                <span class="rating-bar-count">${counts[i]}</span>
+            </div>
+        `).join('');
+
+        // ── Filter chips
+        const filterRow = document.getElementById('art-star-filters');
+        const chipDefs = [
+            { label: 'All', val: 0 },
+            { label: '5 ★', val: 5 },
+            { label: '4 ★', val: 4 },
+            { label: '3 ★', val: 3 },
+            { label: '2 ★', val: 2 },
+            { label: '1 ★', val: 1 },
+        ];
+        filterRow.innerHTML = chipDefs.map(c => {
+            const cnt = c.val === 0 ? total : allReviews.filter(r => r.stars === c.val).length;
+            const active = this.currentStarFilter === c.val ? ' active' : '';
+            return `<div class="star-chip${active}" onclick="app.filterByStar(${c.val})">${c.label} <span style="color:#aaa;font-weight:700;font-size:11px;">(${cnt})</span></div>`;
+        }).join('');
+
+        // ── Filtered list
+        this._renderFilteredComments(stationId);
+
+        // ── Star picker
+        this._renderStarPicker();
+    },
+
+    filterByStar: function(starVal) {
+        this.currentStarFilter = starVal;
+        this.renderReviews(this.currentArticleId);
+        // Scroll to comments
+        setTimeout(() => {
+            const list = document.getElementById('art-comments-list');
+            if (list) list.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 80);
+    },
+
+    _renderFilteredComments: function(stationId) {
+        const allReviews = this.stationReviews[stationId] || [];
+        const filtered = this.currentStarFilter === 0
+            ? allReviews
+            : allReviews.filter(r => r.stars === this.currentStarFilter);
+
+        const label = document.getElementById('art-filtered-label');
+        if (this.currentStarFilter === 0) {
+            label.innerText = `${allReviews.length} review${allReviews.length !== 1 ? 's' : ''}`;
+        } else {
+            label.innerText = `${filtered.length} review${filtered.length !== 1 ? 's' : ''} with ${this.currentStarFilter} star${this.currentStarFilter !== 1 ? 's' : ''}`;
+        }
+
+        const list = document.getElementById('art-comments-list');
+        if (filtered.length === 0) {
+            list.innerHTML = `<div class="no-reviews-msg">No reviews for this rating yet</div>`;
+            return;
+        }
+        list.innerHTML = filtered.map(r => `
+            <div class="comment-card">
+                <div class="comment-top">
+                    <div class="comment-avatar" style="background:${this._avatarColor(r.avatar)}">${r.avatar}</div>
+                    <div class="comment-meta">
+                        <div class="comment-name">${r.name}</div>
+                        <div class="comment-date">${r.date}</div>
+                    </div>
+                    <div class="comment-stars">${[1,2,3,4,5].map(i=>`<span style="color:${i<=r.stars?'#F5A623':'#ddd'}">★</span>`).join('')}</div>
+                </div>
+                <div class="comment-text">${r.text}</div>
+            </div>
+        `).join('');
+    },
+
+    _avatarColor: function(initials) {
+        const colors = ['#00A699','#E74C3C','#3498DB','#9B59B6','#E67E22','#27AE60','#E91E63','#FF5722'];
+        let hash = 0;
+        for (let c of initials) hash += c.charCodeAt(0);
+        return colors[hash % colors.length];
+    },
+
+    _renderStarPicker: function() {
+        const picker = document.getElementById('art-star-picker');
+        picker.innerHTML = [1,2,3,4,5].map(i => `
+            <button class="star-pick-btn ${i <= this.pendingStarRating ? 'lit' : ''}"
+                onclick="app.pickStar(${i})">★</button>
+        `).join('');
+    },
+
+    pickStar: function(n) {
+        this.pendingStarRating = n;
+        this._renderStarPicker();
+    },
+
+    submitReview: function() {
+        const input = document.getElementById('art-review-input');
+        const text = input.value.trim();
+        if (!text || this.currentArticleId === null) return;
+        const name = this.currentUser ? this.currentUser.name.split(' ')[0] : 'Explorer';
+        const initials = name.slice(0, 2).toUpperCase();
+        const newReview = { name, avatar: initials, stars: this.pendingStarRating, date: 'Just now', text };
+        if (!this.stationReviews[this.currentArticleId]) this.stationReviews[this.currentArticleId] = [];
+        this.stationReviews[this.currentArticleId].unshift(newReview);
+        input.value = '';
+        this.pendingStarRating = 5;
+        this.currentStarFilter = 0;
+        this.renderReviews(this.currentArticleId);
+    },
+
     openArticle: function(id) {
         const station = this.stations.find(s => s.id === id);
         if(!station) return;
         this.resetArticleExpansion();
+        this.currentArticleId = id;
+        this.currentStarFilter = 0;
+
+        // Sync favorite button
+        const favBtn = document.getElementById('btn-favorite');
+        favBtn.style.display = 'flex';
+        favBtn.classList.toggle('favorited', this.favorites.has(id));
         
         const contentEl = document.getElementById('art-content');
         const fullText = station.info || "Explore the rich biodiversity and unique heritage of this area.";
@@ -1439,6 +1921,7 @@ const app = {
             this.closeArticle();
             this.startScanner();
         };
+        this.renderReviews(id);
         document.getElementById('article-overlay').classList.add('visible');
     },
 
