@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>BAGVIEW LOGIN</title>
+    <style>
+        @font-face { font-family: 'Agrandir'; src: url('./Assets/agrandir-regular.woff2') format('woff2'); font-weight: 400; }
+        
+        :root { 
+            --accent: #00A699; 
+            --error: #EB4D4B;
+            --bg-page: #ffffff; 
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Agrandir', sans-serif !important; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #fff; }
+
+        .header-teal {
+            background-color: var(--accent);
+            color: white;
+            padding: 60px 20px 50px;
+            text-align: center;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+        }
+
+        .pine-logo { width: 50px; filter: brightness(0) invert(1); margin-bottom: 12px; }
+        .header-teal h2 { font-size: 26px; font-weight: 900; margin: 0; }
+        .header-teal p { font-size: 13px; opacity: 0.85; margin: 6px 0 0; }
+
+        .login-body { padding: 30px; display: flex; flex-direction: column; position: relative; }
+
+        /* Error Bubble Styling */
+        #error-bubble {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-10px);
+            background: var(--error);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(235, 77, 75, 0.3);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        #error-bubble.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .auth-tab-row {
+            display: flex; background: #f0f0f0; border-radius: 14px;
+            padding: 4px; margin-bottom: 25px;
+        }
+
+        .auth-tab {
+            flex: 1; text-align: center; padding: 12px;
+            border-radius: 11px; font-size: 12px; font-weight: 900;
+            color: #999; cursor: pointer;
+        }
+
+        .auth-tab.active { background: white; color: var(--accent); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+        .auth-input {
+            width: 100%; padding: 16px; border-radius: 14px;
+            border: 1.5px solid #eee; background: #f9f9f9;
+            font-size: 14px; margin-bottom: 12px; outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .auth-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0,166,153,0.1);
+            background: #fff;
+        }
+        .auth-input.field-error {
+            border-color: var(--error) !important;
+            box-shadow: 0 0 0 3px rgba(235,77,75,0.12) !important;
+            background: #fff8f8 !important;
+            animation: shake 0.3s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        .btn-auth-primary {
+            width: 100%; padding: 16px; border-radius: 14px;
+            background: var(--accent); color: white; border: none;
+            font-weight: 900; text-transform: uppercase; text-align: center;
+            cursor: pointer; font-size: 14px;
+            transition: opacity 0.2s ease, transform 0.1s ease;
+        }
+        .btn-auth-primary:active { transform: scale(0.98); }
+        .btn-auth-primary:disabled {
+            background: #ccc; cursor: not-allowed; opacity: 0.6;
+        }
+        .auth-divider { text-align: center; margin: 25px 0; position: relative; border-top: 1px solid #eee; }
+        .auth-divider span {
+            position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+            background: white; padding: 0 10px; font-size: 10px; color: #bbb; font-weight: 800;
+        }
+
+        .social-row { display: flex; justify-content: center; gap: 20px; }
+        .btn-social {
+            width: 52px; height: 52px; border-radius: 50%; border: none;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.1); cursor: pointer;
+        }
+        .btn-social.fb { background: #1877F2; color: white; }
+        .btn-social.google { background: #fff; border: 1.5px solid #eee; }
+
+        .guest-link {
+            text-align: center; margin-top: 40px;
+            font-size: 11px; color: #aaa; font-weight: 800;
+            text-transform: uppercase; text-decoration: underline; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-teal">
+        <img src="Assets/Logo_Icon.png" alt="BagView" class="pine-logo">
+        <h2>Welcome to BagView</h2>
+        <p>Your AR Eco-Tourism companion for Baguio</p>
+    </div>
+
+    <div class="login-body">
+        <div id="error-bubble">Please fill in all fields</div>
+
+        <div class="auth-tab-row">
+            <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">Login</div>
+            <div class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Sign Up</div>
+        </div>
+
+        <div id="form-container">
+            <input class="auth-input" id="login-email" type="email" placeholder="Email address" oninput="onFieldInput()">
+            <input class="auth-input" id="login-pass" type="password" placeholder="Password" oninput="onFieldInput()">
+            <button class="btn-auth-primary" id="auth-btn" onclick="handleAuth()" disabled>Login</button>
+        </div>
+
+        <div class="auth-divider"><span>OR SIGN UP USING</span></div>
+
+        <div class="social-row">
+            <button class="btn-social fb" onclick="sessionStorage.setItem('bv_user_name','Facebook User');sessionStorage.setItem('bv_logged_in','true');window.location.href='index.html'">
+                <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </button>
+            <button class="btn-social google" onclick="sessionStorage.setItem('bv_user_name','Google User');sessionStorage.setItem('bv_logged_in','true');window.location.href='index.html'">
+                <svg width="22" height="22" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.5l3.1-3.1C17.2 1.5 14.8 1 12 1 7.3 1 3.4 3.7 1.6 7.6l3.6 2.8C6.1 7.2 8.8 5 12 5z"/><path fill="#FBBC05" d="M1 12c0-.9.1-1.7.4-2.6L1.6 7.6c-.4 1.3-.6 2.9-.6 4.4 0 1.5.2 3.1.6 4.4l3.6-2.8C5.1 13.7 5 12.9 5 12z"/><path fill="#4285F4" d="M12 23c2.8 0 5.2-.5 7.2-2.4l-3.3-2.6c-1.1.7-2.4 1-3.9 1-3.2 0-5.9-2.2-6.8-5.4l-3.6 2.8C3.4 20.3 7.3 23 12 23z"/><path fill="#34A853" d="M22.6 11.4c.1.2.1.4.1.6 0 3.1-1.1 5.7-3.2 7.6l3.3 2.6c2.5-2.3 3.9-5.7 3.9-9.8 0-.3 0-.7-.1-1H12v4h6.6z"/></svg>
+            </button>
+        </div>
+
+        <div class="guest-link" onclick="sessionStorage.setItem('bv_user_name','Guest');sessionStorage.setItem('bv_logged_in','true');window.location.href='index.html'">Continue as Guest</div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            const isLogin = tab === 'login';
+            document.getElementById('tab-login').classList.toggle('active', isLogin);
+            document.getElementById('tab-signup').classList.toggle('active', !isLogin);
+
+            const form = document.getElementById('form-container');
+            if (isLogin) {
+                form.innerHTML = `
+                    <input class="auth-input" id="login-email" type="email" placeholder="Email address" oninput="onFieldInput()">
+                    <input class="auth-input" id="login-pass" type="password" placeholder="Password" oninput="onFieldInput()">
+                    <button class="btn-auth-primary" id="auth-btn" onclick="handleAuth()" disabled>Login</button>
+                `;
+            } else {
+                form.innerHTML = `
+                    <input class="auth-input" id="reg-name" type="text" placeholder="Full name" oninput="onFieldInput()">
+                    <input class="auth-input" id="reg-email" type="email" placeholder="Email address" oninput="onFieldInput()">
+                    <input class="auth-input" id="reg-pass" type="password" placeholder="Create password" oninput="onFieldInput()">
+                    <button class="btn-auth-primary" id="auth-btn" onclick="handleAuth()" disabled>Create Account</button>
+                `;
+            }
+        }
+
+        // Called on every keystroke — enables button only when all fields are filled
+        function onFieldInput() {
+            const btn = document.getElementById('auth-btn');
+            const inputs = document.querySelectorAll('#form-container .auth-input');
+            const allFilled = Array.from(inputs).every(i => i.value.trim() !== '');
+            btn.disabled = !allFilled;
+
+            // Clear red highlight as user types into a field
+            inputs.forEach(i => {
+                if (i.value.trim() !== '') i.classList.remove('field-error');
+            });
+        }
+
+        function showError(message) {
+            const bubble = document.getElementById('error-bubble');
+            bubble.innerText = message;
+            bubble.classList.add('visible');
+            setTimeout(() => bubble.classList.remove('visible'), 3000);
+        }
+
+        // Highlight all empty fields with a red shake
+        function highlightEmptyFields() {
+            const inputs = document.querySelectorAll('#form-container .auth-input');
+            let anyEmpty = false;
+            inputs.forEach(i => {
+                if (i.value.trim() === '') {
+                    i.classList.remove('field-error'); // reset to re-trigger animation
+                    void i.offsetWidth;               // force reflow
+                    i.classList.add('field-error');
+                    anyEmpty = true;
+                }
+            });
+            return anyEmpty;
+        }
+
+        function handleAuth() {
+            const isLoginTab = document.getElementById('tab-login').classList.contains('active');
+
+            // Double-guard: highlight empties and block if somehow button was clicked while empty
+            if (highlightEmptyFields()) {
+                showError(isLoginTab ? "Please enter your email and password" : "Please fill in all fields");
+                return;
+            }
+
+            if (isLoginTab) {
+                const email = document.getElementById('login-email').value.trim();
+                const derivedName = email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                sessionStorage.setItem('bv_user_name', derivedName);
+                sessionStorage.setItem('bv_user_email', email);
+                sessionStorage.setItem('bv_logged_in', 'true');
+            } else {
+                const name = document.getElementById('reg-name').value.trim();
+                const email = document.getElementById('reg-email').value.trim();
+                sessionStorage.setItem('bv_user_name', name);
+                sessionStorage.setItem('bv_user_email', email);
+                sessionStorage.setItem('bv_logged_in', 'true');
+            }
+
+            window.location.href = 'index.html';
+        }
+
+        // Initialise — set up the default login form with disabled button and live checking
+        switchTab('login');
+    </script>
+</body>
+</html>
