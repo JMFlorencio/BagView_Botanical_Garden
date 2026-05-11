@@ -642,10 +642,6 @@
     <div id="home-page" class="overlay-screen active">
         <div class="user-greeting" id="welcome-text">
             <div><h3>Hi, Explorer!</h3><h2>Let's Discover Baguio</h2></div>
-            <button class="home-notif-btn" onclick="app.nav('notifications')" style="position:relative;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                <span class="notif-badge"></span>
-            </button>
         </div>
 
         <!--Search panel -->
@@ -911,11 +907,14 @@
 
     <nav class="main-navigation-bar" id="main-nav">
         <div class="nav-item active" id="nav-home" onclick="app.nav('home')" data-tip="Home"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
-        <div class="nav-item" id="nav-search" onclick="app.nav('search')" data-tip="Explore Stations"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
+        <div class="nav-item" id="nav-map" onclick="app.openInternalPage('map.html', 0)" data-tip="Garden Map"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg></div>
         <div class="nav-item-center" id="ar-main-btn" onclick="app.startScanner()" data-tip="AR Scanner">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="9" y="9" width="6" height="6"></rect></svg>
         </div>
-        <div class="nav-item" id="nav-map" onclick="app.openInternalPage('map.html', 0)" data-tip="Garden Map"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg></div>
+        <div class="nav-item" id="nav-notifications" onclick="app.nav('notifications')" data-tip="Notifications" style="position:relative;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="notif-badge" id="nav-notif-badge"></span>
+        </div>
         <div class="nav-item" id="nav-profile" onclick="app.navProfile()" data-tip="My Profile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
     </nav>
 
@@ -1227,15 +1226,14 @@ const app = {
         
         const tourSteps = [
             { text: "Your Home screen. Browse stations, articles & AR experiences.", target: "welcome-text", pos: "top: 150px;", arrow: "point-up" },
-            { text: "Bell icon — tap for updates, bloom alerts & announcements.", target: "welcome-text", pos: "top: 150px;", arrow: "point-up" },
             { text: "Search bar — type a station name to find it instantly.", target: "home-search-input", pos: "top: 250px;", arrow: "point-up" },
             { text: "Banners — swipe to browse featured guides & activities.", target: "hero-slider", pos: "top: 440px;", arrow: "point-up" },
             { text: "Top stations ranked by explorer scans. Tap to read more.", target: "most-scanned-container", pos: "top: 580px;", arrow: "point-up" },
             { text: "Did You Know? — tap a card to read garden facts & history.", target: "did-you-know-section", pos: "bottom: 120px;", arrow: "point-down" },
             { text: "Home — returns you to this screen anytime.", target: "nav-home", pos: "bottom: 120px;", arrow: "point-down" },
-            { text: "Explore — search & browse all garden stations.", target: "nav-search", pos: "bottom: 120px;", arrow: "point-down" },
-            { text: "AR Scanner — point at any marker to unlock an AR experience!", target: "ar-main-btn", pos: "bottom: 135px;", arrow: "point-down" },
             { text: "Map — navigate the garden & find stations near you.", target: "nav-map", pos: "bottom: 120px;", arrow: "point-down" },
+            { text: "AR Scanner — point at any marker to unlock an AR experience!", target: "ar-main-btn", pos: "bottom: 135px;", arrow: "point-down" },
+            { text: "Notifications — stay updated with bloom alerts & announcements.", target: "nav-notifications", pos: "bottom: 120px;", arrow: "point-down" },
             { text: "Profile — sign in to track scans, favorites & saved places.", target: "nav-profile", pos: "bottom: 120px;", arrow: "point-down" }
         ];
 
@@ -1617,8 +1615,8 @@ const app = {
         }
 
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-        const activeNav = (page === 'ranked' || page === 'articles') ? 'search' : page;
-        if (document.getElementById('nav-' + activeNav)) document.getElementById('nav-' + activeNav).classList.add('active');
+        const activeNav = (page === 'ranked' || page === 'articles' || page === 'search') ? null : page;
+        if (activeNav && document.getElementById('nav-' + activeNav)) document.getElementById('nav-' + activeNav).classList.add('active');
 
         document.getElementById('main-nav').style.transform = "translateY(0)";
         document.getElementById('ar-top-layer').style.opacity = "0";
