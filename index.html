@@ -824,102 +824,9 @@
             border-top-color: #222; border-bottom: none;
         }
         .nav-tooltip.show { opacity: 1; transform: translateY(0); }
-
-        /* ── Success Overlay ── */
-        #success-overlay {
-            position: fixed; inset: 0; z-index: 99999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.35s ease;
-        }
-        #success-overlay.visible { opacity: 1; pointer-events: auto; }
-        .success-backdrop {
-            position: absolute; inset: 0;
-            background: rgba(0,0,0,0.55);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-        .success-card {
-            position: relative; z-index: 2;
-            background: white;
-            border-radius: 32px;
-            padding: 40px 36px 36px;
-            width: 82%; max-width: 320px;
-            text-align: center;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.25);
-            transform: scale(0.82) translateY(30px);
-            transition: transform 0.45s cubic-bezier(0.19,1,0.22,1), opacity 0.35s ease;
-            opacity: 0;
-        }
-        #success-overlay.visible .success-card { transform: scale(1) translateY(0); opacity: 1; }
-        .success-gif-wrap {
-            width: 120px; height: 120px;
-            margin: 0 auto 20px; border-radius: 50%; overflow: hidden;
-            background: #f0faf9; display: flex; align-items: center; justify-content: center;
-            position: relative;
-        }
-        .success-gif-wrap img { width: 100%; height: 100%; object-fit: cover; }
-        .success-check-svg { width: 72px; height: 72px; }
-        .success-check-svg circle {
-            fill: none; stroke: var(--accent); stroke-width: 3;
-            stroke-dasharray: 166; stroke-dashoffset: 166;
-            animation: drawCircle 0.6s 0.1s cubic-bezier(0.65,0,0.45,1) forwards;
-        }
-        .success-check-svg path {
-            fill: none; stroke: var(--accent); stroke-width: 3;
-            stroke-linecap: round; stroke-linejoin: round;
-            stroke-dasharray: 48; stroke-dashoffset: 48;
-            animation: drawCheck 0.4s 0.65s cubic-bezier(0.65,0,0.45,1) forwards;
-        }
-        @keyframes drawCircle { to { stroke-dashoffset: 0; } }
-        @keyframes drawCheck  { to { stroke-dashoffset: 0; } }
-        .confetti-dot {
-            position: absolute; border-radius: 3px;
-            width: 7px; height: 7px; opacity: 0;
-            animation: confettiFall 1.2s ease forwards;
-        }
-        @keyframes confettiFall {
-            0%   { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
-            100% { opacity: 0; transform: translateY(110px) rotate(400deg) scale(0.3); }
-        }
-        .success-pulse-ring {
-            position: absolute; width: 120px; height: 120px; border-radius: 50%;
-            border: 3px solid rgba(0,166,153,0.4);
-            animation: pulseRing 1.4s 0.5s ease-out infinite;
-        }
-        @keyframes pulseRing { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(1.6); opacity: 0; } }
-        .success-title { font-size: 22px; font-weight: 900; color: #111; margin: 0 0 8px; line-height: 1.2; }
-        .success-subtitle { font-size: 13px; font-weight: 400; color: #777; margin: 0 0 28px; line-height: 1.6; }
-        .success-subtitle strong { color: var(--accent); font-weight: 800; }
-        .btn-success-continue {
-            width: 100%; padding: 16px; border-radius: 50px;
-            background: var(--accent); color: white; border: none;
-            font-weight: 900; font-size: 13px; text-transform: uppercase;
-            letter-spacing: 1px; cursor: pointer; font-family: 'Agrandir', sans-serif;
-            box-shadow: 0 8px 24px rgba(0,166,153,0.35);
-            transition: transform 0.15s, opacity 0.15s;
-        }
-        .btn-success-continue:active { transform: scale(0.97); opacity: 0.9; }
     </style>
 </head>
 <body class="">
-
-    <!-- ── Success Overlay ── -->
-    <div id="success-overlay">
-        <div class="success-backdrop"></div>
-        <div class="success-card" id="success-card">
-            <div id="success-confetti-host" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:32px;"></div>
-            <div style="position:relative;display:inline-block;margin-bottom:20px;">
-                <div class="success-pulse-ring" id="success-pulse-ring"></div>
-                <div class="success-gif-wrap" id="success-gif-wrap">
-                    <!-- JS fills this with img or svg -->
-                </div>
-            </div>
-            <div class="success-title" id="success-title">Welcome back!</div>
-            <div class="success-subtitle" id="success-subtitle">You're now logged in.</div>
-            <button class="btn-success-continue" id="success-continue-btn" onclick="app.dismissSuccess()">Continue</button>
-        </div>
-    </div>
     <audio id="match-sound" src="https://cdn.pixabay.com/audio/2021/08/04/audio_bb630cc098.mp3" preload="auto"></audio>
 
     <div id="splash-screen" style="position:fixed; inset:0; z-index:12000; background:#00A699; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:0.6s;">
@@ -1512,7 +1419,7 @@ const app = {
         if (avatarEmail) avatarEmail.innerText = 'explorer@bagview.app';
 
         this.nav('home');
-        this.openLogin();
+        this.openLogin(true);
     },
 
     continueAsGuest: function() {
@@ -1611,84 +1518,7 @@ const app = {
             iframe.contentWindow.postMessage('loginComplete', '*');
         }
 
-        // Show success overlay instead of jumping to profile
-        this.showSuccessOverlay(isLoginTab ? 'login' : 'signup', name);
-    },
-
-    showSuccessOverlay: function(type, name) {
-        const overlay   = document.getElementById('success-overlay');
-        const gifWrap   = document.getElementById('success-gif-wrap');
-        const titleEl   = document.getElementById('success-title');
-        const subEl     = document.getElementById('success-subtitle');
-        const confHost  = document.getElementById('success-confetti-host');
-        const pulseRing = document.getElementById('success-pulse-ring');
-
-        if (!overlay) return;
-
-        // Reset
-        gifWrap.innerHTML = '';
-        confHost.innerHTML = '';
-        overlay.classList.remove('visible');
-
-        if (type === 'login') {
-            // ── LOGIN SUCCESS ──
-            titleEl.innerHTML = 'Welcome back,<br><strong>' + name + '!</strong>';
-            subEl.innerHTML   = 'You're now logged in.<br>Let's explore Baguio. 🌿';
-            pulseRing.style.display = 'block';
-
-            // Animated checkmark SVG (works offline, no gif needed)
-            gifWrap.innerHTML = \`
-                <svg class="success-check-svg" viewBox="0 0 52 52">
-                    <circle cx="26" cy="26" r="24"/>
-                    <path d="M14 27 l8 8 l16-16"/>
-                </svg>\`;
-
-        } else {
-            // ── SIGN UP SUCCESS ──
-            titleEl.innerHTML = 'You're in,<br><strong>' + name + '! 🎉</strong>';
-            subEl.innerHTML   = 'Account created successfully.<br>Welcome to <strong>BagView</strong> — Baguio awaits!';
-            pulseRing.style.display = 'none';
-
-            // Animated checkmark + confetti
-            gifWrap.style.background = 'linear-gradient(135deg,#e8faf9,#d0f2ef)';
-            gifWrap.innerHTML = \`
-                <svg class="success-check-svg" viewBox="0 0 52 52">
-                    <circle cx="26" cy="26" r="24"/>
-                    <path d="M14 27 l8 8 l16-16"/>
-                </svg>\`;
-
-            // Spawn confetti after card appears
-            const colors = ['#00A699','#FFB347','#FF6B6B','#45B7D1','#96E6A1','#F7DC6F','#BB8FCE'];
-            setTimeout(() => {
-                for (let i = 0; i < 22; i++) {
-                    const dot = document.createElement('div');
-                    dot.className = 'confetti-dot';
-                    dot.style.background = colors[i % colors.length];
-                    dot.style.left = (10 + Math.random() * 80) + '%';
-                    dot.style.top  = (5  + Math.random() * 50) + '%';
-                    dot.style.animationDelay = (Math.random() * 0.5) + 's';
-                    dot.style.animationDuration = (0.9 + Math.random() * 0.6) + 's';
-                    dot.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-                    confHost.appendChild(dot);
-                }
-            }, 250);
-        }
-
-        // Show
-        requestAnimationFrame(() => {
-            overlay.classList.add('visible');
-        });
-
-        // Store which page to go to after dismiss
-        this._successDestination = 'profile';
-    },
-
-    dismissSuccess: function() {
-        const overlay = document.getElementById('success-overlay');
-        overlay.classList.remove('visible');
-        setTimeout(() => {
-            this.nav(this._successDestination || 'profile');
-        }, 350);
+        this.nav('profile');
     },
 
        init: function() {
