@@ -29,7 +29,7 @@
 
         #tour-choice-overlay {
             position: fixed; inset: 0; z-index: 11000; background: rgba(0,0,0,0.8);
-            display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px);
+            display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px);
             transition: 0.4s;
         }
         #tour-choice-overlay.visible { display: flex; }
@@ -1915,14 +1915,14 @@ const app = {
                 splash.style.opacity = '0'; 
                 setTimeout(() => {
                     splash.style.display = 'none';
-                    document.getElementById('tour-choice-overlay').classList.remove('hidden');
+                    document.getElementById('tour-choice-overlay').classList.add('visible');
                 }, 600); 
             }
         }, 1500);
     },
 
     confirmTour: function(wantTour) {
-        document.getElementById('tour-choice-overlay').classList.add('hidden');
+        document.getElementById('tour-choice-overlay').classList.remove('visible');
         // Make home page active directly (without going through nav() which blocks during tour)
         document.querySelectorAll('.overlay-screen').forEach(p => p.classList.remove('active'));
         document.getElementById('home-page').classList.add('active');
