@@ -315,13 +315,13 @@
         .hero-slider-container { margin: 15px 25px; height: 190px; border-radius: 30px; position: relative; overflow: hidden; box-shadow: 0 15px 35px rgba(0,166,153,0.25); touch-action: pan-y; transition: opacity 0.3s ease; }
 
         /* ── Favorites overlay ── */
-        #favorites-overlay {
+        #favorites-overlay, #visited-overlay, #my-reviews-overlay {
             position: fixed; inset: 0; z-index: 9500; background: #fff;
             transform: translateX(100%);
             transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1);
             overflow-y: auto; padding-bottom: 120px;
         }
-        #favorites-overlay.visible { transform: translateX(0); }
+        #favorites-overlay.visible, #visited-overlay.visible, #my-reviews-overlay.visible { transform: translateX(0); }
         .fav-header {
             padding: 50px 25px 18px; display: flex; align-items: center; gap: 14px;
         }
@@ -352,6 +352,26 @@
             display: flex; flex-direction: column; align-items: center; gap: 14px;
         }
         .fav-empty svg { opacity: 0.25; }
+
+        /* ── My Reviews list ── */
+        .my-reviews-list { display: flex; flex-direction: column; gap: 14px; padding: 0 25px 20px; }
+        .my-review-card {
+            background: white; border-radius: 22px; padding: 14px;
+            box-shadow: var(--card-shadow); display: flex; gap: 14px;
+            transition: 0.25s; cursor: pointer;
+        }
+        .my-review-card:active { transform: scale(0.98); }
+        .my-review-card img { width: 70px; height: 70px; object-fit: cover; border-radius: 16px; flex-shrink: 0; }
+        .my-review-body { flex: 1; min-width: 0; }
+        .my-review-body b { font-size: 14px; font-weight: 900; color: #333; display: block; }
+        .my-review-stars { color: var(--accent); font-size: 13px; margin: 3px 0 6px; letter-spacing: 1px; }
+        .my-review-body p {
+            margin: 0; font-size: 12px; color: #777; font-weight: 400;
+            line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .my-review-date { font-size: 10px; color: #ccc; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 6px; display: block; }
+
         .hero-slider-container.paused { opacity: 0.85; }
         .hero-wrapper { width: 100%; height: 100%; position: relative; }
         
@@ -1091,9 +1111,9 @@
 
         <!-- Stats — hidden when user is new (all zeros) -->
         <div class="profile-stats-row" id="profile-stats-row">
-            <div class="stat-card"><span class="stat-num" id="profile-scan-count">0</span><span class="stat-label">Scanned</span></div>
+            <div class="stat-card" onclick="app.openVisited()" style="cursor:pointer;"><span class="stat-num" id="profile-scan-count">0</span><span class="stat-label">Scanned</span></div>
             <div class="stat-card" onclick="app.openFavorites()" style="cursor:pointer;"><span class="stat-num" id="profile-fav-count">0</span><span class="stat-label">Favorites</span></div>
-            <div class="stat-card"><span class="stat-num" id="profile-review-count">0</span><span class="stat-label">Reviews</span></div>
+            <div class="stat-card" onclick="app.openMyReviews()" style="cursor:pointer;"><span class="stat-num" id="profile-review-count">0</span><span class="stat-label">Reviews</span></div>
         </div>
 
         <!-- Activity -->
@@ -1106,7 +1126,7 @@
                 <div class="menu-item-text"><b>My Favorites</b><span>Stations you've hearted</span></div>
                 <svg class="menu-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </div>
-            <div class="profile-menu-item">
+            <div class="profile-menu-item" onclick="app.openMyReviews()">
                 <div class="menu-icon orange">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                 </div>
@@ -1120,7 +1140,7 @@
                 <div class="menu-item-text"><b>Saved Places</b><span>Your bookmarked stations</span></div>
                 <svg class="menu-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </div>
-            <div class="profile-menu-item">
+            <div class="profile-menu-item" onclick="app.openVisited()">
                 <div class="menu-icon purple">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                 </div>
@@ -1251,6 +1271,29 @@
         </div>
         <div id="fav-grid-container"></div>
     </div>
+
+    <div id="visited-overlay">
+        <div class="fav-header">
+            <button class="btn-header-back" onclick="app.closeVisited()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            </button>
+            <h2>Visited Stations</h2>
+            <span id="visited-count-badge" style="font-size:11px; color:var(--accent); font-weight:900; text-transform:uppercase;"></span>
+        </div>
+        <div id="visited-grid-container"></div>
+    </div>
+
+    <div id="my-reviews-overlay">
+        <div class="fav-header">
+            <button class="btn-header-back" onclick="app.closeMyReviews()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            </button>
+            <h2>My Reviews</h2>
+            <span id="my-reviews-count-badge" style="font-size:11px; color:var(--accent); font-weight:900; text-transform:uppercase;"></span>
+        </div>
+        <div id="my-reviews-list-container"></div>
+    </div>
+
 
     <nav class="main-navigation-bar" id="main-nav">
         <div class="nav-item active" id="nav-home" onclick="app.nav('home')" data-tip="Home"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
@@ -1565,6 +1608,8 @@ const app = {
         if (scanEl) scanEl.innerText = '0';
         if (revEl)  revEl.innerText  = '0';
         this.favorites = new Set();
+        this.visitedStations = new Set();
+        this.myReviews = [];
         this.updateProfileStats();
 
         this.nav('home');
@@ -1999,6 +2044,8 @@ const app = {
     },
 
     favorites: new Set(),
+    visitedStations: new Set(),
+    myReviews: [],
     currentArticleId: null,
     currentStarFilter: 0,  // 0 = all
     pendingStarRating: 5,
@@ -2107,6 +2154,104 @@ const app = {
         const el = document.getElementById('profile-fav-count');
         if (el) el.innerText = count;
         this.updateProfileStats();
+    },
+
+    _syncScanCount: function() {
+        const count = this.visitedStations.size;
+        const el = document.getElementById('profile-scan-count');
+        if (el) el.innerText = count;
+        this.updateProfileStats();
+        this.renderVisitedPage();
+    },
+
+    _syncReviewCount: function() {
+        const count = this.myReviews.length;
+        const el = document.getElementById('profile-review-count');
+        if (el) el.innerText = count;
+        this.updateProfileStats();
+        this.renderMyReviewsPage();
+    },
+
+    openMyReviews: function() {
+        this.renderMyReviewsPage();
+        document.getElementById('my-reviews-overlay').classList.add('visible');
+    },
+
+    closeMyReviews: function() {
+        document.getElementById('my-reviews-overlay').classList.remove('visible');
+    },
+
+    renderMyReviewsPage: function() {
+        const container = document.getElementById('my-reviews-list-container');
+        const badge = document.getElementById('my-reviews-count-badge');
+        if (!container || !badge) return;
+        const count = this.myReviews.length;
+        badge.innerText = count ? `${count} review${count !== 1 ? 's' : ''}` : '';
+
+        if (count === 0) {
+            container.innerHTML = `
+                <div class="fav-empty">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <span>No reviews yet</span>
+                    <span style="font-size:12px; font-weight:400; color:#ccc; text-transform:none;">Rate and review a station to see it here</span>
+                </div>`;
+            return;
+        }
+
+        container.innerHTML = `<div class="my-reviews-list">${
+            this.myReviews.map(r => `
+                <div class="my-review-card" onclick="app.openArticleFromFavorites(${r.stationId})">
+                    <img src="${r.thumb}" alt="${r.stationName}">
+                    <div class="my-review-body">
+                        <b>${r.stationName}</b>
+                        <div class="my-review-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</div>
+                        <p>${r.text}</p>
+                        <span class="my-review-date">${r.date}</span>
+                    </div>
+                </div>
+            `).join('')
+        }</div>`;
+    },
+
+    openVisited: function() {
+        this.renderVisitedPage();
+        document.getElementById('visited-overlay').classList.add('visible');
+    },
+
+    closeVisited: function() {
+        document.getElementById('visited-overlay').classList.remove('visible');
+    },
+
+    renderVisitedPage: function() {
+        const container = document.getElementById('visited-grid-container');
+        const badge = document.getElementById('visited-count-badge');
+        if (!container || !badge) return;
+        const count = this.visitedStations.size;
+        badge.innerText = count ? `${count} visited` : '';
+
+        if (count === 0) {
+            container.innerHTML = `
+                <div class="fav-empty">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>No stations scanned yet</span>
+                    <span style="font-size:12px; font-weight:400; color:#ccc; text-transform:none;">Use the AR scanner to discover stations</span>
+                </div>`;
+            return;
+        }
+
+        const visited = [...this.visitedStations]
+            .map(id => this.stations.find(s => s.id === id))
+            .filter(Boolean);
+
+        container.innerHTML = `<div class="fav-grid">${
+            visited.map(s => `
+                <div class="fav-card" onclick="app.openArticleFromFavorites(${s.id})">
+                    <img src="${s.thumb}" alt="${s.name}">
+                    <span class="fav-card-name">${s.name}</span>
+                    <span class="fav-card-tag">${s.scans.toLocaleString()} ${s.scans === 1 ? 'SCAN' : 'SCANS'}</span>
+                </div>
+            `).join('')
+        }</div>`;
     },
 
     openFavorites: function() {
@@ -2294,6 +2439,18 @@ const app = {
         const newReview = { name, avatar: initials, stars: this.pendingStarRating, date: 'Just now', text };
         if (!this.stationReviews[this.currentArticleId]) this.stationReviews[this.currentArticleId] = [];
         this.stationReviews[this.currentArticleId].unshift(newReview);
+
+        const station = this.stations.find(s => s.id === this.currentArticleId);
+        this.myReviews.unshift({
+            stationId: this.currentArticleId,
+            stationName: station ? station.name : 'Unknown Station',
+            thumb: station ? station.thumb : '',
+            stars: this.pendingStarRating,
+            text,
+            date: 'Just now'
+        });
+        this._syncReviewCount();
+
         input.value = '';
         this.pendingStarRating = 5;
         this.currentStarFilter = 0;
@@ -2545,6 +2702,8 @@ const app = {
                 matchSound.play(); 
                 s.scans++; 
                 this.renderMostScanned(); 
+                this.visitedStations.add(s.id);
+                this._syncScanCount();
                 document.getElementById('ar-status-badge').classList.add('match-found');
                 document.getElementById('status-text').innerText = "Match Found!";
                 setTimeout(() => this.openInternalPage(s.link, s.id), 800);
