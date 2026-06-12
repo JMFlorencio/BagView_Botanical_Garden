@@ -632,19 +632,55 @@
             font-size: 9px; color: #bbb; font-weight: 800; letter-spacing: 1px;
         }
 
-        /* Social circle buttons */
+        /* Social login buttons */
         .social-buttons-row {
-            display: flex; justify-content: center; gap: 16px;
+            display: flex; flex-direction: column; gap: 12px;
         }
-        .btn-social-circle {
-            width: 50px; height: 50px; border-radius: 50%; border: none;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.1); cursor: pointer;
-            transition: transform 0.2s;
+        .btn-social {
+            width: 100%; padding: 14px 20px; border-radius: 14px; border: none;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            font-size: 13px; font-weight: 900; cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s; text-transform: uppercase;
+            letter-spacing: 0.5px; position: relative;
         }
-        .btn-social-circle:active { transform: scale(0.92); }
-        .btn-social-circle.facebook { background: #1877F2; color: white; }
-        .btn-social-circle.google { background: #fff; border: 1.5px solid #eee; }
+        .btn-social:active { transform: scale(0.97); }
+        .btn-social.facebook { background: #1877F2; color: white; box-shadow: 0 6px 18px rgba(24,119,242,0.35); }
+        .btn-social.facebook:hover { box-shadow: 0 8px 22px rgba(24,119,242,0.45); }
+        .btn-social.google { background: #fff; color: #444; border: 1.5px solid #e0e0e0; box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+        .btn-social.google:hover { box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+        .btn-social .social-icon { flex-shrink: 0; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+        .btn-social .social-label { flex: 1; text-align: center; }
+
+        /* Social loading overlay */
+        #social-loading-overlay {
+            position: fixed; inset: 0; z-index: 12500;
+            background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        #social-loading-overlay.visible { opacity: 1; pointer-events: auto; }
+        .social-loading-card {
+            background: white; border-radius: 26px; padding: 36px 40px;
+            display: flex; flex-direction: column; align-items: center; gap: 18px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25); width: 80%; max-width: 300px;
+        }
+        .social-loading-card .social-spinner {
+            width: 44px; height: 44px; border-radius: 50%;
+            border: 4px solid #eee; border-top-color: var(--accent);
+            animation: spin 0.9s linear infinite;
+        }
+        .social-loading-card p {
+            margin: 0; font-size: 13px; font-weight: 800; color: #555;
+            text-transform: uppercase; letter-spacing: 0.5px; text-align: center;
+        }
+        .social-loading-card small {
+            font-size: 11px; color: #aaa; font-weight: 400; text-align: center;
+        }
+        .btn-cancel-social {
+            margin-top: 4px; background: #f0f0f0; color: #888; border: none;
+            padding: 10px 24px; border-radius: 20px; font-weight: 800; font-size: 11px;
+            text-transform: uppercase; cursor: pointer;
+        }
 
         .login-guest-link {
             text-align: center; margin-top: 18px;
@@ -857,6 +893,16 @@
     </div>
 	
 	
+    <!-- Social OAuth Loading Overlay -->
+    <div id="social-loading-overlay">
+        <div class="social-loading-card">
+            <div class="social-spinner"></div>
+            <p id="social-loading-text">Connecting…</p>
+            <small>You'll be redirected to sign in securely. Please wait.</small>
+            <button class="btn-cancel-social" onclick="app.cancelSocialLogin()">Cancel</button>
+        </div>
+    </div>
+
     <div id="login-screen">
         <!-- Full-bleed hero photo -->
         <div class="login-hero-bg"></div>
@@ -900,11 +946,17 @@
             <div class="auth-divider"><span class="auth-divider-label">OR CONTINUE WITH</span></div>
 
             <div class="social-buttons-row">
-                <button class="btn-social-circle facebook" onclick="app.completeLogin()">
-                    <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                <button class="btn-social facebook" onclick="app.loginWithFacebook()">
+                    <span class="social-icon">
+                        <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </span>
+                    <span class="social-label">Continue with Facebook</span>
                 </button>
-                <button class="btn-social-circle google" onclick="app.completeLogin()">
-                    <svg width="22" height="22" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.5l3.1-3.1C17.2 1.5 14.8 1 12 1 7.3 1 3.4 3.7 1.6 7.6l3.6 2.8C6.1 7.2 8.8 5 12 5z"/><path fill="#FBBC05" d="M1 12c0-.9.1-1.7.4-2.6L1.6 7.6c-.4 1.3-.6 2.9-.6 4.4 0 1.5.2 3.1.6 4.4l3.6-2.8C5.1 13.7 5 12.9 5 12z"/><path fill="#4285F4" d="M12 23c2.8 0 5.2-.5 7.2-2.4l-3.3-2.6c-1.1.7-2.4 1-3.9 1-3.2 0-5.9-2.2-6.8-5.4l-3.6 2.8C3.4 20.3 7.3 23 12 23z"/><path fill="#34A853" d="M22.6 11.4c.1.2.1.4.1.6 0 3.1-1.1 5.7-3.2 7.6l3.3 2.6c2.5-2.3 3.9-5.7 3.9-9.8 0-.3 0-.7-.1-1H12v4h6.6z"/></svg>
+                <button class="btn-social google" onclick="app.loginWithGoogle()">
+                    <span class="social-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.5l3.1-3.1C17.2 1.5 14.8 1 12 1 7.3 1 3.4 3.7 1.6 7.6l3.6 2.8C6.1 7.2 8.8 5 12 5z"/><path fill="#FBBC05" d="M1 12c0-.9.1-1.7.4-2.6L1.6 7.6c-.4 1.3-.6 2.9-.6 4.4 0 1.5.2 3.1.6 4.4l3.6-2.8C5.1 13.7 5 12.9 5 12z"/><path fill="#4285F4" d="M12 23c2.8 0 5.2-.5 7.2-2.4l-3.3-2.6c-1.1.7-2.4 1-3.9 1-3.2 0-5.9-2.2-6.8-5.4l-3.6 2.8C3.4 20.3 7.3 23 12 23z"/><path fill="#34A853" d="M22.6 11.4c.1.2.1.4.1.6 0 3.1-1.1 5.7-3.2 7.6l3.3 2.6c2.5-2.3 3.9-5.7 3.9-9.8 0-.3 0-.7-.1-1H12v4h6.6z"/></svg>
+                    </span>
+                    <span class="social-label">Continue with Google</span>
                 </button>
             </div>
 
@@ -1645,6 +1697,109 @@ const app = {
             if (screen.classList.contains('sheet-collapsed')) expand();
         });
     },
+
+    /* ── Social OAuth Login ─────────────────────────────── */
+
+    _socialLoginTimer: null,
+
+    _showSocialLoading: function(provider) {
+        const overlay = document.getElementById('social-loading-overlay');
+        const text    = document.getElementById('social-loading-text');
+        text.innerText = `Connecting to ${provider}…`;
+        overlay.classList.add('visible');
+    },
+
+    _hideSocialLoading: function() {
+        const overlay = document.getElementById('social-loading-overlay');
+        overlay.classList.remove('visible');
+        clearTimeout(this._socialLoginTimer);
+    },
+
+    cancelSocialLogin: function() {
+        this._hideSocialLoading();
+    },
+
+    loginWithFacebook: function() {
+        this._showSocialLoading('Facebook');
+
+        // ── Real integration guide ────────────────────────────────────────
+        // 1. Add to <head>:
+        //    <script async defer crossorigin="anonymous"
+        //      src="https://connect.facebook.net/en_US/sdk.js"></script>
+        // 2. In app.init() call:
+        //    FB.init({ appId: 'YOUR_FB_APP_ID', cookie: true, xfbml: true, version: 'v19.0' });
+        // 3. Replace the setTimeout below with:
+        //    FB.login(response => {
+        //      if (response.authResponse) {
+        //        FB.api('/me', { fields: 'name,email,picture' }, data => {
+        //          app.completeLoginWithSocial('facebook', data.name, data.email,
+        //                                       data.picture?.data?.url || '');
+        //        });
+        //      } else { app._hideSocialLoading(); }
+        //    }, { scope: 'public_profile,email' });
+        // ─────────────────────────────────────────────────────────────────
+
+        // Demo simulation (remove when real SDK is wired up):
+        this._socialLoginTimer = setTimeout(() => {
+            this._hideSocialLoading();
+            this.completeLoginWithSocial('facebook', 'Facebook User', 'user@facebook.com', '');
+        }, 2000);
+    },
+
+    loginWithGoogle: function() {
+        this._showSocialLoading('Google');
+
+        // ── Real integration guide ────────────────────────────────────────
+        // 1. Add to <head>:
+        //    <script src="https://accounts.google.com/gsi/client" async defer></script>
+        // 2. In app.init() call:
+        //    google.accounts.id.initialize({
+        //      client_id: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+        //      callback: (response) => {
+        //        const payload = JSON.parse(atob(response.credential.split('.')[1]));
+        //        app.completeLoginWithSocial('google', payload.name, payload.email, payload.picture);
+        //      }
+        //    });
+        //    google.accounts.id.prompt(); // shows One Tap popup
+        // ─────────────────────────────────────────────────────────────────
+
+        // Demo simulation (remove when real SDK is wired up):
+        this._socialLoginTimer = setTimeout(() => {
+            this._hideSocialLoading();
+            this.completeLoginWithSocial('google', 'Google User', 'user@gmail.com', '');
+        }, 2000);
+    },
+
+    completeLoginWithSocial: function(provider, name, email, avatarUrl) {
+        this._hideSocialLoading();
+        this.isLoggedIn = true;
+        this.currentUser = { name, email, provider };
+
+        sessionStorage.setItem('bv_user_name',  name);
+        sessionStorage.setItem('bv_user_email', email);
+        sessionStorage.setItem('bv_logged_in',  'true');
+        sessionStorage.setItem('bv_user_provider', provider);
+        if (avatarUrl) sessionStorage.setItem('bv_user_avatar', avatarUrl);
+
+        // Apply avatar photo from social profile if provided
+        if (avatarUrl) {
+            const img = document.getElementById('avatar-img');
+            const placeholder = document.getElementById('avatar-placeholder-icon');
+            if (img) { img.src = avatarUrl; img.style.display = 'block'; }
+            if (placeholder) placeholder.style.display = 'none';
+        }
+
+        this.applyUserUI();
+        this.closeLogin();
+
+        const iframe = document.getElementById('tour-iframe');
+        if (iframe && iframe.contentWindow && iframe.src) {
+            iframe.contentWindow.postMessage('loginComplete', '*');
+        }
+        this.nav('profile');
+    },
+
+    /* ── End Social OAuth ───────────────────────────────── */
 
         completeLogin() {
         const isLoginTab = document.getElementById('tab-login').classList.contains('active');
