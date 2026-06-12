@@ -1119,8 +1119,8 @@
             </div>
         </div>
 
-        <!-- Stats — hidden when user is new (all zeros) -->
-        <div class="profile-stats-row" id="profile-stats-row">
+        <!-- Stats — always visible, shows 0 0 0 for new users -->
+        <div class="profile-stats-row" id="profile-stats-row" style="display:flex;">
             <div class="stat-card"><span class="stat-num" id="profile-scan-count">0</span><span class="stat-label">Scanned</span></div>
             <div class="stat-card" onclick="app.openFavorites()" style="cursor:pointer;"><span class="stat-num" id="profile-fav-count">0</span><span class="stat-label">Favorites</span></div>
             <div class="stat-card"><span class="stat-num" id="profile-review-count">0</span><span class="stat-label">Reviews</span></div>
@@ -1443,15 +1443,11 @@ const app = {
     },
 
     updateProfileStats: function() {
-        const scans  = parseInt(document.getElementById('profile-scan-count')?.innerText || '0');
-        const favs   = this.favorites ? this.favorites.size : 0;
-        const reviews = parseInt(document.getElementById('profile-review-count')?.innerText || '0');
+        const favs = this.favorites ? this.favorites.size : 0;
         const statsRow = document.getElementById('profile-stats-row');
-        if (statsRow) {
-            const hasActivity = scans > 0 || favs > 0 || reviews > 0;
-            statsRow.style.display = hasActivity ? 'flex' : 'none';
-        }
-        // keep fav count in sync
+        // Always visible — shows 0 0 0 for new users
+        if (statsRow) statsRow.style.display = 'flex';
+        // Keep fav count in sync
         const favEl = document.getElementById('profile-fav-count');
         if (favEl) favEl.innerText = favs;
     },
@@ -1597,7 +1593,7 @@ const app = {
         if (dispName) dispName.innerText = 'Explorer';
         if (dispEmail) dispEmail.innerText = 'explorer@bagview.app';
         this.renderAvatar();
-        // Reset stats to zero and hide
+        // Reset stats to zero
         const scanEl = document.getElementById('profile-scan-count');
         const revEl  = document.getElementById('profile-review-count');
         if (scanEl) scanEl.innerText = '0';
