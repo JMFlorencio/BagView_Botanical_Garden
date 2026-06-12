@@ -29,7 +29,7 @@
 
         #tour-choice-overlay {
             position: fixed; inset: 0; z-index: 11000; background: rgba(0,0,0,0.8);
-            display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px);
+            display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px);
             transition: 0.4s;
         }
         #tour-choice-overlay.visible { display: flex; }
@@ -465,6 +465,7 @@
             inset: 0;
             z-index: 11500;
             overflow: hidden;
+            display: none;
         }
 
         /* Full-bleed hero background */
@@ -900,10 +901,10 @@
             <div class="auth-divider"><span class="auth-divider-label">OR CONTINUE WITH</span></div>
 
             <div class="social-buttons-row">
-                <button class="btn-social-circle facebook" onclick="app.completeLogin()">
+                <button class="btn-social-circle facebook" onclick="app.socialLogin()">
                     <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                 </button>
-                <button class="btn-social-circle google" onclick="app.completeLogin()">
+                <button class="btn-social-circle google" onclick="app.socialLogin()">
                     <svg width="22" height="22" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.5l3.1-3.1C17.2 1.5 14.8 1 12 1 7.3 1 3.4 3.7 1.6 7.6l3.6 2.8C6.1 7.2 8.8 5 12 5z"/><path fill="#FBBC05" d="M1 12c0-.9.1-1.7.4-2.6L1.6 7.6c-.4 1.3-.6 2.9-.6 4.4 0 1.5.2 3.1.6 4.4l3.6-2.8C5.1 13.7 5 12.9 5 12z"/><path fill="#4285F4" d="M12 23c2.8 0 5.2-.5 7.2-2.4l-3.3-2.6c-1.1.7-2.4 1-3.9 1-3.2 0-5.9-2.2-6.8-5.4l-3.6 2.8C3.4 20.3 7.3 23 12 23z"/><path fill="#34A853" d="M22.6 11.4c.1.2.1.4.1.6 0 3.1-1.1 5.7-3.2 7.6l3.3 2.6c2.5-2.3 3.9-5.7 3.9-9.8 0-.3 0-.7-.1-1H12v4h6.6z"/></svg>
                 </button>
             </div>
@@ -1646,7 +1647,27 @@ const app = {
         });
     },
 
-        completeLogin() {
+        socialLogin: function() {
+        document.querySelectorAll("#login-screen .auth-input").forEach(i => i.classList.remove("field-error"));
+        const bubble = document.getElementById("login-error-bubble");
+        if (bubble) bubble.classList.remove("visible");
+        const name = "Explorer";
+        const email = "";
+        this.isLoggedIn = true;
+        this.currentUser = { name, email };
+        sessionStorage.setItem("bv_user_name", name);
+        sessionStorage.setItem("bv_user_email", email);
+        sessionStorage.setItem("bv_logged_in", "true");
+        this.applyUserUI();
+        this.closeLogin();
+        const iframe = document.getElementById("tour-iframe");
+        if (iframe && iframe.contentWindow && iframe.src) {
+            iframe.contentWindow.postMessage("loginComplete", "*");
+        }
+        this.nav("profile");
+    },
+
+    completeLogin() {
         const isLoginTab = document.getElementById('tab-login').classList.contains('active');
         if (this.highlightLoginEmptyFields()) {
             this.showLoginError(isLoginTab ? 'Please enter your email and password' : 'Please fill in all fields');
@@ -1759,14 +1780,14 @@ const app = {
                 splash.style.opacity = '0'; 
                 setTimeout(() => {
                     splash.style.display = 'none';
-                    document.getElementById('tour-choice-overlay').classList.remove('hidden');
+                    document.getElementById('tour-choice-overlay').classList.add('visible');
                 }, 600); 
             }
         }, 1500);
     },
 
     confirmTour: function(wantTour) {
-        document.getElementById('tour-choice-overlay').classList.add('hidden');
+        document.getElementById('tour-choice-overlay').classList.remove('visible');
         // Make home page active directly (without going through nav() which blocks during tour)
         document.querySelectorAll('.overlay-screen').forEach(p => p.classList.remove('active'));
         document.getElementById('home-page').classList.add('active');
