@@ -833,6 +833,14 @@
             border-top-color: #222; border-bottom: none;
         }
         .nav-tooltip.show { opacity: 1; transform: translateY(0); }
+        /* Increase hero banner height on larger (desktop/tablet) screens only — mobile stays unchanged */
+        @media (min-width: 768px) {
+            .hero-slider-container { height: 480px; }
+            .search-item img { height: 260px; }
+            .search-item b { font-size: 18px; margin-top: 14px; }
+            .search-item .scans-info { font-size: 12px; margin-top: 8px; }
+            .search-item { padding: 16px; }
+        }
     </style>
 </head>
 <body class="">
@@ -1258,7 +1266,7 @@
         <div class="nav-item-center" id="ar-main-btn" onclick="app.startScanner()" data-tip="AR Scanner">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="9" y="9" width="6" height="6"></rect></svg>
         </div>
-        <div class="nav-item" id="nav-notifications" onclick="app.nav('notifications')" data-tip="Notifications" style="position:relative;">
+        <div class="nav-item" id="nav-notifications" onclick="app.navNotifications()" data-tip="Notifications" style="position:relative;">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
             <span class="notif-badge" id="nav-notif-badge"></span>
         </div>
@@ -1541,6 +1549,14 @@ const app = {
         }
     },
 
+    navNotifications: function() {
+        if (this.isLoggedIn) {
+            this.nav('notifications');
+        } else {
+            this.openLogin(true);
+        }
+    },
+
     logout: function() {
         this.isLoggedIn = false;
         this.currentUser = null;
@@ -1687,6 +1703,7 @@ const app = {
         this.initDockDraggable(); 
         this.startHeroSlider();
         this.initNavTooltips();
+        this.startLiveScanSimulation();
         
         // --- MOBILE BACK BUTTON LOGIC ---
         window.addEventListener('popstate', (event) => {
@@ -2440,6 +2457,46 @@ const app = {
             </div>`).join('');
     },
 
+    // Re-renders every visible UI element that displays scan counts,
+    // so updates feel "real-time" without any backend (Firebase, etc.)
+    refreshScanCounts: function() {
+        // Home page "Most Scanned Station" rail
+        this.renderMostScanned();
+
+        // Search / Ranked / Explore grid, only if currently on screen
+        const searchPage = document.getElementById('search-page');
+        if (searchPage && searchPage.classList.contains('active')) {
+            const titleEl = document.getElementById('search-page-title');
+            const searchInput = document.getElementById('station-search-input');
+            const isRankedView = titleEl && titleEl.innerText === "Most Scanned Station";
+            if (isRankedView) {
+                this.renderRankedPage("", true);
+            } else if (searchInput) {
+                this.renderRankedPage(searchInput.value, false);
+            }
+        }
+
+        // Article overlay, if open for this station, update its scan badge too
+        const articleScanEl = document.getElementById('art-scans-label');
+        if (articleScanEl && this.currentArticleId !== null) {
+            const station = this.stations.find(s => s.id === this.currentArticleId);
+            if (station) articleScanEl.innerText = `${station.scans.toLocaleString()} SCANS`;
+        }
+    },
+
+    // Lightweight "live" simulation: occasionally bumps a random station's
+    // scan count so the UI feels real-time without any server/Firebase.
+    startLiveScanSimulation: function() {
+        if (this._liveScanInterval) return;
+        this._liveScanInterval = setInterval(() => {
+            const candidates = this.stations.filter(s => s.id !== 0);
+            if (!candidates.length) return;
+            const pick = candidates[Math.floor(Math.random() * candidates.length)];
+            pick.scans += Math.floor(Math.random() * 3) + 1; // +1 to +3
+            this.refreshScanCounts();
+        }, 15000); // every 15 seconds
+    },
+
    renderDock: function() {
     const dock = document.getElementById('gallery-dock');
     dock.innerHTML = this.stations.map(s => `
@@ -2544,7 +2601,7 @@ const app = {
             entity.addEventListener("targetFound", () => {
                 matchSound.play(); 
                 s.scans++; 
-                this.renderMostScanned(); 
+                this.refreshScanCounts();
                 document.getElementById('ar-status-badge').classList.add('match-found');
                 document.getElementById('status-text').innerText = "Match Found!";
                 setTimeout(() => this.openInternalPage(s.link, s.id), 800);
