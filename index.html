@@ -403,6 +403,89 @@
         .faq-contact-card b { display: block; font-size: 13px; color: #222; margin-bottom: 4px; }
         .faq-contact-card span { font-size: 11px; color: #666; font-weight: 400; }
 
+        /* ── App Preferences & About overlays (share FAQ slide-in pattern) ── */
+        #prefs-overlay, #about-overlay {
+            position: fixed; inset: 0; z-index: 9500; background: #fff;
+            transform: translateX(100%);
+            transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+            overflow-y: auto; padding-bottom: 120px;
+        }
+        #prefs-overlay.visible, #about-overlay.visible { transform: translateX(0); }
+
+        .pref-section-label {
+            padding: 18px 25px 8px; font-size: 11px; font-weight: 900; color: var(--accent);
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .pref-group { margin: 0 25px; background: #f9f9f9; border-radius: 20px; overflow: hidden; }
+        .pref-row {
+            display: flex; align-items: center; gap: 14px; padding: 16px 18px;
+            border-bottom: 1px solid #eee;
+        }
+        .pref-row:last-child { border-bottom: none; }
+        .pref-row-text { flex: 1; }
+        .pref-row-text b { display: block; font-size: 13px; color: #222; font-weight: 800; }
+        .pref-row-text span { font-size: 11px; color: #888; font-weight: 400; }
+
+        .pref-switch { position: relative; width: 46px; height: 26px; flex-shrink: 0; cursor: pointer; }
+        .pref-switch input { opacity: 0; width: 0; height: 0; }
+        .pref-switch-track {
+            position: absolute; inset: 0; background: #ddd; border-radius: 20px; transition: 0.3s;
+        }
+        .pref-switch-track::before {
+            content: ''; position: absolute; width: 20px; height: 20px; left: 3px; top: 3px;
+            background: white; border-radius: 50%; transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .pref-switch input:checked + .pref-switch-track { background: var(--accent); }
+        .pref-switch input:checked + .pref-switch-track::before { transform: translateX(20px); }
+
+        .pref-select-wrap { flex-shrink: 0; }
+        .pref-select {
+            border: none; background: #eee; border-radius: 12px; padding: 8px 12px;
+            font-size: 11px; font-weight: 800; color: #333; font-family: 'Agrandir', sans-serif;
+            text-transform: uppercase;
+        }
+        .pref-action-row { cursor: pointer; }
+        .pref-action-row .pref-row-text b { color: var(--accent); }
+        .pref-action-row.danger .pref-row-text b { color: #EB4D4B; }
+
+        /* ── About BagView overlay ── */
+        .about-hero {
+            padding: 60px 25px 10px; text-align: center;
+        }
+        .about-hero-logo {
+            width: 72px; height: 72px; border-radius: 22px; background: var(--accent-soft);
+            display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;
+            color: var(--accent);
+        }
+        .about-hero h2 { margin: 0 0 4px; font-size: 22px; font-weight: 900; color: #222; }
+        .about-hero .about-version-tag {
+            display: inline-block; background: var(--accent-soft); color: var(--accent);
+            font-size: 10px; font-weight: 900; padding: 4px 12px; border-radius: 20px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .about-desc {
+            margin: 18px 25px 0; font-size: 13px; line-height: 1.7; color: #555; font-weight: 400;
+            text-align: left;
+        }
+        .about-team-grid { margin: 10px 25px 0; display: flex; flex-direction: column; gap: 14px; }
+        .about-team-card {
+            background: #f9f9f9; border-radius: 22px; padding: 18px; display: flex;
+            align-items: center; gap: 16px;
+        }
+        .about-photo-placeholder {
+            width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0;
+            background: #eaeaea; border: 2px dashed #ccc;
+            display: flex; align-items: center; justify-content: center; color: #aaa;
+            overflow: hidden;
+        }
+        .about-team-info b { display: block; font-size: 13px; color: #222; font-weight: 800; }
+        .about-team-info .about-role { display: block; font-size: 11px; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; }
+        .about-team-info .about-role-sub { display: block; font-size: 11px; color: #888; font-weight: 400; margin-top: 4px; line-height: 1.4; }
+        .about-footer {
+            text-align: center; margin: 25px 25px 0; font-size: 10px; color: #bbb;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
         .hero-slider-container.paused { opacity: 0.85; }
         .hero-wrapper { width: 100%; height: 100%; position: relative; }
         
@@ -893,6 +976,84 @@
             .search-item .scans-info { font-size: 12px; margin-top: 8px; }
             .search-item { padding: 16px; }
         }
+
+        /* ══════════════ DARK MODE ══════════════ */
+        html[data-theme="dark"] {
+            --bg-page: #121212;
+            --surface: #1a1a1a;
+            --card-bg: #232323;
+            --card-bg-alt: #2a2a2a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #b3b3b3;
+            --text-tertiary: #8a8a8a;
+            --border-color: #333333;
+            --input-bg: #2a2a2a;
+            --accent-soft: rgba(0, 166, 153, 0.28);
+        }
+        html[data-theme="dark"] body,
+        html[data-theme="dark"] html { background-color: var(--bg-page); }
+        html[data-theme="dark"] .overlay-screen,
+        html[data-theme="dark"] #faq-overlay,
+        html[data-theme="dark"] #prefs-overlay,
+        html[data-theme="dark"] #about-overlay,
+        html[data-theme="dark"] #article-overlay { background: var(--surface); }
+
+        html[data-theme="dark"] .user-greeting h2,
+        html[data-theme="dark"] .faq-header h2,
+        html[data-theme="dark"] .about-hero h2,
+        html[data-theme="dark"] .about-team-info b,
+        html[data-theme="dark"] .pref-row-text b,
+        html[data-theme="dark"] .faq-question,
+        html[data-theme="dark"] .menu-item-text b,
+        html[data-theme="dark"] .stat-num,
+        html[data-theme="dark"] .search-item b,
+        html[data-theme="dark"] .notif-title,
+        html[data-theme="dark"] .article-title,
+        html[data-theme="dark"] .nav-tooltip { color: var(--text-primary); }
+
+        html[data-theme="dark"] .pref-row-text span,
+        html[data-theme="dark"] .faq-answer,
+        html[data-theme="dark"] .about-desc,
+        html[data-theme="dark"] .about-footer,
+        html[data-theme="dark"] .menu-item-text span,
+        html[data-theme="dark"] .stat-label,
+        html[data-theme="dark"] .notif-desc,
+        html[data-theme="dark"] .notif-time { color: var(--text-secondary); }
+
+        html[data-theme="dark"] .choice-card h2,
+        html[data-theme="dark"] .inst-text { color: var(--text-primary); }
+        html[data-theme="dark"] .choice-card p,
+        html[data-theme="dark"] .skip-tour-link { color: var(--text-secondary); }
+        html[data-theme="dark"] .skip-tour-link { border-top-color: var(--border-color); }
+        html[data-theme="dark"] #instruction-bubble::after { background: var(--card-bg); }
+
+        html[data-theme="dark"] .pref-group,
+        html[data-theme="dark"] .faq-item,
+        html[data-theme="dark"] .about-team-card,
+        html[data-theme="dark"] .stat-card,
+        html[data-theme="dark"] .profile-menu-group,
+        html[data-theme="dark"] .notif-card,
+        html[data-theme="dark"] .search-item,
+        html[data-theme="dark"] .choice-card,
+        html[data-theme="dark"] #instruction-bubble { background: var(--card-bg); }
+
+        html[data-theme="dark"] .pref-row { border-bottom-color: var(--border-color); }
+        html[data-theme="dark"] .faq-search-wrap,
+        html[data-theme="dark"] .home-search-bar,
+        html[data-theme="dark"] .search-bar-wrap,
+        html[data-theme="dark"] .pref-select { background: var(--input-bg); }
+        html[data-theme="dark"] .faq-search-wrap input,
+        html[data-theme="dark"] .home-search-bar input,
+        html[data-theme="dark"] .pref-select { color: var(--text-primary); }
+
+        html[data-theme="dark"] .main-navigation-bar { background: var(--surface); box-shadow: 0 -10px 30px rgba(0,0,0,0.4); }
+        html[data-theme="dark"] .nav-item { color: #666; }
+        html[data-theme="dark"] #gallery-dock-container { background: rgba(26,26,26,0.95); }
+        html[data-theme="dark"] .gallery-img-wrap { background: var(--card-bg); border-color: var(--border-color); }
+        html[data-theme="dark"] .dock-handle { background: #444; }
+        html[data-theme="dark"] .about-photo-placeholder { background: #2a2a2a; border-color: #444; color: #777; }
+        html[data-theme="dark"] .profile-header-section,
+        html[data-theme="dark"] .btn-logout { filter: brightness(0.92); }
     </style>
 </head>
 <body class="">
@@ -1151,66 +1312,59 @@
 
         <!-- Stats — hidden when user is new (all zeros) -->
         <div class="profile-stats-row" id="profile-stats-row">
-            <div class="stat-card"><span class="stat-num" id="profile-scan-count">0</span><span class="stat-label">Scanned</span></div>
-            <div class="stat-card" onclick="app.openFavorites()" style="cursor:pointer;"><span class="stat-num" id="profile-fav-count">0</span><span class="stat-label">Favorites</span></div>
-            <div class="stat-card"><span class="stat-num" id="profile-review-count">0</span><span class="stat-label">Reviews</span></div>
+            <div class="stat-card"><span class="stat-num" id="profile-scan-count">0</span><span class="stat-label" data-i18n="stat_scanned">Scanned</span></div>
+            <div class="stat-card" onclick="app.openFavorites()" style="cursor:pointer;"><span class="stat-num" id="profile-fav-count">0</span><span class="stat-label" data-i18n="stat_favorites">Favorites</span></div>
+            <div class="stat-card"><span class="stat-num" id="profile-review-count">0</span><span class="stat-label" data-i18n="stat_reviews">Reviews</span></div>
         </div>
 
         <!-- Activity -->
-        <div class="profile-section-label">My Activity</div>
+        <div class="profile-section-label" data-i18n="section_my_activity">My Activity</div>
         <div class="profile-menu-group">
             <div class="profile-menu-item" onclick="app.openFavorites()">
                 <div class="menu-icon green">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                 </div>
-                <div class="menu-item-text"><b>My Favorites</b><span>Stations you've hearted</span></div>
+                <div class="menu-item-text"><b data-i18n="menu_favorites_title">My Favorites</b><span data-i18n="menu_favorites_sub">Stations you've hearted</span></div>
                 <svg class="menu-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </div>
             <div class="profile-menu-item">
                 <div class="menu-icon orange">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                 </div>
-                <div class="menu-item-text"><b>My Reviews</b><span>Share your experience</span></div>
+                <div class="menu-item-text"><b data-i18n="menu_reviews_title">My Reviews</b><span data-i18n="menu_reviews_sub">Share your experience</span></div>
                 <svg class="menu-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </div>
             <div class="profile-menu-item">
                 <div class="menu-icon blue">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                 </div>
-                <div class="menu-item-text"><b>Saved Places</b><span>Your bookmarked stations</span></div>
-                <svg class="menu-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </div>
-            <div class="profile-menu-item">
-                <div class="menu-icon purple">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                </div>
-                <div class="menu-item-text"><b>Visited Stations</b><span>Your exploration history</span></div>
+                <div class="menu-item-text"><b data-i18n="menu_saved_title">Saved Places</b><span data-i18n="menu_saved_sub">Your bookmarked stations</span></div>
                 <svg class="menu-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </div>
         </div>
 
         <!-- Settings -->
-        <div class="profile-section-label">Settings</div>
+        <div class="profile-section-label" data-i18n="section_settings">Settings</div>
         <div class="profile-menu-group">
-            <div class="profile-menu-item">
+            <div class="profile-menu-item" onclick="app.openPrefs()">
                 <div class="menu-icon green">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 </div>
-                <div class="menu-item-text"><b>App Preferences</b><span>Notifications & display</span></div>
+                <div class="menu-item-text"><b data-i18n="menu_prefs_title">App Preferences</b><span data-i18n="menu_prefs_sub">Notifications & display</span></div>
                 <svg class="menu-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </div>
             <div class="profile-menu-item" onclick="app.openFAQ()">
                 <div class="menu-icon purple">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                 </div>
-                <div class="menu-item-text"><b>Help &amp; FAQ</b><span>Answers to common questions</span></div>
+                <div class="menu-item-text"><b data-i18n="menu_faq_title">Help &amp; FAQ</b><span data-i18n="menu_faq_sub">Answers to common questions</span></div>
                 <svg class="menu-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </div>
-            <div class="profile-menu-item">
+            <div class="profile-menu-item" onclick="app.openAbout()">
                 <div class="menu-icon blue">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
                 </div>
-                <div class="menu-item-text"><b>About BagView</b><span>Version 2.0</span></div>
+                <div class="menu-item-text"><b data-i18n="menu_about_title">About BagView</b><span>Version 2.0</span></div>
                 <svg class="menu-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </div>
         </div>
@@ -1219,14 +1373,14 @@
         <div class="logout-btn-row">
             <button class="btn-logout" onclick="app.logout()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                Log Out
+                <span data-i18n="btn_logout">Log Out</span>
             </button>
         </div>
     </div>
 
     <div id="search-page" class="overlay-screen">
         <div class="user-greeting">
-            <h2 id="search-page-title">Explore</h2>
+            <h2 id="search-page-title" data-i18n="search_title">Explore</h2>
             <button class="btn-header-back" onclick="app.nav('home')">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
             </button>
@@ -1235,7 +1389,7 @@
         <div class="search-panel-container" id="search-panel-wrap">
             <div class="search-bar-wrap">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="3"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <input type="text" id="station-search-input" placeholder="Search stations..." oninput="app.renderRankedPage(this.value)">
+                <input type="text" id="station-search-input" data-i18n-placeholder="search_placeholder" placeholder="Search stations..." oninput="app.renderRankedPage(this.value)">
             </div>
         </div>
 
@@ -1325,26 +1479,130 @@
             <button class="btn-header-back" onclick="app.closeFAQ()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
             </button>
-            <h2>Help &amp; FAQ</h2>
+            <h2 data-i18n="faq_title">Help &amp; FAQ</h2>
         </div>
         <div class="faq-search-wrap">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="3"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="faq-search-input" placeholder="Search for a topic..." oninput="app.filterFAQ(this.value)">
+            <input type="text" id="faq-search-input" data-i18n-placeholder="faq_search_placeholder" placeholder="Search for a topic..." oninput="app.filterFAQ(this.value)">
         </div>
         <div id="faq-list-container"></div>
     </div>
 
+    <!-- App Preferences Overlay -->
+    <div id="prefs-overlay">
+        <div class="faq-header">
+            <button class="btn-header-back" onclick="app.closePrefs()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            </button>
+            <h2 data-i18n="prefs_title">App Preferences</h2>
+        </div>
+
+        <div class="pref-section-label" data-i18n="prefs_section_notifications">Notifications</div>
+        <div class="pref-group">
+            <div class="pref-row">
+                <div class="pref-row-text"><b data-i18n="pref_push_title">Push Notifications</b><span data-i18n="pref_push_sub">New stations, updates & alerts</span></div>
+                <label class="pref-switch">
+                    <input type="checkbox" id="pref-push" checked onchange="app.savePref('push', this.checked)">
+                    <span class="pref-switch-track"></span>
+                </label>
+            </div>
+            <div class="pref-row">
+                <div class="pref-row-text"><b data-i18n="pref_promo_title">Promo & News Updates</b><span data-i18n="pref_promo_sub">What's new in BagView</span></div>
+                <label class="pref-switch">
+                    <input type="checkbox" id="pref-promo" checked onchange="app.savePref('promo', this.checked)">
+                    <span class="pref-switch-track"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="pref-section-label" data-i18n="prefs_section_display">Display</div>
+        <div class="pref-group">
+            <div class="pref-row">
+                <div class="pref-row-text"><b data-i18n="pref_darkmode_title">Dark Mode</b><span data-i18n="pref_darkmode_sub">Easier viewing at night</span></div>
+                <label class="pref-switch">
+                    <input type="checkbox" id="pref-darkmode" onchange="app.setDarkMode(this.checked)">
+                    <span class="pref-switch-track"></span>
+                </label>
+            </div>
+            <div class="pref-row">
+                <div class="pref-row-text"><b data-i18n="pref_language_title">Language</b><span data-i18n="pref_language_sub">Display language for the app</span></div>
+                <div class="pref-select-wrap">
+                    <select class="pref-select" id="pref-language" onchange="app.setLanguage(this.value)">
+                        <option value="en">English</option>
+                        <option value="fil">Filipino</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About BagView Overlay -->
+    <div id="about-overlay">
+        <div class="faq-header">
+            <button class="btn-header-back" onclick="app.closeAbout()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            </button>
+            <h2 data-i18n="about_header">About BagView</h2>
+        </div>
+
+        <div class="about-hero">
+            <div class="about-hero-logo">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="9" y="9" width="6" height="6"></rect></svg>
+            </div>
+            <h2>BagView</h2>
+            <span class="about-version-tag">Version 2.0</span>
+        </div>
+
+        <p class="about-desc" data-i18n="about_desc">
+            BagView is an AR-powered eco-tourism web app that lets visitors point their device at markers around the garden to instantly unlock interactive stories, photos, and facts about each station. Built to make exploring our green spaces more engaging, it turns every walkway into a self-guided, augmented reality tour, making learning about local plants and heritage sites more immersive without needing a printed guide or a tour staff on hand.
+        </p>
+
+        <div class="pref-section-label" data-i18n="about_team_label">Meet the Team</div>
+        <div class="about-team-grid">
+            <div class="about-team-card">
+                <div class="about-photo-placeholder">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <div class="about-team-info">
+                    <b>Joey Florencio</b>
+                    <span class="about-role" data-i18n="about_role_dev">Web Developer  & Concept Contributor</span>
+                    <span class="about-role-sub" data-i18n="about_role_dev_sub"></span>
+                </div>
+            </div>
+            <div class="about-team-card">
+                <div class="about-photo-placeholder">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <div class="about-team-info">
+                    <b data-i18n="about_add_name">Fara Mae Linagga</b>
+                    <span class="about-role" data-i18n="about_role_designer">Graphic Designer</span>
+                </div>
+            </div>
+            <div class="about-team-card">
+                <div class="about-photo-placeholder">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <div class="about-team-info">
+                    <b>Vannesa Manongdo</b>
+                    <span class="about-role" data-i18n="about_role_photo">Photographer & Content Specialist</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-footer" data-i18n="about_footer">&copy; 2026 BagView. All rights reserved.</div>
+    </div>
+
     <nav class="main-navigation-bar" id="main-nav">
-        <div class="nav-item active" id="nav-home" onclick="app.nav('home')" data-tip="Home"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
-        <div class="nav-item" id="nav-map" onclick="app.openInternalPage('map.html', 0)" data-tip="Garden Map"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg></div>
-        <div class="nav-item-center" id="ar-main-btn" onclick="app.startScanner()" data-tip="AR Scanner">
+        <div class="nav-item active" id="nav-home" onclick="app.nav('home')" data-tip="Home" data-i18n-tip="tip_home"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
+        <div class="nav-item" id="nav-map" onclick="app.openInternalPage('map.html', 0)" data-tip="Garden Map" data-i18n-tip="tip_map"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg></div>
+        <div class="nav-item-center" id="ar-main-btn" onclick="app.startScanner()" data-tip="AR Scanner" data-i18n-tip="tip_scanner">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="9" y="9" width="6" height="6"></rect></svg>
         </div>
-        <div class="nav-item" id="nav-notifications" onclick="app.navNotifications()" data-tip="Notifications" style="position:relative;">
+        <div class="nav-item" id="nav-notifications" onclick="app.navNotifications()" data-tip="Notifications" data-i18n-tip="tip_notifications" style="position:relative;">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
             <span class="notif-badge" id="nav-notif-badge"></span>
         </div>
-        <div class="nav-item" id="nav-profile" onclick="app.navProfile()" data-tip="My Profile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+        <div class="nav-item" id="nav-profile" onclick="app.navProfile()" data-tip="My Profile" data-i18n-tip="tip_profile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
     </nav>
 
     <!-- Persistent help/tour button -->
@@ -1388,7 +1646,7 @@ const app = {
 
     facts: [
         { id: 'fact-history', tag: "HISTORY", title: "Baguio Botanical Garden History", thumb: "Assets/History.png", info: "Originally known as the Igorot Village during the early years of its development, the garden has served as a cultural preservation site since the mid-20th century. It was designed to showcase the traditional huts and lifestyle of the different tribes in the Cordillera region, including the Ifugao, Kalinga, and Ibaloi. It was later renamed the Baguio Botanical Garden to emphasize its expanding role in biodiversity, botanical research, and environmental education for tourists and locals alike." },
-        { id: 'fact-tips', tag: "TRAVEL TIPS", title: "Responsible Tourism Guide", thumb: "Assets/Eco%20Tips.png", info: "To preserve the natural beauty and ecological integrity of the gardens, we strongly encourage all visitors to follow the 'Leave No Trace' policy during their exploration. Please stay on designated paths to avoid soil compaction, avoid picking flowers or disturbing the local wildlife, and use our AR features to interact with nature digitally rather than physically. By being a responsible tourist, you help ensure that future generations can enjoy the same vibrant colors and crisp mountain air that Baguio is famous for." },
+        { id: 'fact-tips', tag: "TRAVEL TIPS", title: "Responsible Tourism Guide", thumb: "Assets/Eco%20Tips.png", info: "To preserve the natural beauty and ecological integrity of the gardens, we strongly encourage all visitors to follow the 'Leave No Trace' policy during their exploration. Please stay on designated paths to avoid soil compaction, avoid picking flowers, and use our AR features to interact with nature digitally rather than physically. By being a responsible tourist, you help ensure that future generations can enjoy the same vibrant colors and crisp mountain air that Baguio is famous for." },
         { id: 'fact-eco', tag: "SUSTAINABILITY", title: "Conservation Efforts", thumb: "Assets/Eco%20Awareness.png", info: "The garden is home to several endemic and endangered plant species that are strictly protected under local environmental laws and international conservation treaties. Our app helps track scanning data to understand which areas of the park receive the most foot traffic, helping park rangers manage conservation zones more effectively. This data-driven approach allows us to balance the needs of tourism with the urgent requirement for environmental protection and habitat restoration within the city's green lung." }
     ],
 
@@ -1781,6 +2039,9 @@ const app = {
     },
 
        init: function() {
+        // --- APPLY SAVED APP PREFERENCES (theme & language) ---
+        this.applyStoredPrefs();
+
         // --- RESTORE SESSION FROM Login_page.html ---
         const savedName = sessionStorage.getItem('bv_user_name');
         const savedEmail = sessionStorage.getItem('bv_user_email');
@@ -2241,9 +2502,9 @@ const app = {
         { category: "AR Scanner", q: "The scan reticle won't disappear or the camera feels stuck. What do I do?", a: "Tap the home icon in the top corner of the AR view to exit the scanner, then reopen it from the navigation bar. Restarting the app will also reset the camera session." },
         { category: "Map & Stations", q: "How do I find stations near me?", a: "Open the Garden Map from the navigation bar to see all station locations. Tap any pin for details, or use the search bar on the Home screen to look up a station by name." },
         { category: "Map & Stations", q: "What do the numbers on 'Top Stations' mean?", a: "Stations are ranked by how many times explorers have successfully scanned them, giving you a quick way to find the most popular spots in the garden." },
-        { category: "Map & Stations", q: "What is 'Did You Know'?", a: "These are bite-sized facts about the garden's plants, history, and wildlife. Tap any card to read the full story." },
+        { category: "Map & Stations", q: "What is 'Did You Know'?", a: "These are bite-sized facts about the garden's plants, and history. Tap any card to read the full story." },
         { category: "Account & Profile", q: "How do I change my display name?", a: "Go to Profile, tap your name, edit the text field that appears, then tap Save." },
-        { category: "Account & Profile", q: "Where can I see the stations I've scanned or favorited?", a: "Your Profile page shows Scanned, Favorites, and Reviews counts. Tap 'My Favorites' or 'Visited Stations' under My Activity to see the full list." },
+        { category: "Account & Profile", q: "Where can I see the stations I've scanned or favorited?", a: "Your Profile page shows Scanned, Favorites, and Reviews counts. Tap 'My Favorites' under My Activity to see your full list of saved stations." },
         { category: "Account & Profile", q: "Is my personal data private?", a: "Your profile info, scan history, and favorites are tied to your account and are not shared publicly. Reviews you post are visible to other explorers." },
         { category: "Reviews & Favorites", q: "How do I favorite a station?", a: "Tap the heart icon on a station's article page or image card. Favorited stations are saved to My Favorites on your Profile." },
         { category: "Reviews & Favorites", q: "How do I write a review?", a: "Open a station's article, scroll to the Reviews section, tap a star rating, type your comment, and tap send." },
@@ -2320,6 +2581,136 @@ const app = {
         const wasOpen = el.classList.contains('open');
         document.querySelectorAll('.faq-item.open').forEach(item => item.classList.remove('open'));
         if (!wasOpen) el.classList.add('open');
+    },
+
+    /* ── App Preferences ── */
+    prefDefaults: { push: true, promo: true, darkmode: false, language: 'en' },
+
+    loadPrefs: function() {
+        let stored = {};
+        try {
+            stored = JSON.parse(localStorage.getItem('bagview_prefs') || '{}');
+        } catch (e) { stored = {}; }
+        this.userPrefs = Object.assign({}, this.prefDefaults, stored);
+        return this.userPrefs;
+    },
+
+    openPrefs: function() {
+        const prefs = this.userPrefs || this.loadPrefs();
+        document.getElementById('pref-push').checked = prefs.push;
+        document.getElementById('pref-promo').checked = prefs.promo;
+        document.getElementById('pref-darkmode').checked = prefs.darkmode;
+        document.getElementById('pref-language').value = prefs.language;
+        document.getElementById('prefs-overlay').classList.add('visible');
+    },
+
+    closePrefs: function() {
+        document.getElementById('prefs-overlay').classList.remove('visible');
+    },
+
+    savePref: function(key, value) {
+        this.userPrefs = Object.assign({}, this.prefDefaults, this.userPrefs || {});
+        this.userPrefs[key] = value;
+        try { localStorage.setItem('bagview_prefs', JSON.stringify(this.userPrefs)); } catch (e) {}
+    },
+
+    setDarkMode: function(isDark) {
+        this.savePref('darkmode', isDark);
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    },
+
+    setLanguage: function(lang) {
+        this.savePref('language', lang);
+        this.applyLanguage(lang);
+    },
+
+    i18n: {
+        en: {
+            stat_scanned: "Scanned", stat_favorites: "Favorites", stat_reviews: "Reviews",
+            section_my_activity: "My Activity", section_settings: "Settings",
+            menu_favorites_title: "My Favorites", menu_favorites_sub: "Stations you've hearted",
+            menu_reviews_title: "My Reviews", menu_reviews_sub: "Share your experience",
+            menu_saved_title: "Saved Places", menu_saved_sub: "Your bookmarked stations",
+            menu_prefs_title: "App Preferences", menu_prefs_sub: "Notifications & display",
+            menu_faq_title: "Help & FAQ", menu_faq_sub: "Answers to common questions",
+            menu_about_title: "About BagView",
+            btn_logout: "Log Out",
+            search_title: "Explore", search_placeholder: "Search stations...",
+            faq_title: "Help & FAQ", faq_search_placeholder: "Search for a topic...",
+            prefs_title: "App Preferences",
+            prefs_section_notifications: "Notifications", prefs_section_display: "Display",
+            pref_push_title: "Push Notifications", pref_push_sub: "New stations, updates & alerts",
+            pref_promo_title: "Promo & News Updates", pref_promo_sub: "What's new in BagView",
+            pref_darkmode_title: "Dark Mode", pref_darkmode_sub: "Easier viewing at night",
+            pref_language_title: "Language", pref_language_sub: "Display language for the app",
+            about_header: "About BagView",
+            about_desc: "BagView is an AR-powered eco-tourism web app that lets visitors point their device at markers around the garden to instantly unlock interactive stories, photos, and facts about each station. Built to make exploring our green spaces more engaging, it turns every walkway into a self-guided, augmented reality tour, making learning about local plants, and heritage sites more immersive without needing a printed guide or a tour staff on hand.",
+            about_team_label: "Meet the Team",
+            about_role_dev: "Web Developer", about_role_dev_sub: "Project developer & concept contributor",
+            about_add_name: "[Add Name]", about_role_designer: "Graphic Designer",
+            about_role_photo: "Photographer & Content Specialist",
+            about_footer: "\u00A9 2026 BagView. All rights reserved.",
+            tip_home: "Home", tip_map: "Garden Map", tip_scanner: "AR Scanner", tip_notifications: "Notifications", tip_profile: "My Profile"
+        },
+        fil: {
+            stat_scanned: "Na-scan", stat_favorites: "Paborito", stat_reviews: "Review",
+            section_my_activity: "Aking Aktibidad", section_settings: "Mga Setting",
+            menu_favorites_title: "Aking Paborito", menu_favorites_sub: "Mga station na iyong na-heart",
+            menu_reviews_title: "Aking Review", menu_reviews_sub: "Ibahagi ang iyong karanasan",
+            menu_saved_title: "Na-save na Lugar", menu_saved_sub: "Mga naka-bookmark mong station",
+            menu_prefs_title: "Mga Kagustuhan sa App", menu_prefs_sub: "Notipikasyon at display",
+            menu_faq_title: "Tulong at FAQ", menu_faq_sub: "Sagot sa mga karaniwang tanong",
+            menu_about_title: "Tungkol sa BagView",
+            btn_logout: "Mag-log Out",
+            search_title: "Galugarin", search_placeholder: "Maghanap ng station...",
+            faq_title: "Tulong at FAQ", faq_search_placeholder: "Maghanap ng paksa...",
+            prefs_title: "Mga Kagustuhan sa App",
+            prefs_section_notifications: "Notipikasyon", prefs_section_display: "Display",
+            pref_push_title: "Push Notification", pref_push_sub: "Bagong station, update at alerto",
+            pref_promo_title: "Promo at Balita", pref_promo_sub: "Ano'ng bago sa BagView",
+            pref_darkmode_title: "Dark Mode", pref_darkmode_sub: "Mas madaling tingnan sa gabi",
+            pref_language_title: "Wika", pref_language_sub: "Wikang gagamitin sa app",
+            about_header: "Tungkol sa BagView",
+            about_desc: "Ang BagView ay isang AR-powered eco-tourism web app na nagbibigay-daan sa mga bisita na itutok ang kanilang device sa mga marker sa paligid ng hardin upang agad na ma-unlock ang mga interaktibong kwento, larawan, at impormasyon tungkol sa bawat station. Idinisenyo upang gawing mas kaakit-akit ang paggalugad sa aming mga berdeng espasyo, binabago nito ang bawat daanan tungo sa isang self-guided, augmented reality tour, na ginagawang mas nakaka-engganyo ang pag-aaral tungkol sa mga lokal na halaman, at makasaysayang lugar nang hindi na kailangan ng nakalimbag na gabay o tour guide.",
+            about_team_label: "Kilalanin ang Koponan",
+            about_role_dev: "Web Developer", about_role_dev_sub: "Developer ng proyekto at concept contributor",
+            about_add_name: "[Idagdag ang Pangalan]", about_role_designer: "Graphic Designer",
+            about_role_photo: "Photographer at Content Specialist",
+            about_footer: "\u00A9 2026 BagView. Lahat ng karapatan ay nakalaan.",
+            tip_home: "Home", tip_map: "Mapa ng Hardin", tip_scanner: "AR Scanner", tip_notifications: "Notipikasyon", tip_profile: "Aking Profile"
+        }
+    },
+
+    applyLanguage: function(lang) {
+        const dict = this.i18n[lang] || this.i18n.en;
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (dict[key]) el.textContent = dict[key];
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (dict[key]) el.placeholder = dict[key];
+        });
+        document.querySelectorAll('[data-i18n-tip]').forEach(el => {
+            const key = el.getAttribute('data-i18n-tip');
+            if (dict[key]) el.setAttribute('data-tip', dict[key]);
+        });
+        document.documentElement.setAttribute('lang', lang === 'fil' ? 'fil' : 'en');
+    },
+
+    applyStoredPrefs: function() {
+        const prefs = this.loadPrefs();
+        document.documentElement.setAttribute('data-theme', prefs.darkmode ? 'dark' : 'light');
+        this.applyLanguage(prefs.language);
+    },
+
+    /* ── About BagView ── */
+    openAbout: function() {
+        document.getElementById('about-overlay').classList.add('visible');
+    },
+
+    closeAbout: function() {
+        document.getElementById('about-overlay').classList.remove('visible');
     },
 
     renderFavoritesPage: function() {
