@@ -42,6 +42,38 @@
         .btn-start-tour { background: var(--accent); color: white; border: none; width: 100%; padding: 16px; border-radius: 15px; font-weight: 900; margin-bottom: 12px; font-size: 14px; text-transform: uppercase; }
         .btn-skip-tour { background: #f0f0f0; color: #666; border: none; width: 100%; padding: 12px; border-radius: 15px; font-weight: 800; font-size: 12px; text-transform: uppercase; }
 
+        /* ── Plan comparison overlay (shown after login/signup) ── */
+        #plan-compare-overlay {
+            position: fixed; inset: 0; z-index: 11500; background: rgba(0,0,0,0.8);
+            display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px);
+            transition: 0.4s; padding: 20px;
+        }
+        #plan-compare-overlay.visible { display: flex; }
+        .plan-card {
+            background: white; width: 100%; max-width: 380px; max-height: 88vh; overflow-y: auto;
+            padding: 28px 24px 24px; border-radius: 28px; text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); position: relative;
+        }
+        .plan-card-close {
+            position: absolute; top: 16px; right: 16px; width: 30px; height: 30px; border-radius: 50%;
+            background: #f0f0f0; border: none; display: flex; align-items: center; justify-content: center; color: #666;
+        }
+        .plan-card h2 { font-size: 21px; margin: 0 0 6px; color: #222; font-weight: 900; }
+        .plan-card > p.plan-card-sub { font-size: 12.5px; color: #666; margin: 0 0 22px; line-height: 1.5; font-weight: 400; }
+        .plan-table-head { display: grid; grid-template-columns: 1.3fr 0.85fr 0.85fr; align-items: end; margin-bottom: 8px; }
+        .plan-table-head .plan-col-label { text-align: left; font-size: 11px; font-weight: 800; color: #999; text-transform: uppercase; }
+        .plan-table-head .plan-col-name { font-size: 13px; font-weight: 900; text-transform: uppercase; }
+        .plan-table-head .plan-col-name.premium { color: var(--accent); }
+        .plan-feature-row { display: grid; grid-template-columns: 1.3fr 0.85fr 0.85fr; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+        .plan-feature-row:last-of-type { border-bottom: none; }
+        .plan-feature-name { text-align: left; font-size: 12.5px; font-weight: 700; color: #333; line-height: 1.3; }
+        .plan-feature-name .plan-feature-tag { display: block; font-size: 10px; font-weight: 800; color: var(--accent); text-transform: uppercase; margin-top: 2px; }
+        .plan-check, .plan-cross { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+        .plan-check { background: var(--accent-soft); color: var(--accent); }
+        .plan-cross { background: #f2f2f2; color: #bbb; }
+        .btn-plan-primary { background: var(--accent); color: white; border: none; width: 100%; padding: 16px; border-radius: 15px; font-weight: 900; margin-top: 22px; margin-bottom: 10px; font-size: 13.5px; text-transform: uppercase; }
+        .btn-plan-secondary { background: none; color: #888; border: none; width: 100%; padding: 8px; font-weight: 700; font-size: 12.5px; }
+
         #ar-reticle { position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%); width: 80vw; height: 45vh; z-index: 4000; pointer-events: none; opacity: 0; transition: 0.5s var(--transition); }
         .leaf-corner { position: absolute; width: 60px; height: 60px; border: 4px solid var(--accent); animation: leafPulse 2.5s ease-in-out infinite; }
         @keyframes leafPulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; border-width: 5px; } }
@@ -1125,6 +1157,30 @@
         </div>
     </div>
 
+    <!-- Free vs Premium comparison, shown right after login/signup -->
+    <div id="plan-compare-overlay">
+        <div class="plan-card">
+            <button class="plan-card-close" onclick="app.closePlanCompare()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <h2>Choose Your Plan</h2>
+            <p class="plan-card-sub">Here's what's included, so you can pick what's right for your next visit.</p>
+
+            <div class="plan-table-head">
+                <div class="plan-col-label">Feature</div>
+                <div class="plan-col-name">Free</div>
+                <div class="plan-col-name premium">Premium</div>
+            </div>
+
+            <div id="plan-compare-list">
+                <!-- rows injected by app.renderPlanCompare() -->
+            </div>
+
+            <button class="btn-plan-primary" onclick="app.startPremiumTrial()">Start Free Trial</button>
+            <button class="btn-plan-secondary" onclick="app.closePlanCompare()">Maybe Later</button>
+        </div>
+    </div>
+
     <div id="tour-choice-overlay" class="hidden">
         <div class="choice-card">
             <h2>Welcome, Explorer!</h2>
@@ -1996,6 +2052,7 @@ const app = {
             iframe.contentWindow.postMessage("loginComplete", "*");
         }
         this.nav("profile");
+        this.openPlanCompare();
     },
 
     completeLogin() {
@@ -2036,6 +2093,7 @@ const app = {
         }
 
         this.nav('profile');
+        this.openPlanCompare();
     },
 
        init: function() {
@@ -2073,9 +2131,9 @@ const app = {
             if (event.data === 'hideExitBtn') { exitBtn.style.display = 'none'; } 
             else if (event.data === 'showExitBtn') { exitBtn.style.display = 'block'; }
             else if (event.data === 'openLogin' || event.data === 'openPremium' || event.data === 'openFreeTrial') {
-                // Only show login if the user is not already logged in
+                // Only show the Premium heads-up if the user is not already logged in
                 if (!app.isLoggedIn) {
-                    app.openLogin();
+                    app.openPlanCompare('guestGate');
                 }
                 // If already logged in, do nothing — they already have access
             }
@@ -2489,6 +2547,72 @@ const app = {
 
     closeFavorites: function() {
         document.getElementById('favorites-overlay').classList.remove('visible');
+    },
+
+    // ── Free vs Premium plan comparison ──
+    planFeatures: [
+        { name: "AR Marker Scanning", free: true, premium: true },
+        { name: "Garden Map & Station Pins", free: true, premium: true },
+        { name: "Station Articles & Facts", free: true, premium: true },
+        { name: "Favorites & Reviews", free: true, premium: true },
+        { name: "Bypass Phygital Scanning", free: false, premium: true, tag: "Premium Only" },
+        { name: "Additional Extended AR Tour Content", free: false, premium: true },
+        { name: "Seasonal-scenes", free: false, premium: true }
+    ],
+
+    renderPlanCompare: function() {
+        const container = document.getElementById('plan-compare-list');
+        if (!container) return;
+        const checkIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        const crossIcon = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+        let html = '';
+        this.planFeatures.forEach(f => {
+            html += `
+                <div class="plan-feature-row">
+                    <div class="plan-feature-name">${f.name}${f.tag ? `<span class="plan-feature-tag">${f.tag}</span>` : ''}</div>
+                    <div>${f.free ? `<div class="plan-check">${checkIcon}</div>` : `<div class="plan-cross">${crossIcon}</div>`}</div>
+                    <div>${f.premium ? `<div class="plan-check">${checkIcon}</div>` : `<div class="plan-cross">${crossIcon}</div>`}</div>
+                </div>`;
+        });
+        container.innerHTML = html;
+    },
+
+    openPlanCompare: function(context) {
+        this.planCompareContext = context || 'postLogin';
+        this.renderPlanCompare();
+
+        const subEl = document.querySelector('#plan-compare-overlay .plan-card-sub');
+        const primaryBtn = document.querySelector('#plan-compare-overlay .btn-plan-primary');
+        if (this.planCompareContext === 'guestGate') {
+            if (subEl) subEl.innerText = "That feature is part of Premium. Sign in or create a free account to unlock it.";
+            if (primaryBtn) primaryBtn.innerText = 'Sign Up / Log In';
+        } else {
+            if (subEl) subEl.innerText = "Here's what's included, so you can pick what's right for your next visit.";
+            if (primaryBtn) primaryBtn.innerText = 'Start Free Trial';
+        }
+
+        document.getElementById('plan-compare-overlay').classList.add('visible');
+    },
+
+    closePlanCompare: function() {
+        document.getElementById('plan-compare-overlay').classList.remove('visible');
+    },
+
+    startPremiumTrial: function() {
+        this.closePlanCompare();
+
+        // If this popup was shown because a guest tried to access a Premium
+        // feature, the primary action is to get them signed in first.
+        if (this.planCompareContext === 'guestGate') {
+            this.openLogin(true);
+            return;
+        }
+
+        // Hook into the existing Premium / Free Trial flow
+        const iframe = document.getElementById('tour-iframe');
+        if (iframe && iframe.contentWindow && iframe.src) {
+            iframe.contentWindow.postMessage('openFreeTrial', '*');
+        }
     },
 
     // ── FAQ data & logic ──
