@@ -69,6 +69,7 @@
         .exit-pill-btn { background: #00A699; color: white; border: none; padding: 10px 22px; border-radius: 50px; font-weight: 800; font-size: 12px; cursor: pointer; text-transform: uppercase; }
         #pano-frame { position: absolute; top: 60px; left: 0; width: 100%; height: calc(100% - 60px); border: none; z-index: 2000; }
 
+        /* --- GALLERY DOCK (reduced height) --- */
         #bottom-sheet {
             position: absolute; bottom: 0; left: 0; right: 0; height: 50px;
             background: white; z-index: 500; border-radius: 24px 24px 0 0;
@@ -76,18 +77,18 @@
             box-shadow: 0 -5px 25px rgba(0,0,0,0.1); display: flex; flex-direction: column;
             touch-action: none; overflow: hidden;
         }
-        .drag-handle { width: 40px; height: 5px; background: #e5e7eb; margin: 12px auto; border-radius: 10px; cursor: grab; flex-shrink: 0; }
-        .sheet-label { font-size: 11px; font-weight: 900; color: var(--dark); text-transform: uppercase; margin-bottom: 15px; }
+        .drag-handle { width: 40px; height: 5px; background: #e5e7eb; margin: 8px auto; border-radius: 10px; cursor: grab; flex-shrink: 0; }
+        .sheet-label { font-size: 11px; font-weight: 900; color: var(--dark); text-transform: uppercase; margin-bottom: 10px; }
         #station-list { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 10px; scrollbar-width: none; opacity: 0; transition: opacity 0.3s ease; }
         #bottom-sheet.open #station-list { opacity: 1; }
 
-        .station-card { flex: 0 0 160px; position: relative; height: 110px; cursor: pointer; border-radius: 18px; overflow: hidden; box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+        .station-card { flex: 0 0 160px; position: relative; height: 85px; cursor: pointer; border-radius: 18px; overflow: hidden; box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
         .station-card img { width: 100%; height: 100%; object-fit: cover; }
 
         .station-tag {
             position: absolute; bottom: 0; left: 0; right: 0;
             background: linear-gradient(90deg, rgba(72, 229, 194, 0.85) 0%, rgba(72, 229, 194, 0.7) 50%, rgba(72, 229, 194, 0) 95%);
-            backdrop-filter: blur(2px); padding: 10px 15px; pointer-events: none;
+            backdrop-filter: blur(2px); padding: 8px 12px; pointer-events: none;
         }
         .station-tag span {
             color: white; font-size: 10px; font-weight: 900;
@@ -330,8 +331,10 @@
             frame.src = "";
             stopMotionForwarding();
         };
+
+        // --- GALLERY DOCK DRAG (reduced height range) ---
         const minHeight = 50;
-        const maxHeight = 260;
+        const maxHeight = 195;
 
         const setSheetHeight = (height) => {
             sheet.style.height = height + "px";
