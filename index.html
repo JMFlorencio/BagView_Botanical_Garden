@@ -2137,6 +2137,14 @@ const app = {
                 }
                 // If already logged in, do nothing — they already have access
             }
+            else if (event.data === 'goHome') {
+                // The embedded map page's home button was tapped — close the tour
+                // modal (if open) and take the user to the BAGVIEW homepage
+                if (document.getElementById('tour-modal').classList.contains('visible')) {
+                    app.closeInternalPage();
+                }
+                app.nav('home');
+            }
         });
 
         document.getElementById('tour-iframe').onload = () => {
