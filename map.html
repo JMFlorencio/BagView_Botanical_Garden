@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Resort Map | Premium Edition</title>
     
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style> 
         @font-face {
             font-family: 'Agrandir';
-            src: url('Assets/agrandir-regular.woff2') format('woff2');
+            src: url('Assets/Agrandir-Regular.woff2') format('woff2');
             font-weight: normal; font-style: normal;
         }
 
@@ -125,7 +126,7 @@
     <div id="map"></div>
 
     <button class="map-home-btn" id="map-home-btn">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
     </button>
 
     <div class="map-legend">
@@ -197,7 +198,7 @@
             zoomSnap: 0.1
         });
 
-        L.imageOverlay('Assets/A1_Map.png', bounds).addTo(map);
+        const baseMap = L.imageOverlay('Assets/A1_Map.png', bounds).addTo(map);
         map.fitBounds(bounds);
 
         const list = document.getElementById('station-list');
@@ -213,10 +214,24 @@
             
             const card = document.createElement('div');
             card.className = 'station-card';
-            card.innerHTML = `<img src="${s.img}"><div class="station-tag"><span>${s.id}. ${s.name}</span></div>`;
+            card.innerHTML = `<img src="${s.img}" loading="lazy" decoding="async"><div class="station-tag"><span>${s.id}. ${s.name}</span></div>`;
             card.onclick = () => { marker.openPopup(); map.flyTo([s.y, s.x], 1, { duration: 1.5 }); };
             list.appendChild(card);
         });
+
+        // Let the parent app (index.html) know the map is interactive now,
+        // instead of waiting for every station thumbnail image to finish
+        // loading — this is what was making the loading screen linger.
+        const signalMapReady = () => {
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage('mapReady', '*');
+            }
+        };
+        if (baseMap._image && baseMap._image.complete) {
+            signalMapReady();
+        } else {
+            baseMap.once('load', signalMapReady);
+        }
 
         const overlay = document.getElementById('pano-overlay-container');
         const frame = document.getElementById('pano-frame');
