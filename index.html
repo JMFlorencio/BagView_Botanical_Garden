@@ -2145,6 +2145,13 @@ const app = {
                 }
                 app.nav('home');
             }
+            else if (event.data === 'mapReady') {
+                // The map page is interactive now — hide the loader right away
+                // instead of waiting for every station thumbnail to finish loading
+                const loader = document.getElementById('tour-loader');
+                loader.style.opacity = '0';
+                setTimeout(() => { loader.style.display = 'none'; }, 300);
+            }
         });
 
         document.getElementById('tour-iframe').onload = () => {
@@ -3353,9 +3360,23 @@ const app = {
             return; // popstate listener will call this function again with fromPopState = true
         }
 
+        // If the loading screen was still showing (e.g. user backed out before
+        // the page finished loading), hide it immediately so it can't flash
+        // black while the modal slides away.
+        const loader = document.getElementById('tour-loader');
+        loader.style.opacity = '0';
+        loader.style.display = 'none';
+
         document.getElementById('tour-modal').classList.remove('visible'); 
         document.getElementById('tour-back-btn').style.display = 'none'; 
-        document.getElementById('tour-iframe').src = ""; 
+
+        // Keep the iframe's content on screen while the modal slides down
+        // (matches the 0.5s CSS transition on #tour-modal), then clear it —
+        // clearing it immediately was causing a black flash mid-animation.
+        setTimeout(() => {
+            document.getElementById('tour-iframe').src = "";
+        }, 500);
+
         const sceneEl = document.querySelector('a-scene');
         if (document.getElementById('gallery-dock-container').classList.contains('ar-active')) {
             if (sceneEl.systems['mindar-image-system']) { sceneEl.systems['mindar-image-system'].start(); }
