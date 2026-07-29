@@ -524,7 +524,7 @@
             max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.35s ease;
             padding: 0 18px; font-size: 12px; color: #666; line-height: 1.6; font-weight: 400;
         }
-        .faq-item.open .faq-answer { max-height: 400px; padding: 0 18px 16px; }
+        .faq-item.open .faq-answer { max-height: 900px; padding: 0 18px 16px; }
         .faq-empty {
             text-align: center; padding: 60px 25px; color: #bbb; font-size: 13px;
             font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
@@ -2956,8 +2956,20 @@ const app = {
     faqData: [
         { category: "Getting Started", q: "What is BagView?", a: "BagView is an AR eco-tourism companion. Point your camera at markers around the garden to unlock augmented reality experiences, read station facts, and track the places you've explored." },
         { category: "Getting Started", q: "How do I retake the app tutorial?", a: "Tap the floating \"?\" button on the Home screen at any time to restart the guided walkthrough of the app's main features." },
-        { category: "Getting Started", q: "Do I need an account to use BagView?", a: "No — you can browse stations, use the AR scanner, and read articles without an account. Signing in lets you save favorites, track your scan history, and write reviews across devices." },
-        { category: "AR Scanner", q: "How does the AR Scanner work?", a: "Tap the center scan button in the navigation bar, then point your camera at a station marker. When a match is found you'll feel/hear a confirmation and the related AR experience or article will open automatically." },
+        { category: "Getting Started", q: "Do I need an account to use BagView?", a: `<p style="margin:0 0 12px;"><strong>No</strong> — you can use BagView without creating an account.</p>
+            <ul style="margin:0 0 12px; padding-left:16px; list-style:disc;">
+                <li style="margin-bottom:12px;"><strong>Continue as Guest:</strong> You can immediately access the app without logging in. You will be able to view the map and use the AR scanner with both the digital and printed versions of the magazine. However, guest access is limited, and interactive features on the map will be locked.</li>
+                <li><strong>Creating an Account / Signing In:</strong> Logging in unlocks all interactive features of BagView! You will be able to:
+                    <ul style="margin:8px 0 0; padding-left:16px; list-style:circle;">
+                        <li style="margin-bottom:8px;">Interact with the map</li>
+                        <li style="margin-bottom:8px;">Leave comments in the comment section</li>
+                        <li style="margin-bottom:8px;">Save and favorite stations ("heart" items)</li>
+                        <li style="margin-bottom:8px;">Sync your scan history across devices</li>
+                        <li>Get early access to future features</li>
+                    </ul>
+                </li>
+            </ul>` },
+        { category: "AR Scanner", q: "How does the AR Scanner work?", a: "BAGVIEW is a hybrid print and digital multimedia system designed to serve as an interactive magazine and virtual tour platform for the Baguio Botanical Garden. It addresses information gaps and promotes sustainable eco-tourism by integrating WebAR image scanning, 360-degree virtual tours, and interactive maps into a unified web application and flipbook format." },
         { category: "AR Scanner", q: "Why isn't my camera detecting a marker?", a: "Make sure you're in a well-lit area, hold your phone steady about arm's length from the marker, and keep the whole marker inside the on-screen frame. If scanning still fails, check that camera permission is enabled for BagView in your device settings." },
         { category: "AR Scanner", q: "Can I use the AR Scanner without an internet connection?", a: "Marker recognition works offline once the experience has loaded, but opening station articles, images, and reviews requires an internet connection." },
         { category: "AR Scanner", q: "The scan reticle won't disappear or the camera feels stuck. What do I do?", a: "Tap the home icon in the top corner of the AR view to exit the scanner, then reopen it from the navigation bar. Restarting the app will also reset the camera session." },
