@@ -317,6 +317,23 @@
         .comment-date { font-size: 10px; color: #aaa; font-weight: 700; text-transform: uppercase; }
         .comment-stars { display: flex; gap: 2px; font-size: 11px; }
         .comment-text { font-size: 13px; color: #555; line-height: 1.5; font-weight: 400; }
+        .comment-edit-btn {
+            background: none; border: none; cursor: pointer; color: #bbb;
+            padding: 4px; display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-left: 4px; transition: 0.2s;
+        }
+        .comment-edit-btn:active { color: var(--accent); transform: scale(0.88); }
+
+        .review-editing-banner {
+            display: flex; align-items: center; justify-content: space-between;
+            background: #eafaf8; border-radius: 14px; padding: 8px 14px;
+            margin-bottom: 10px; font-size: 11px; font-weight: 900;
+            color: var(--accent); text-transform: uppercase; letter-spacing: 0.3px;
+        }
+        .review-editing-banner .cancel-edit-link {
+            cursor: pointer; text-decoration: underline; color: #888;
+            text-transform: none; font-weight: 700; font-size: 11px;
+        }
 
         .no-reviews-msg {
             text-align: center; padding: 28px 0; color: #bbb;
@@ -1504,11 +1521,15 @@
 
                 <!-- Write a review -->
                 <div class="review-write-section">
-                    <div class="review-write-label">Rate &amp; Review</div>
+                    <div class="review-editing-banner" id="review-editing-banner" style="display:none;">
+                        <span>Editing your review</span>
+                        <span class="cancel-edit-link" onclick="app.cancelEditReview()">Cancel</span>
+                    </div>
+                    <div class="review-write-label" id="review-write-label">Rate &amp; Review</div>
                     <div class="star-picker" id="art-star-picker"></div>
                     <div class="review-input-wrap">
                         <input type="text" id="art-review-input" placeholder="Share your experience...">
-                        <button class="btn-send-review" onclick="app.submitReview()">
+                        <button class="btn-send-review" id="btn-send-review" onclick="app.submitReview()">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                         </button>
                     </div>
@@ -2449,6 +2470,7 @@ const app = {
     currentArticleId: null,
     currentStarFilter: 0,  // 0 = all
     pendingStarRating: 5,
+    editingReviewId: null,
 
     stationReviews: {
         1:  [
@@ -2648,7 +2670,7 @@ const app = {
         { category: "Account & Profile", q: "Is my personal data private?", a: "Your profile info, scan history, and favorites are tied to your account and are not shared publicly. Reviews you post are visible to other explorers." },
         { category: "Reviews & Favorites", q: "How do I favorite a station?", a: "Tap the heart icon on a station's article page or image card. Favorited stations are saved to My Favorites on your Profile." },
         { category: "Reviews & Favorites", q: "How do I write a review?", a: "Open a station's article, scroll to the Reviews section, tap a star rating, type your comment, and tap send." },
-        { category: "Reviews & Favorites", q: "Can I edit or delete a review I posted?", a: "Currently reviews can't be edited from within the app. If you need one removed, use the Contact Support option below." },
+        { category: "Reviews & Favorites", q: "Can I edit a review I posted?", a: "Yes. Find your review under the station's Reviews section and tap the pencil icon on it. You can update your rating and comment, then tap send to save your changes." },
         { category: "Notifications", q: "What kind of notifications will I get?", a: "BagView sends bloom alerts, seasonal events, and garden announcements. You'll see a badge on the notification bell when something new is available." },
         { category: "Premium & Login", q: "What do I get with Premium?", a: "Premium unlocks extended AR tours, exclusive 360° experiences, and ad-free browsing. You'll be prompted to sign in or start a free trial when you tap a Premium feature." },
         { category: "Premium & Login", q: "I tapped 'Get Premium' and nothing happened.", a: "You should see a login prompt appear — if it doesn't, make sure pop-ups aren't blocked and that you have a stable connection, then try again." },
@@ -2994,6 +3016,9 @@ const app = {
                         <div class="comment-date">${r.date}</div>
                     </div>
                     <div class="comment-stars">${[1,2,3,4,5].map(i=>`<span style="color:${i<=r.stars?'var(--accent)':'#ddd'}">★</span>`).join('')}</div>
+                    ${r.isMine ? `<button class="comment-edit-btn" onclick="app.editReview('${stationId}', ${r.id})" aria-label="Edit review">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    </button>` : ''}
                 </div>
                 <div class="comment-text">${r.text}</div>
             </div>
@@ -3024,9 +3049,28 @@ const app = {
         const input = document.getElementById('art-review-input');
         const text = input.value.trim();
         if (!text || this.currentArticleId === null) return;
+
+        // ── Editing an existing review ──
+        if (this.editingReviewId !== null && this.editingReviewId !== undefined) {
+            const list = this.stationReviews[this.currentArticleId] || [];
+            const review = list.find(r => r.id === this.editingReviewId);
+            if (review) {
+                review.text = text;
+                review.stars = this.pendingStarRating;
+                review.date = 'Edited just now';
+            }
+            this.editingReviewId = null;
+            input.value = '';
+            this.pendingStarRating = 5;
+            this._setReviewFormEditingState(false);
+            this.renderReviews(this.currentArticleId);
+            return;
+        }
+
+        // ── Posting a new review ──
         const name = this.currentUser ? this.currentUser.name.split(' ')[0] : 'Explorer';
         const initials = name.slice(0, 2).toUpperCase();
-        const newReview = { name, avatar: initials, stars: this.pendingStarRating, date: 'Just now', text };
+        const newReview = { id: Date.now(), name, avatar: initials, stars: this.pendingStarRating, date: 'Just now', text, isMine: true };
         if (!this.stationReviews[this.currentArticleId]) this.stationReviews[this.currentArticleId] = [];
         this.stationReviews[this.currentArticleId].unshift(newReview);
         input.value = '';
@@ -3035,12 +3079,45 @@ const app = {
         this.renderReviews(this.currentArticleId);
     },
 
+    editReview: function(stationId, reviewId) {
+        const list = this.stationReviews[stationId] || [];
+        const review = list.find(r => r.id === reviewId);
+        if (!review) return;
+        this.editingReviewId = reviewId;
+        this.pendingStarRating = review.stars;
+        this._renderStarPicker();
+        const input = document.getElementById('art-review-input');
+        input.value = review.text;
+        input.focus();
+        this._setReviewFormEditingState(true);
+        const writeSection = document.querySelector('.review-write-section');
+        if (writeSection) writeSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    },
+
+    cancelEditReview: function() {
+        this.editingReviewId = null;
+        this.pendingStarRating = 5;
+        const input = document.getElementById('art-review-input');
+        if (input) input.value = '';
+        this._renderStarPicker();
+        this._setReviewFormEditingState(false);
+    },
+
+    _setReviewFormEditingState: function(isEditing) {
+        const banner = document.getElementById('review-editing-banner');
+        const label = document.getElementById('review-write-label');
+        if (banner) banner.style.display = isEditing ? 'flex' : 'none';
+        if (label) label.innerText = isEditing ? 'Update Your Rating' : 'Rate & Review';
+    },
+
     openArticle: function(id) {
         const station = this.stations.find(s => s.id === id);
         if(!station) return;
         this.resetArticleExpansion();
         this.currentArticleId = id;
         this.currentStarFilter = 0;
+        this.editingReviewId = null;
+        this.pendingStarRating = 5;
 
         // Sync favorite button
         const favBtn = document.getElementById('btn-favorite');
