@@ -82,8 +82,14 @@
             background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(14px);
             border: 1px solid rgba(255,255,255,0.4);
             display: flex; align-items: center; justify-content: space-between;
-            padding: 10px 10px 10px 20px; box-sizing: border-box; z-index: 2001;
+            padding: 10px 10px 10px 20px; box-sizing: border-box; z-index: 2002;
             border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .pano-top-bar.pano-bar-hidden {
+            opacity: 0;
+            transform: translateY(-24px);
+            pointer-events: none;
         }
         .pano-title { color: var(--dark); font-weight: 800; font-size: 14px; }
         .exit-pill-btn {
@@ -92,6 +98,12 @@
             display: flex; align-items: center; justify-content: center;
         }
         #pano-frame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 2000; }
+        /* Invisible layer that only activates once the bar has hidden itself —
+           a tap anywhere brings the bar back without blocking normal dragging
+           on the 360° view the rest of the time. */
+        #pano-reveal-layer {
+            position: absolute; inset: 0; z-index: 2001; pointer-events: none;
+        }
 
         #pano-loader {
             position: absolute; inset: 0; z-index: 2002;
@@ -192,6 +204,8 @@
             allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking; fullscreen; camera; microphone"
             allowfullscreen></iframe>
 
+        <div id="pano-reveal-layer"></div>
+
         <div id="pano-loader">
             <div class="pano-spinner"></div>
             <span class="pano-loader-text">Loading Experience<span class="pano-dots"><span>.</span><span>.</span><span>.</span></span></span>
@@ -274,6 +288,8 @@
 
         const overlay = document.getElementById('pano-overlay-container');
         const frame = document.getElementById('pano-frame');
+        const panoBar = document.querySelector('.pano-top-bar');
+        const panoReveal = document.getElementById('pano-reveal-layer');
         const sheet = document.getElementById('bottom-sheet');
         const handle = document.getElementById('sheet-handle');
         const stationList = document.getElementById('station-list');
@@ -401,6 +417,30 @@
 
         const panoLoader = document.getElementById('pano-loader');
 
+        // --- AUTO-HIDE TOP BAR WHILE VIEWING THE 360° EXPERIENCE ---
+        // We can't detect actual dragging inside the 360° iframe (it's a
+        // cross-origin embed, browsers block that for security). Instead:
+        // the bar shows briefly, then fades away on its own so it doesn't
+        // block the view; a single tap anywhere brings it back and resets
+        // the timer, without interfering with normal panning the rest of
+        // the time (the reveal layer only intercepts taps while hidden).
+        let barHideTimer = null;
+
+        function showPanoBar() {
+            panoBar.classList.remove('pano-bar-hidden');
+            panoReveal.style.pointerEvents = 'none';
+            clearTimeout(barHideTimer);
+            barHideTimer = setTimeout(hidePanoBar, 3500);
+        }
+
+        function hidePanoBar() {
+            panoBar.classList.add('pano-bar-hidden');
+            panoReveal.style.pointerEvents = 'auto';
+        }
+
+        panoReveal.addEventListener('touchstart', showPanoBar, { passive: true });
+        panoReveal.addEventListener('click', showPanoBar);
+
         // Hide the loader once the 360° experience has actually finished loading
         frame.onload = () => {
             if (frame.src) {
@@ -415,6 +455,7 @@
             panoLoader.style.opacity = '1';
             frame.src = url;
             overlay.style.display = 'block';
+            showPanoBar();
             // Request motion permission as part of this user-gesture-triggered function
             requestMotionPermission();
         }
@@ -423,6 +464,7 @@
             overlay.style.display = 'none';
             frame.src = "";
             stopMotionForwarding();
+            clearTimeout(barHideTimer);
         };
         // --- HOME BUTTON: send the user back to the BAGVIEW homepage ---
         document.getElementById('map-home-btn').onclick = () => {
