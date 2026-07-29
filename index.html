@@ -42,6 +42,20 @@
         .btn-start-tour { background: var(--accent); color: white; border: none; width: 100%; padding: 16px; border-radius: 15px; font-weight: 900; margin-bottom: 12px; font-size: 14px; text-transform: uppercase; }
         .btn-skip-tour { background: #f0f0f0; color: #666; border: none; width: 100%; padding: 12px; border-radius: 15px; font-weight: 800; font-size: 12px; text-transform: uppercase; }
 
+        /* ── Leaving-site confirmation overlay ── */
+        #leave-site-overlay {
+            position: fixed; inset: 0; z-index: 12000; background: rgba(0,0,0,0.8);
+            display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px);
+            transition: 0.4s;
+        }
+        #leave-site-overlay.visible { display: flex; }
+        .leave-site-icon {
+            width: 52px; height: 52px; border-radius: 50%; background: var(--accent-soft); color: var(--accent);
+            display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;
+        }
+        .leave-site-card h2 { font-size: 19px; }
+        .leave-site-card p { font-size: 12.5px; }
+
         /* ── Plan comparison overlay (shown after login/signup) ── */
         #plan-compare-overlay {
             position: fixed; inset: 0; z-index: 11500; background: rgba(0,0,0,0.8);
@@ -216,7 +230,94 @@
 
         .article-tag { color: var(--accent); font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; }
         .article-title { font-size: 28px; font-weight: 900; color: #111; margin: 10px 0 20px; line-height: 1.1; }
-        .article-content { font-size: 15px; color: #555; line-height: 1.7; font-weight: 400; white-space: pre-line; margin-bottom: 20px; }
+        .article-content { font-size: 15px; color: #555; line-height: 1.7; font-weight: 400; white-space: pre-line; margin-bottom: 20px; text-align: justify; text-justify: inter-word; }
+
+        /* Sectioned history article layout */
+        #art-content.has-html { white-space: normal; }
+        .history-block { margin-bottom: 18px; }
+        .history-block:first-child { margin-top: 4px; }
+        .history-section-title {
+            font-size: 13px; font-weight: 900; color: var(--accent);
+            text-transform: uppercase; letter-spacing: 1.2px;
+            margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+        }
+        .history-section-title::before {
+            content: ""; width: 5px; height: 5px; border-radius: 50%;
+            background: var(--accent); flex-shrink: 0;
+        }
+        .history-divider { border: none; border-top: 1px solid #ececec; margin: 14px 0; }
+        .history-list { list-style: none; margin: 0; padding: 0; }
+        .history-list li {
+            position: relative; padding-left: 18px; margin-bottom: 10px;
+            font-size: 14px; line-height: 1.65; color: #555; font-weight: 400;
+            text-align: justify; text-justify: inter-word;
+        }
+        .history-list li:last-child { margin-bottom: 0; }
+        .history-list li::before {
+            content: ""; position: absolute; left: 0; top: 8px;
+            width: 5px; height: 5px; border-radius: 50%; background: #ccc;
+        }
+        .history-list li b { color: #222; font-weight: 800; }
+        .history-source {
+            display: flex; align-items: center; gap: 8px;
+            margin-top: 20px; padding: 12px 16px;
+            background: var(--accent-soft); border-radius: 14px;
+            font-size: 12px; font-weight: 700; color: var(--accent);
+        }
+        .history-source svg { flex-shrink: 0; }
+        .history-source a { color: var(--accent); font-weight: 900; text-decoration: underline; }
+        .history-highlight {
+            background: var(--accent-soft); border-left: 3px solid var(--accent);
+            border-radius: 10px; padding: 14px 16px; margin-bottom: 22px;
+            font-size: 14.5px; font-weight: 800; color: #1a4d47; line-height: 1.5; font-style: italic;
+        }
+
+        /* Transportation list */
+        .transport-list { list-style: none; margin: 0; padding: 0; }
+        .transport-list li { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+        .transport-list li:last-child { margin-bottom: 0; }
+        .transport-icon {
+            width: 36px; height: 36px; border-radius: 11px; background: var(--accent-soft);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--accent); flex-shrink: 0;
+        }
+        .transport-detail { display: flex; flex-direction: column; }
+        .transport-detail b { font-size: 13.5px; font-weight: 800; color: #222; margin-bottom: 3px; }
+        .transport-detail span { font-size: 13px; color: #666; line-height: 1.55; }
+        .transport-fare {
+            display: inline-block; margin-top: 6px; width: fit-content;
+            font-size: 11px; font-weight: 900; color: var(--accent);
+            background: var(--accent-soft); padding: 3px 12px; border-radius: 20px;
+        }
+
+        /* Entrance fee table */
+        .fee-table { width: 100%; border-collapse: collapse; margin-top: 2px; }
+        .fee-table thead th {
+            text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+            color: #aaa; font-weight: 800; padding-bottom: 10px; border-bottom: 1.5px solid #eee;
+        }
+        .fee-table tbody td { padding: 12px 4px; font-size: 13.5px; border-bottom: 1px solid #f2f2f2; vertical-align: middle; }
+        .fee-table tbody tr:last-child td { border-bottom: none; }
+        .fee-cat { display: flex; align-items: center; gap: 10px; font-weight: 800; color: #222; }
+        .fee-icon {
+            width: 30px; height: 30px; border-radius: 50%; background: var(--accent-soft);
+            display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0;
+        }
+        .fee-price { font-weight: 900; color: var(--accent); text-align: right; }
+        .fee-note { font-size: 11px; color: #999; font-weight: 500; margin-top: 12px; line-height: 1.5; }
+        .fee-updated-badge {
+            display: inline-block; font-size: 10.5px; font-weight: 900; color: #b45309;
+            background: #fef3c7; padding: 4px 12px; border-radius: 20px; margin-bottom: 16px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .fee-group-label {
+            font-size: 12px; font-weight: 900; color: #222; margin-bottom: 8px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .fee-group-label::before {
+            content: ""; width: 4px; height: 4px; border-radius: 50%; background: var(--accent);
+        }
+        .fee-group-spacer { margin-top: 20px; }
         .article-action { margin-top: 10px; background: #f9f9f9; padding: 25px; border-radius: 25px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .article-action h6 { margin: 0; font-size: 13px; font-weight: 900; }
         .btn-view-360 { background: var(--accent); color: white; border: none; padding: 12px 20px; border-radius: 50px; font-weight: 900; font-size: 10px; text-transform: uppercase; }
@@ -317,23 +418,6 @@
         .comment-date { font-size: 10px; color: #aaa; font-weight: 700; text-transform: uppercase; }
         .comment-stars { display: flex; gap: 2px; font-size: 11px; }
         .comment-text { font-size: 13px; color: #555; line-height: 1.5; font-weight: 400; }
-        .comment-edit-btn {
-            background: none; border: none; cursor: pointer; color: #bbb;
-            padding: 4px; display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0; margin-left: 4px; transition: 0.2s;
-        }
-        .comment-edit-btn:active { color: var(--accent); transform: scale(0.88); }
-
-        .review-editing-banner {
-            display: flex; align-items: center; justify-content: space-between;
-            background: #eafaf8; border-radius: 14px; padding: 8px 14px;
-            margin-bottom: 10px; font-size: 11px; font-weight: 900;
-            color: var(--accent); text-transform: uppercase; letter-spacing: 0.3px;
-        }
-        .review-editing-banner .cancel-edit-link {
-            cursor: pointer; text-decoration: underline; color: #888;
-            text-transform: none; font-weight: 700; font-size: 11px;
-        }
 
         .no-reviews-msg {
             text-align: center; padding: 28px 0; color: #bbb;
@@ -1198,6 +1282,19 @@
         </div>
     </div>
 
+    <div id="leave-site-overlay">
+        <div class="choice-card leave-site-card">
+            <div class="leave-site-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </div>
+            <h2>You're Leaving BagView</h2>
+            <p>This link goes to an external website that BagView doesn't manage. Do you want to continue?</p>
+            <button class="btn-start-tour" onclick="app.confirmLeaveSite()">Continue to Site</button>
+            <button class="btn-skip-tour" onclick="app.closeLeaveSite()">Stay in BagView</button>
+        </div>
+    </div>
+
+
     <div id="tour-choice-overlay" class="hidden">
         <div class="choice-card">
             <h2>Welcome, Explorer!</h2>
@@ -1521,15 +1618,11 @@
 
                 <!-- Write a review -->
                 <div class="review-write-section">
-                    <div class="review-editing-banner" id="review-editing-banner" style="display:none;">
-                        <span>Editing your review</span>
-                        <span class="cancel-edit-link" onclick="app.cancelEditReview()">Cancel</span>
-                    </div>
-                    <div class="review-write-label" id="review-write-label">Rate &amp; Review</div>
+                    <div class="review-write-label">Rate &amp; Review</div>
                     <div class="star-picker" id="art-star-picker"></div>
                     <div class="review-input-wrap">
                         <input type="text" id="art-review-input" placeholder="Share your experience...">
-                        <button class="btn-send-review" id="btn-send-review" onclick="app.submitReview()">
+                        <button class="btn-send-review" onclick="app.submitReview()">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                         </button>
                     </div>
@@ -1722,9 +1815,174 @@ const app = {
     },
 
     facts: [
-        { id: 'fact-history', tag: "HISTORY", title: "Baguio Botanical Garden History", thumb: "Assets/History.png", info: "Originally known as the Igorot Village during the early years of its development, the garden has served as a cultural preservation site since the mid-20th century. It was designed to showcase the traditional huts and lifestyle of the different tribes in the Cordillera region, including the Ifugao, Kalinga, and Ibaloi. It was later renamed the Baguio Botanical Garden to emphasize its expanding role in biodiversity, botanical research, and environmental education for tourists and locals alike." },
-        { id: 'fact-tips', tag: "TRAVEL TIPS", title: "Responsible Tourism Guide", thumb: "Assets/Eco%20Tips.png", info: "To preserve the natural beauty and ecological integrity of the gardens, we strongly encourage all visitors to follow the 'Leave No Trace' policy during their exploration. Please stay on designated paths to avoid soil compaction, avoid picking flowers, and use our AR features to interact with nature digitally rather than physically. By being a responsible tourist, you help ensure that future generations can enjoy the same vibrant colors and crisp mountain air that Baguio is famous for." },
-        { id: 'fact-eco', tag: "SUSTAINABILITY", title: "Conservation Efforts", thumb: "Assets/Eco%20Awareness.png", info: "The garden is home to several endemic and endangered plant species that are strictly protected under local environmental laws and international conservation treaties. Our app helps track scanning data to understand which areas of the park receive the most foot traffic, helping park rangers manage conservation zones more effectively. This data-driven approach allows us to balance the needs of tourism with the urgent requirement for environmental protection and habitat restoration within the city's green lung." }
+        { id: 'fact-history', tag: "HISTORY", title: "Baguio Botanical Garden History", thumb: "Assets/History.png", info: "Originally known as the Igorot Village during the early years of its development, the garden has served as a cultural preservation site since the mid-20th century, later renamed the Baguio Botanical Garden to reflect its wartime history and expanding role in biodiversity, research, and environmental education.", html: `
+            <div class="history-block">
+                <div class="history-section-title">Historical Names &amp; Cultural Roots</div>
+                <ul class="history-list">
+                    <li><b>Local Names:</b> Known historically and locally by names such as "Igorot Village" or "Imelda Park."</li>
+                    <li><b>Cultural Representation:</b> The garden features native huts, indigenous art, stone/metal sculptures, and cultural tributes celebrating various tribes of the Cordillera region (such as the Igorot, Ifugao, and Kalinga).</li>
+                </ul>
+            </div>
+            <hr class="history-divider">
+            <div class="history-block">
+                <div class="history-section-title">World War II History &amp; The Japanese Tunnels</div>
+                <ul class="history-list">
+                    <li><b>Military Stronghold:</b> During the Japanese occupation of World War II, Baguio served as a fortified military stronghold for the Japanese Imperial Army.</li>
+                    <li><b>General Yamashita's Headquarters:</b> General Tomoyuki Yamashita (known as the "Tiger of Malaya") established his final headquarters at Camp John Hay in Baguio City between June and September 1945.</li>
+                    <li><b>Purpose of the Tunnels:</b> Beneath the garden grounds, Japanese soldiers dug a network of underground stone tunnels and bunkers designed for survival, hideouts, storage, ambushes, and escape routes during American assaults.</li>
+                    <li><b>Rediscovery &amp; Preservation:</b> After the war, these tunnels were largely abandoned and forgotten. They were later rediscovered during expansion and beautification projects at the Botanical Garden, after which they were reinforced, maintained, and opened for public viewing as a historical landmark.</li>
+                </ul>
+            </div>
+            <hr class="history-divider">
+            <div class="history-block">
+                <div class="history-section-title">The Garden Experience Today</div>
+                <ul class="history-list">
+                    <li><b>Seamless Historical Integration:</b> Visitors walking through the landscaped paths, pine trees, and floral displays can access the Japanese Tunnel system via a short flight of stone steps on the right side of the main pathway.</li>
+                    <li><b>Memorial &amp; Heritage:</b> Beyond its nature paths, the garden serves as a reminder of wartime resilience, indigenous heritage, peace, and healing in Baguio City.</li>
+                </ul>
+            </div>
+            <div class="history-source">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                <span>Source: <a href="https://thebaguiochannel.com/?p=3876" onclick="app.openExternalLink('https://thebaguiochannel.com/?p=3876'); return false;">The Baguio Channel</a></span>
+            </div>
+        ` },
+        { id: 'fact-tips', tag: "TRAVEL TIPS", title: "Responsible Tourism Guide", thumb: "Assets/Eco%20Tips.png", info: "A responsible-tourism guide covering eco-friendly etiquette, how to get to Baguio Botanical Garden, transportation fares, and the updated entrance fee rates for tourists and Baguio City residents, effective July 1, 2026.", html: `
+            <div class="history-block">
+                <div class="history-section-title">Eco Tips</div>
+                <ul class="history-list">
+                    <li><b>Leave No Trace:</b> Stay on the designated pathways at all times to avoid soil compaction and protect root systems of nearby plants.</li>
+                    <li><b>Respect the Flora:</b> Avoid picking flowers, leaves, or fruit. Photos are the only souvenirs the garden needs.</li>
+                    <li><b>Go Digital:</b> Use the app's AR features to interact with plant markers instead of touching or disturbing live specimens.</li>
+                    <li><b>Dispose Properly:</b> Bring a small trash bag for your snacks and wrappers, and drop waste only in the provided bins.</li>
+                    <li><b>Support Local:</b> Buy from the small local vendors, plant stalls, and artisan booths inside the garden to help the surrounding community.</li>
+                </ul>
+            </div>
+            <hr class="history-divider">
+            <div class="history-block">
+                <div class="history-section-title">Visitors Guide &mdash; How To Get There</div>
+                <ul class="transport-list">
+                    <li>
+                        <div class="transport-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+                        <div class="transport-detail">
+                            <b>Address & Starting Point</b>
+                            <span>37 Leonard Wood Road, Baguio City. Most jeepneys and taxis depart from Session Road / Baguio Public Market in the city proper.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="transport-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="5" width="15" height="12"></rect><polygon points="16 9 20 9 23 12 23 17 16 17 16 9"></polygon><circle cx="5.5" cy="19.5" r="2.5"></circle><circle cx="18.5" cy="19.5" r="2.5"></circle></svg></div>
+                        <div class="transport-detail">
+                            <b>By Jeepney</b>
+                            <span>Ride a jeepney bound for Mines View / Leonard Wood Road. It drops off right in front of the entrance.</span>
+                            <span class="transport-fare">~₱13 fare</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="transport-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11"></path><rect x="3" y="11" width="18" height="6" rx="2"></rect><circle cx="7.5" cy="17.5" r="1.5"></circle><circle cx="16.5" cy="17.5" r="1.5"></circle></svg></div>
+                        <div class="transport-detail">
+                            <b>By Taxi / Ride-hailing</b>
+                            <span>The most convenient option if you're coming straight from your hotel; drops you directly at the gate.</span>
+                            <span class="transport-fare">~₱80&ndash;₱150</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="transport-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg></div>
+                        <div class="transport-detail">
+                            <b>On Foot</b>
+                            <span>If you're already near Wright Park or The Mansion, it's an easy 10&ndash;15 minute walk along Leonard Wood Road.</span>
+                            <span class="transport-fare">Free</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <hr class="history-divider">
+            <div class="history-block">
+                <div class="history-section-title">Entrance Fee Guide</div>
+                <div class="fee-updated-badge">Updated Rates &bull; Effective July 1, 2026</div>
+
+                <div class="fee-group-label">For Tourists</div>
+                <table class="fee-table">
+                    <thead>
+                        <tr><th>Category</th><th style="text-align:right;">Rate</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><div class="fee-cat"><span class="fee-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span> Adults & Children (13 yrs old & above)</div></td>
+                            <td class="fee-price">₱110.00</td>
+                        </tr>
+                        <tr>
+                            <td><div class="fee-cat"><span class="fee-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg></span> Children (12 yrs old & below)</div></td>
+                            <td class="fee-price">₱27.50</td>
+                        </tr>
+                        <tr>
+                            <td><div class="fee-cat"><span class="fee-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg></span> Senior Citizens & PWDs</div></td>
+                            <td class="fee-price">20% off</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="fee-group-label fee-group-spacer">For Baguio City Residents</div>
+                <table class="fee-table">
+                    <thead>
+                        <tr><th>Category</th><th style="text-align:right;">Rate</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><div class="fee-cat"><span class="fee-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span> Adults</div></td>
+                            <td class="fee-price">₱55.00</td>
+                        </tr>
+                        <tr>
+                            <td><div class="fee-cat"><span class="fee-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg></span> Children & Students (13 yrs old & above)</div></td>
+                            <td class="fee-price">₱27.50</td>
+                        </tr>
+                        <tr>
+                            <td><div class="fee-cat"><span class="fee-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></span> Children & Students (12 yrs old & below)</div></td>
+                            <td class="fee-price">Free</td>
+                        </tr>
+                        <tr>
+                            <td><div class="fee-cat"><span class="fee-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg></span> Senior Citizens & PWDs</div></td>
+                            <td class="fee-price">₱27.50</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="fee-note">Pursuant to City Ordinance No. 18, Series of 2016. Senior/PWD rates require a valid ID.</div>
+            </div>
+            <div class="history-source">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                <span>Source: <a href="https://web.facebook.com/photo?fbid=1566020098221294&set=a.404645651025417" onclick="app.openExternalLink('https://web.facebook.com/photo?fbid=1566020098221294&set=a.404645651025417'); return false;">Baguio City PIO Official Advisory</a></span>
+            </div>
+        ` },
+        { id: 'fact-eco', tag: "SUSTAINABILITY", title: "Conservation Efforts", thumb: "Assets/Eco%20Awareness.png", info: "The PMSEA Garden inside the Botanical Park has grown from a former dumping area into a thriving 5,000-square-meter green space, now recognized as a beacon of environmental responsibility in Baguio City.", html: `
+            <div class="history-highlight">"PMSEA Garden in Baguio's Botanical Park blossoms as a beacon of environmental responsibility"</div>
+            <div class="history-block">
+                <div class="history-section-title">From Dumpsite To Living Garden</div>
+                <ul class="history-list">
+                    <li><b>Adoption:</b> In 2010, the Philippine Mine Safety and Environment Association (PMSEA) adopted a 5,000-square-meter section of the Botanical Garden along Leonard Wood Road to support the city's environmental efforts.</li>
+                    <li><b>Transformation:</b> An area once used for dumping has since been rehabilitated into a thriving green space through the organization's ongoing tree-planting programs.</li>
+                </ul>
+            </div>
+            <hr class="history-divider">
+            <div class="history-block">
+                <div class="history-section-title">Biodiversity By The Numbers</div>
+                <ul class="history-list">
+                    <li><b>Plant Count:</b> The PMSEA Garden is now home to more than 1,500 plants.</li>
+                    <li><b>Species Mix:</b> Roughly 40% are species found only in the Philippines, 50% are native Philippine species, and the remaining 10% were brought in from neighboring Southeast Asian countries.</li>
+                </ul>
+            </div>
+            <hr class="history-divider">
+            <div class="history-block">
+                <div class="history-section-title">A Model For The City</div>
+                <ul class="history-list">
+                    <li><b>Partnership:</b> The garden's upkeep is a joint effort between PMSEA, mining-industry partners, the DENR, and the Baguio City government.</li>
+                    <li><b>Citywide Inspiration:</b> City environment officials have pointed to the garden's nature-based approach as a model they hope to replicate in other parks across Baguio.</li>
+                    <li><b>Beyond The Garden:</b> PMSEA also introduced a waterways system within the Botanical Garden that supports local tourism and serves as a learning space for students.</li>
+                </ul>
+            </div>
+            <div class="history-source">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                <span>Source: <a href="https://pia.gov.ph/news/pmsea-garden-in-baguios-botanical-park-blossoms-as-a-beacon-of-environmental-responsibility/" onclick="app.openExternalLink('https://pia.gov.ph/news/pmsea-garden-in-baguios-botanical-park-blossoms-as-a-beacon-of-environmental-responsibility/'); return false;">Philippine Information Agency</a></span>
+            </div>
+        ` }
     ],
 
     stations: [
@@ -2418,14 +2676,20 @@ const app = {
         const contentEl = document.getElementById('art-content');
         const fullText = fact.info;
         contentEl.setAttribute('data-full', fullText);
-        
-        const words = fullText.split(/\s+/);
-        if (words.length > 30) {
-            contentEl.innerText = this.getLimitedWords(fullText, 30);
+        contentEl.setAttribute('data-full-html', fact.html || '');
+
+        if (fact.html) {
+            contentEl.innerText = fullText;
             document.getElementById('see-more-trigger').style.display = 'block';
         } else {
-            contentEl.innerText = fullText;
-            document.getElementById('see-more-trigger').style.display = 'none';
+            const words = fullText.split(/\s+/);
+            if (words.length > 30) {
+                contentEl.innerText = this.getLimitedWords(fullText, 30);
+                document.getElementById('see-more-trigger').style.display = 'block';
+            } else {
+                contentEl.innerText = fullText;
+                document.getElementById('see-more-trigger').style.display = 'none';
+            }
         }
 
         document.getElementById('art-hero-img').src = fact.thumb;
@@ -2445,6 +2709,7 @@ const app = {
         const contentEl = document.getElementById('art-content');
         const fullText = data.content;
         contentEl.setAttribute('data-full', fullText);
+        contentEl.setAttribute('data-full-html', '');
         
         const words = fullText.split(/\s+/);
         if (words.length > 30) {
@@ -2470,16 +2735,15 @@ const app = {
     currentArticleId: null,
     currentStarFilter: 0,  // 0 = all
     pendingStarRating: 5,
-    editingReviewId: null,
 
     stationReviews: {
         1:  [
-            { name: "Geena Gail C.",  avatar: "MS", stars: 5, date: "2 days ago",  text: "Absolutely stunning entrance! The manicured lawns welcomed us perfectly. Great place to start your garden tour." },
-            { name: "Lloyd L.",   avatar: "JR", stars: 4, date: "1 week ago",  text: "Very organized and clean. The signage helps a lot. Wished the entry path was a bit wider during peak hours." },
-            { name: "Miguel G.",    avatar: "AP", stars: 5, date: "2 weeks ago", text: "Loved the decorative plant beds near the gate. My kids were already excited just seeing the entrance!" }
+            { name: "Maria S.",  avatar: "MS", stars: 5, date: "2 days ago",  text: "Absolutely stunning entrance! The manicured lawns welcomed us perfectly. Great place to start your garden tour." },
+            { name: "Jake R.",   avatar: "JR", stars: 4, date: "1 week ago",  text: "Very organized and clean. The signage helps a lot. Wished the entry path was a bit wider during peak hours." },
+            { name: "Ana P.",    avatar: "AP", stars: 5, date: "2 weeks ago", text: "Loved the decorative plant beds near the gate. My kids were already excited just seeing the entrance!" }
         ],
         2:  [
-            { name: "Henry C.", avatar: "CM", stars: 5, date: "3 days ago",  text: "The canopy here is magical. So cool and peaceful — perfect escape from the summer heat." },
+            { name: "Carlo M.", avatar: "CM", stars: 5, date: "3 days ago",  text: "The canopy here is magical. So cool and peaceful — perfect escape from the summer heat." },
             { name: "Bea T.",   avatar: "BT", stars: 4, date: "5 days ago",  text: "One of the quietest spots in the garden. The towering trees make you feel so small in the best way." },
             { name: "Luis G.",  avatar: "LG", stars: 5, date: "3 weeks ago", text: "Great for a relaxing walk. Highly recommend visiting after the busier sections of the garden." }
         ],
@@ -2529,19 +2793,19 @@ const app = {
             { name: "Ben O.",   avatar: "BO", stars: 4, date: "3 weeks ago", text: "One of my favorite sections. The Japanese aesthetic is very well-executed here." }
         ],
         12: [
-            { name: "Vanessa M.",   avatar: "RD", stars: 5, date: "1 day ago",   text: "Walking through this tunnel sent chills down my spine. Such a powerful piece of history." },
-            { name: "Fara Mae L.",  avatar: "GM", stars: 5, date: "4 days ago",  text: "The LED lighting makes it accessible and safe to walk through. Very eerie and educational." },
-            { name: "Joey F.",  avatar: "HS", stars: 4, date: "2 weeks ago", text: "A sobering historical experience. Everyone should walk through at least once." }
+            { name: "Rex D.",   avatar: "RD", stars: 5, date: "1 day ago",   text: "Walking through this tunnel sent chills down my spine. Such a powerful piece of history." },
+            { name: "Gina M.",  avatar: "GM", stars: 5, date: "4 days ago",  text: "The LED lighting makes it accessible and safe to walk through. Very eerie and educational." },
+            { name: "Hiro S.",  avatar: "HS", stars: 4, date: "2 weeks ago", text: "A sobering historical experience. Everyone should walk through at least once." }
         ],
         13: [
-            { name: "Jonalyn F.",  avatar: "CW", stars: 5, date: "2 days ago",  text: "The Korean pagodas are gorgeous! Great photo spot and a lovely tribute to both nations." },
-            { name: "Marilou F.",  avatar: "MT", stars: 4, date: "6 days ago",  text: "Vibrant colors and interesting wooden sculptures. Really stands out in the garden." },
-            { name: "Joy F.",   avatar: "JL", stars: 5, date: "3 weeks ago", text: "Beautifully done. The cultural design elements feel very authentic." }
+            { name: "Chae W.",  avatar: "CW", stars: 5, date: "2 days ago",  text: "The Korean pagodas are gorgeous! Great photo spot and a lovely tribute to both nations." },
+            { name: "Mark T.",  avatar: "MT", stars: 4, date: "6 days ago",  text: "Vibrant colors and interesting wooden sculptures. Really stands out in the garden." },
+            { name: "Joy L.",   avatar: "JL", stars: 5, date: "3 weeks ago", text: "Beautifully done. The cultural design elements feel very authentic." }
         ],
         14: [
-            { name: "Gem B.",  avatar: "LV", stars: 5, date: "1 day ago",   text: "The orchids here are absolutely breathtaking. So many varieties, all perfectly displayed." },
-            { name: "Nico G.",  avatar: "NH", stars: 5, date: "3 days ago",  text: "Best stop in the whole garden for me. The fragrance and colors are unforgettable." },
-            { name: "Kyra B.", avatar: "TA", stars: 4, date: "1 week ago",  text: "Stunning collection. The epiphyte walls are something you truly have to see in person." }
+            { name: "Lara V.",  avatar: "LV", stars: 5, date: "1 day ago",   text: "The orchids here are absolutely breathtaking. So many varieties, all perfectly displayed." },
+            { name: "Nico H.",  avatar: "NH", stars: 5, date: "3 days ago",  text: "Best stop in the whole garden for me. The fragrance and colors are unforgettable." },
+            { name: "Trish A.", avatar: "TA", stars: 4, date: "1 week ago",  text: "Stunning collection. The epiphyte walls are something you truly have to see in person." }
         ],
         15: [
             { name: "Aree P.",  avatar: "AP", stars: 5, date: "2 days ago",  text: "The Thai pavilion is stunning! The golden details are so intricate and beautiful." },
@@ -2636,6 +2900,23 @@ const app = {
         document.getElementById('plan-compare-overlay').classList.remove('visible');
     },
 
+    openExternalLink: function(url) {
+        this.pendingExternalUrl = url;
+        document.getElementById('leave-site-overlay').classList.add('visible');
+    },
+
+    confirmLeaveSite: function() {
+        if (this.pendingExternalUrl) {
+            window.open(this.pendingExternalUrl, '_blank', 'noopener,noreferrer');
+        }
+        this.closeLeaveSite();
+    },
+
+    closeLeaveSite: function() {
+        document.getElementById('leave-site-overlay').classList.remove('visible');
+        this.pendingExternalUrl = null;
+    },
+
     startPremiumTrial: function() {
         this.closePlanCompare();
 
@@ -2670,7 +2951,7 @@ const app = {
         { category: "Account & Profile", q: "Is my personal data private?", a: "Your profile info, scan history, and favorites are tied to your account and are not shared publicly. Reviews you post are visible to other explorers." },
         { category: "Reviews & Favorites", q: "How do I favorite a station?", a: "Tap the heart icon on a station's article page or image card. Favorited stations are saved to My Favorites on your Profile." },
         { category: "Reviews & Favorites", q: "How do I write a review?", a: "Open a station's article, scroll to the Reviews section, tap a star rating, type your comment, and tap send." },
-        { category: "Reviews & Favorites", q: "Can I edit a review I posted?", a: "Yes. Find your review under the station's Reviews section and tap the pencil icon on it. You can update your rating and comment, then tap send to save your changes." },
+        { category: "Reviews & Favorites", q: "Can I edit or delete a review I posted?", a: "Currently reviews can't be edited from within the app. If you need one removed, use the Contact Support option below." },
         { category: "Notifications", q: "What kind of notifications will I get?", a: "BagView sends bloom alerts, seasonal events, and garden announcements. You'll see a badge on the notification bell when something new is available." },
         { category: "Premium & Login", q: "What do I get with Premium?", a: "Premium unlocks extended AR tours, exclusive 360° experiences, and ad-free browsing. You'll be prompted to sign in or start a free trial when you tap a Premium feature." },
         { category: "Premium & Login", q: "I tapped 'Get Premium' and nothing happened.", a: "You should see a login prompt appear — if it doesn't, make sure pop-ups aren't blocked and that you have a stable connection, then try again." },
@@ -3016,9 +3297,6 @@ const app = {
                         <div class="comment-date">${r.date}</div>
                     </div>
                     <div class="comment-stars">${[1,2,3,4,5].map(i=>`<span style="color:${i<=r.stars?'var(--accent)':'#ddd'}">★</span>`).join('')}</div>
-                    ${r.isMine ? `<button class="comment-edit-btn" onclick="app.editReview('${stationId}', ${r.id})" aria-label="Edit review">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                    </button>` : ''}
                 </div>
                 <div class="comment-text">${r.text}</div>
             </div>
@@ -3049,28 +3327,9 @@ const app = {
         const input = document.getElementById('art-review-input');
         const text = input.value.trim();
         if (!text || this.currentArticleId === null) return;
-
-        // ── Editing an existing review ──
-        if (this.editingReviewId !== null && this.editingReviewId !== undefined) {
-            const list = this.stationReviews[this.currentArticleId] || [];
-            const review = list.find(r => r.id === this.editingReviewId);
-            if (review) {
-                review.text = text;
-                review.stars = this.pendingStarRating;
-                review.date = 'Edited just now';
-            }
-            this.editingReviewId = null;
-            input.value = '';
-            this.pendingStarRating = 5;
-            this._setReviewFormEditingState(false);
-            this.renderReviews(this.currentArticleId);
-            return;
-        }
-
-        // ── Posting a new review ──
         const name = this.currentUser ? this.currentUser.name.split(' ')[0] : 'Explorer';
         const initials = name.slice(0, 2).toUpperCase();
-        const newReview = { id: Date.now(), name, avatar: initials, stars: this.pendingStarRating, date: 'Just now', text, isMine: true };
+        const newReview = { name, avatar: initials, stars: this.pendingStarRating, date: 'Just now', text };
         if (!this.stationReviews[this.currentArticleId]) this.stationReviews[this.currentArticleId] = [];
         this.stationReviews[this.currentArticleId].unshift(newReview);
         input.value = '';
@@ -3079,45 +3338,12 @@ const app = {
         this.renderReviews(this.currentArticleId);
     },
 
-    editReview: function(stationId, reviewId) {
-        const list = this.stationReviews[stationId] || [];
-        const review = list.find(r => r.id === reviewId);
-        if (!review) return;
-        this.editingReviewId = reviewId;
-        this.pendingStarRating = review.stars;
-        this._renderStarPicker();
-        const input = document.getElementById('art-review-input');
-        input.value = review.text;
-        input.focus();
-        this._setReviewFormEditingState(true);
-        const writeSection = document.querySelector('.review-write-section');
-        if (writeSection) writeSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    },
-
-    cancelEditReview: function() {
-        this.editingReviewId = null;
-        this.pendingStarRating = 5;
-        const input = document.getElementById('art-review-input');
-        if (input) input.value = '';
-        this._renderStarPicker();
-        this._setReviewFormEditingState(false);
-    },
-
-    _setReviewFormEditingState: function(isEditing) {
-        const banner = document.getElementById('review-editing-banner');
-        const label = document.getElementById('review-write-label');
-        if (banner) banner.style.display = isEditing ? 'flex' : 'none';
-        if (label) label.innerText = isEditing ? 'Update Your Rating' : 'Rate & Review';
-    },
-
     openArticle: function(id) {
         const station = this.stations.find(s => s.id === id);
         if(!station) return;
         this.resetArticleExpansion();
         this.currentArticleId = id;
         this.currentStarFilter = 0;
-        this.editingReviewId = null;
-        this.pendingStarRating = 5;
 
         // Sync favorite button
         const favBtn = document.getElementById('btn-favorite');
@@ -3127,6 +3353,7 @@ const app = {
         const contentEl = document.getElementById('art-content');
         const fullText = station.info || "Explore the rich biodiversity and unique heritage of this area.";
         contentEl.setAttribute('data-full', fullText);
+        contentEl.setAttribute('data-full-html', '');
 
         const words = fullText.split(/\s+/);
         if (words.length > 30) {
@@ -3154,14 +3381,22 @@ const app = {
         const hero = document.querySelector('.article-hero');
         const contentEl = document.getElementById('art-content');
         const fullText = contentEl.getAttribute('data-full');
+        const fullHtml = contentEl.getAttribute('data-full-html');
         
         if (body.classList.contains('expanded')) {
             this.resetArticleExpansion();
+            contentEl.classList.remove('has-html');
             contentEl.innerText = this.getLimitedWords(fullText, 30);
         } else {
             body.classList.add('expanded');
             hero.classList.add('shrunk');
-            contentEl.innerText = fullText;
+            if (fullHtml) {
+                contentEl.classList.add('has-html');
+                contentEl.innerHTML = fullHtml;
+            } else {
+                contentEl.classList.remove('has-html');
+                contentEl.innerText = fullText;
+            }
             body.scrollTop = 0;
         }
     },
