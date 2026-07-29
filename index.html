@@ -6,6 +6,7 @@
     <title>BAGVIEW | AR Eco-Tourism</title>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+	<link rel="preload" as="image" href="https://www.image2url.com/r2/default/images/1785241371877-0f66e47b-cace-4678-9903-27cf7786ae53.png" fetchpriority="high">
 	<link rel="preload" as="image" href="assets/launch-ar-btn.webp">
 	<link rel="preload" as="image" href="assets/dock-handle.svg">
     <style>
@@ -739,7 +740,7 @@
         .login-hero-bg {
             position: absolute;
             inset: 0;
-            background: url('https://www.image2url.com/r2/default/images/1785241371877-0f66e47b-cace-4678-9903-27cf7786ae53.png') center center / cover no-repeat;
+            background: var(--accent) url('https://www.image2url.com/r2/default/images/1785241371877-0f66e47b-cace-4678-9903-27cf7786ae53.png') center center / cover no-repeat;
             z-index: 0;
         }
         .login-hero-bg::after {
@@ -2981,7 +2982,6 @@ const app = {
         { category: "Account & Profile", q: "Is my personal data private?", a: "Your profile info, scan history, and favorites are tied to your account and are not shared publicly. Reviews you post are visible to other explorers." },
         { category: "Reviews & Favorites", q: "How do I favorite a station?", a: "Tap the heart icon on a station's article page or image card. Favorited stations are saved to My Favorites on your Profile." },
         { category: "Reviews & Favorites", q: "How do I write a review?", a: "Open a station's article, scroll to the Reviews section, tap a star rating, type your comment, and tap send." },
-        { category: "Reviews & Favorites", q: "Can I edit or delete a review I posted?", a: "Currently reviews can't be edited from within the app. If you need one removed, use the Contact Support option below." },
         { category: "Notifications", q: "What kind of notifications will I get?", a: "BagView sends bloom alerts, seasonal events, and garden announcements. You'll see a badge on the notification bell when something new is available." },
         { category: "Premium & Login", q: "What do I get with Premium?", a: "Premium unlocks extended AR tours, exclusive 360° experiences, and ad-free browsing. You'll be prompted to sign in or start a free trial when you tap a Premium feature." },
         { category: "Premium & Login", q: "I tapped 'Get Premium' and nothing happened.", a: "You should see a login prompt appear — if it doesn't, make sure pop-ups aren't blocked and that you have a stable connection, then try again." },
