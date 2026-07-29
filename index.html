@@ -1380,10 +1380,6 @@
                     <h1>Interactive Map Feature</h1>
                     <button onclick="app.openBannerArticle('trails')">Learn More</button>
                 </div>
-                <div class="promo-banner" style="background-image: url('Assets/F_2.png')">
-                    <h1>Interactive Discovery</h1>
-                    <button onclick="app.openBannerArticle('plants')">Learn More</button>
-                </div>
                 <div class="promo-banner" style="background-image: url('Assets/F_3.png')">
                     <h1>Augmented Exploration</h1>
                     <button onclick="app.openBannerArticle('heritage')">Learn More</button>
@@ -1391,7 +1387,7 @@
 				
             </div>
             <div class="hero-dots" id="hero-dots">
-                <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                <div class="dot active"></div><div class="dot"></div><div class="dot"></div>
             </div>
         </div>
 
@@ -1680,6 +1676,17 @@
                 <div class="pref-row-text"><b data-i18n="pref_promo_title">Promo & News Updates</b><span data-i18n="pref_promo_sub">What's new in BagView</span></div>
                 <label class="pref-switch">
                     <input type="checkbox" id="pref-promo" checked onchange="app.savePref('promo', this.checked)">
+                    <span class="pref-switch-track"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="pref-section-label" data-i18n="prefs_section_ar">AR Experience</div>
+        <div class="pref-group">
+            <div class="pref-row">
+                <div class="pref-row-text"><b data-i18n="pref_sound_title">Sound Effects</b><span data-i18n="pref_sound_sub">Play a sound when a marker is matched</span></div>
+                <label class="pref-switch">
+                    <input type="checkbox" id="pref-sound" checked onchange="app.savePref('sound', this.checked)">
                     <span class="pref-switch-track"></span>
                 </label>
             </div>
@@ -3037,7 +3044,7 @@ const app = {
     },
 
     /* ── App Preferences ── */
-    prefDefaults: { push: true, promo: true, darkmode: false, language: 'en' },
+    prefDefaults: { push: true, promo: true, darkmode: false, language: 'en', sound: true },
 
     loadPrefs: function() {
         let stored = {};
@@ -3053,6 +3060,7 @@ const app = {
         document.getElementById('pref-push').checked = prefs.push;
         document.getElementById('pref-promo').checked = prefs.promo;
         document.getElementById('pref-darkmode').checked = prefs.darkmode;
+        document.getElementById('pref-sound').checked = prefs.sound;
         document.getElementById('pref-language').value = prefs.language;
         document.getElementById('prefs-overlay').classList.add('visible');
     },
@@ -3091,9 +3099,10 @@ const app = {
             search_title: "Explore", search_placeholder: "Search stations...",
             faq_title: "Help & FAQ", faq_search_placeholder: "Search for a topic...",
             prefs_title: "App Preferences",
-            prefs_section_notifications: "Notifications", prefs_section_display: "Display",
+            prefs_section_notifications: "Notifications", prefs_section_display: "Display", prefs_section_ar: "AR Experience",
             pref_push_title: "Push Notifications", pref_push_sub: "New stations, updates & alerts",
             pref_promo_title: "Promo & News Updates", pref_promo_sub: "What's new in BagView",
+            pref_sound_title: "Sound Effects", pref_sound_sub: "Play a sound when a marker is matched",
             pref_darkmode_title: "Dark Mode", pref_darkmode_sub: "Easier viewing at night",
             pref_language_title: "Language", pref_language_sub: "Display language for the app",
             about_header: "About BagView",
@@ -3118,9 +3127,10 @@ const app = {
             search_title: "Galugarin", search_placeholder: "Maghanap ng station...",
             faq_title: "Tulong at FAQ", faq_search_placeholder: "Maghanap ng paksa...",
             prefs_title: "Mga Kagustuhan sa App",
-            prefs_section_notifications: "Notipikasyon", prefs_section_display: "Display",
+            prefs_section_notifications: "Notipikasyon", prefs_section_display: "Display", prefs_section_ar: "Karanasan sa AR",
             pref_push_title: "Push Notification", pref_push_sub: "Bagong station, update at alerto",
             pref_promo_title: "Promo at Balita", pref_promo_sub: "Ano'ng bago sa BagView",
+            pref_sound_title: "Tunog", pref_sound_sub: "Magpatugtog ng tunog kapag natugma ang isang marker",
             pref_darkmode_title: "Dark Mode", pref_darkmode_sub: "Mas madaling tingnan sa gabi",
             pref_language_title: "Wika", pref_language_sub: "Wikang gagamitin sa app",
             about_header: "Tungkol sa BagView",
@@ -3639,7 +3649,8 @@ const app = {
             const entity = document.createElement('a-entity');
             entity.setAttribute('mindar-image-target', `targetIndex: ${s.id}`);
             entity.addEventListener("targetFound", () => {
-                matchSound.play(); 
+                const prefs = this.userPrefs || this.loadPrefs();
+                if (prefs.sound) { matchSound.play(); }
                 s.scans++; 
                 this.refreshScanCounts();
                 document.getElementById('ar-status-badge').classList.add('match-found');
