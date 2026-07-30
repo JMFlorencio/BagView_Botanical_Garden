@@ -2753,25 +2753,26 @@ const app = {
         contentEl.setAttribute('data-full', fullText);
         contentEl.setAttribute('data-full-html', fact.html || '');
 
-        if (fact.html) {
-            contentEl.innerText = fullText;
-            document.getElementById('see-more-trigger').style.display = 'block';
-        } else {
-            const words = fullText.split(/\s+/);
-            if (words.length > 30) {
-                contentEl.innerText = this.getLimitedWords(fullText, 30);
-                document.getElementById('see-more-trigger').style.display = 'block';
-            } else {
-                contentEl.innerText = fullText;
-                document.getElementById('see-more-trigger').style.display = 'none';
-            }
-        }
-
         document.getElementById('art-hero-img').src = fact.thumb;
         document.getElementById('art-tag').innerText = fact.tag;
         document.getElementById('art-title').innerText = fact.title;
         document.getElementById('art-action-bar').style.display = 'none';
         document.getElementById('article-overlay').classList.add('visible');
+
+        // Reveal the full content right away — no "See more" tap needed for facts
+        const body = document.getElementById('art-body');
+        const hero = document.querySelector('.article-hero');
+        body.classList.add('expanded');
+        hero.classList.add('shrunk');
+        if (fact.html) {
+            contentEl.classList.add('has-html');
+            contentEl.innerHTML = fact.html;
+        } else {
+            contentEl.classList.remove('has-html');
+            contentEl.innerText = fullText;
+        }
+        document.getElementById('see-more-trigger').style.display = 'none';
+        body.scrollTop = 0;
     },
 
     openBannerArticle: function(key) {
@@ -3618,7 +3619,10 @@ const app = {
             const titleEl = document.getElementById('search-page-title');
             const searchInput = document.getElementById('station-search-input');
             const isRankedView = titleEl && titleEl.innerText === "Most Scanned Station";
-            if (isRankedView) {
+            const isArticlesView = titleEl && titleEl.innerText === "Did You Know?";
+            if (isArticlesView) {
+                this.renderFactCards(true);
+            } else if (isRankedView) {
                 this.renderRankedPage("", true);
             } else if (searchInput) {
                 this.renderRankedPage(searchInput.value, false);
