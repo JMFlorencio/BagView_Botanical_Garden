@@ -2154,17 +2154,21 @@ const app = {
     },
 
     updateProfileStats: function() {
-        const scans  = parseInt(document.getElementById('profile-scan-count')?.innerText || '0');
-        const favs   = this.favorites ? this.favorites.size : 0;
-        const reviews = parseInt(document.getElementById('profile-review-count')?.innerText || '0');
+        const scans   = this.scannedStations ? this.scannedStations.size : 0;
+        const favs    = this.favorites ? this.favorites.size : 0;
+        const reviews = this.myReviewCount || 0;
         const statsRow = document.getElementById('profile-stats-row');
         if (statsRow) {
             const hasActivity = scans > 0 || favs > 0 || reviews > 0;
             statsRow.style.display = hasActivity ? 'flex' : 'none';
         }
-        // keep fav count in sync
-        const favEl = document.getElementById('profile-fav-count');
-        if (favEl) favEl.innerText = favs;
+        // keep all three stats in sync with real tracked data
+        const scanEl = document.getElementById('profile-scan-count');
+        const favEl  = document.getElementById('profile-fav-count');
+        const revEl  = document.getElementById('profile-review-count');
+        if (scanEl) scanEl.innerText = scans;
+        if (favEl)  favEl.innerText  = favs;
+        if (revEl)  revEl.innerText  = reviews;
     },
 
     startEditName: function() {
@@ -2323,6 +2327,8 @@ const app = {
         if (scanEl) scanEl.innerText = '0';
         if (revEl)  revEl.innerText  = '0';
         this.favorites = new Set();
+        this.scannedStations = new Set();
+        this.myReviewCount = 0;
         this.updateProfileStats();
 
         this.nav('home');
@@ -2808,6 +2814,8 @@ const app = {
     },
 
     favorites: new Set(),
+    scannedStations: new Set(),
+    myReviewCount: 0,
     currentArticleId: null,
     currentStarFilter: 0,  // 0 = all
     pendingStarRating: 5,
@@ -3455,6 +3463,8 @@ const app = {
         input.value = '';
         this.pendingStarRating = 5;
         this.currentStarFilter = 0;
+        this.myReviewCount = (this.myReviewCount || 0) + 1;
+        this.updateProfileStats();
         this.renderReviews(this.currentArticleId);
     },
 
@@ -3754,7 +3764,11 @@ const app = {
             entity.addEventListener("targetFound", () => {
                 const prefs = this.userPrefs || this.loadPrefs();
                 if (prefs.sound) { matchSound.play(); }
-                s.scans++; 
+                s.scans++;
+                if (this.isLoggedIn) {
+                    this.scannedStations.add(s.id);
+                    this.updateProfileStats();
+                }
                 this.refreshScanCounts();
                 document.getElementById('ar-status-badge').classList.add('match-found');
                 document.getElementById('status-text').innerText = "Match Found!";
