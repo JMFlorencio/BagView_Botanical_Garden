@@ -469,6 +469,15 @@
             overflow-y: auto; padding-bottom: 120px;
         }
         #favorites-overlay.visible { transform: translateX(0); }
+
+        /* ── My Reviews overlay ── */
+        #reviews-overlay {
+            position: fixed; inset: 0; z-index: 9500; background: #fff;
+            transform: translateX(100%);
+            transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+            overflow-y: auto; padding-bottom: 120px;
+        }
+        #reviews-overlay.visible { transform: translateX(0); }
         .fav-header {
             padding: 50px 25px 18px; display: flex; align-items: center; gap: 14px;
         }
