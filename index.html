@@ -231,6 +231,15 @@
 
         .article-tag { color: var(--accent); font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; }
         .article-title { font-size: 28px; font-weight: 900; color: #111; margin: 10px 0 20px; line-height: 1.1; }
+        .article-video-wrap { margin: 0 0 20px; }
+        .article-video-wrap video {
+            width: 100%; aspect-ratio: 16/9; display: block;
+            border-radius: 20px; background: #0a0a0a; object-fit: cover;
+        }
+        .article-video-hint {
+            font-size: 10px; color: #aaa; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 0.4px; margin-top: 8px; text-align: center;
+        }
         .article-content { font-size: 15px; color: #555; line-height: 1.7; font-weight: 400; white-space: pre-line; margin-bottom: 20px; text-align: justify; text-justify: inter-word; }
 
         /* Sectioned history article layout */
@@ -1442,7 +1451,7 @@
             <div class="hero-wrapper" id="hero-wrapper">
 			 <div class="promo-banner" style="background-image: url('Assets/F_3.png')">
                     <h1>User Guide</h1>
-                    <button onclick="app.openBannerArticle('heritage')">Watch</button>
+                    <button onclick="app.openBannerArticle('userguide')">Watch</button>
                 </div>
                 <div class="promo-banner active" style="background-image: url('Assets/F_1.png')">
                     <h1>Interactive Map Feature</h1>
@@ -1636,7 +1645,17 @@
         <div class="article-body" id="art-body">
             <span class="article-tag" id="art-tag">Botanical Station</span>
             <h1 class="article-title" id="art-title">Station Title</h1>
-            
+
+            <!-- Video guide placeholder — only shown for the User Guide article.
+                 To use: replace the src filename in bannerContent.userguide.video (e.g. "Assets/user-guide.mp4") -->
+            <div class="article-video-wrap" id="art-video-section" style="display:none;">
+                <video id="art-video-player" controls playsinline>
+                    <source id="art-video-source" src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="article-video-hint" id="art-video-hint"></div>
+            </div>
+
             <div class="article-content" id="art-content">
                 Explore the rich biodiversity and unique heritage of this area.
             </div>
@@ -1804,7 +1823,7 @@
         </div>
 
         <p class="about-desc" data-i18n="about_desc">
-            BagView is a hybrid print and digital multimedia system that serves as an interactive magazine and virtual tour platform for the Baguio Botanical Garden. It brings together WebAR image scanning, 360&deg; virtual tours, and interactive maps into one unified web app and flipbook experience, addressing information gaps and promoting sustainable eco-tourism as visitors explore the garden's plants and heritage sites.
+            BagView is a hybrid print and digital multimedia system that serves as an interactive magazine and virtual tour platform for the Baguio Botanical Garden. It brings together WebAR image scanning, virtual tours, and interactive maps into one unified web app and flipbook experience, addressing information gaps and promoting sustainable eco-tourism as visitors explore the garden's plants and heritage sites.
         </p>
         <p class="about-desc" data-i18n="about_desc_credits">
             This web app was developed by Joey Florencio, Fara Mae Linagga, and Vannesa Manongdo, a team of Multimedia students.
@@ -1909,7 +1928,7 @@ const app = {
     bannerContent: {
         'trails': { title: "Guide Map", tag: "EXPLORATION", img: "Assets/F_1.png", content: "The interactive guide map is a sophisticated tool designed to help you navigate the sprawling landscapes of Baguio Botanical Garden without missing any of its hidden gems and trails. This map is populated with Interactive Pins marking every major landmark, themed garden, and historical site within the garden. Use this digital companion to navigate your way through the hidden paths, ensure you don't miss any of the special garden stations, and plan your journey efficiently. It provides real-time positioning and context for each station you encounter along the way." },
         'plants': { title: "3D Plant Encyclopedia", tag: "INTERACTIVE AR", img: "Assets/F_2.png", content: "Our revolutionary 3D Plant Encyclopedia brings botanical education to life through the power of Augmented Reality technology directly on your mobile device. By scanning the markers located near our specialized greenhouses and botanical collections, you can unlock detailed 3D models of rare flora and endemic mountain species. Learn about the origin, growth cycle, and care instructions for various endemic species found right here in Baguio. The encyclopedia allows you to rotate models, zoom in on cellular structures, and observe the flowering stages of plants that might not be in season during your actual visit." },
-        'heritage': { title: "Heritage Walk", tag: "CULTURE", img: "Assets/F_3.png", content: "The Heritage Walk is a cultural deep-dive that allows you to step back in time and explore the deep-rooted history of the Cordilleras and Baguio City. This feature uses AR to overlay historical narratives and archival imagery onto the existing village structures and garden monuments. Discover the stories of the indigenous people, the construction of the garden during the mid-20th century, and the historical evolution of the Botanical Garden over the decades. It is a digital bridge connecting the modern explorer to the rich ancestral heritage that defines the spirit of the mountain provinces." },
+        'userguide': { title: "How To Use BagView", tag: "USER GUIDE", img: "Assets/F_3.png", video: "Assets/user-guide.mp4", content: "Welcome to BagView — your digital companion for exploring the Baguio Botanical Garden. Here's how to get the most out of the app.\n\nStart on the Home screen, where you'll find featured guides, the Most Scanned Station rail, and Did You Know facts. Tap the AR Scanner icon in the center of the bottom navigation to activate your camera, then point it at any marker you find printed on a station sign or inside the physical BagView magazine. Hold your phone steady until the reticle locks on — this unlocks that station's 3D content, mini-tour, or article automatically.\n\nUse the Map tab to see every station pinned across the garden, plan your route, and jump straight to a station's article without scanning. Inside any station article, tap the heart icon to save it to My Favorites, and scroll down to rate and review your experience — you can edit your review anytime from the same screen.\n\nYour Profile page tracks everything you've scanned, favorited, and reviewed, all in one place. If you ever need help, the Help & FAQ section under Settings covers entrance fees, transportation, and troubleshooting tips. Log in to unlock account features like saved history and Premium perks — or continue as a guest to browse freely with limited interactivity." },
         'phygital': { title: "Augmented Exploration", tag: "PHYGITAL EXPERIENCE", img: "Assets/F_3.png", content: "Augmented Exploration is BagView's Phygital Magazine experience, blending the Physical and the Digital into one seamless journey. Every station is paired with a QR code embedded on the pages of both the Digital Magazine and the Physical printed book. Simply scan a code to activate the AR Scanner, which recognizes the marker and instantly unlocks interactive content tied to that page. This scanning process is the bridge between the printed word and the digital experience, letting you interact directly with the story instead of just reading it. Each scan highlights and surfaces the specific BagView features connected to that station." }
     },
 
@@ -2837,14 +2856,36 @@ const app = {
             document.getElementById('see-more-trigger').style.display = 'none';
         }
 
-        document.getElementById('art-action-bar').style.display = 'flex';
         document.getElementById('art-hero-img').src = data.img;
         document.getElementById('art-tag').innerText = data.tag;
         document.getElementById('art-title').innerText = data.title;
-        document.getElementById('art-tour-btn').onclick = () => {
-            this.closeArticle();
-            this.startScanner();
-        };
+
+        // Video guide placeholder — only populated/shown when this entry has a video filename
+        const videoSection = document.getElementById('art-video-section');
+        const videoSource  = document.getElementById('art-video-source');
+        const videoPlayer  = document.getElementById('art-video-player');
+        const videoHint    = document.getElementById('art-video-hint');
+        if (data.video) {
+            videoSource.src = data.video;
+            videoPlayer.load();
+            videoHint.innerText = `Video file: ${data.video}`;
+            videoSection.style.display = 'block';
+        } else {
+            videoPlayer.pause();
+            videoSection.style.display = 'none';
+        }
+
+        // "Launch AR" action bar doesn't apply to the User Guide article
+        const actionBar = document.getElementById('art-action-bar');
+        if (key === 'userguide') {
+            actionBar.style.display = 'none';
+        } else {
+            actionBar.style.display = 'flex';
+            document.getElementById('art-tour-btn').onclick = () => {
+                this.closeArticle();
+                this.startScanner();
+            };
+        }
         document.getElementById('article-overlay').classList.add('visible');
     },
 
@@ -3240,9 +3281,9 @@ const app = {
             pref_darkmode_title: "Dark Mode", pref_darkmode_sub: "Easier viewing at night",
             pref_language_title: "Language", pref_language_sub: "Display language for the app",
             about_header: "About BagView",
-            about_desc: "BagView is a hybrid print and digital multimedia system that serves as an interactive magazine and virtual tour platform for the Baguio Botanical Garden. It brings together WebAR image scanning, 360&deg; virtual tours, and interactive maps into one unified web app and flipbook experience, addressing information gaps and promoting sustainable eco-tourism as visitors explore the garden's plants and heritage sites.",
+            about_desc: "BagView is a hybrid print and digital multimedia system that serves as an interactive magazine and virtual tour platform for the Baguio Botanical Garden. It brings together WebAR image scanning,virtual tours, and interactive maps into one unified web app and flipbook experience, addressing information gaps and promoting sustainable eco-tourism as visitors explore the garden's plants and heritage sites.",
             about_desc_credits: "This web app was developed by Joey Florencio, Fara Mae Linagga, and Vannesa Manongdo, a team of Multimedia students.",
-            about_desc_version: "You're currently using the most up-to-date version of BagView &mdash; Version 2.0. Log in to enjoy a 7-day free trial of our exclusive Premium features.",
+            about_desc_version: "You're currently using the most up-to-date version of BagView  Version 2.0. Log in to enjoy a 7-day free trial of our exclusive Premium features.",
             about_team_label: "Meet the Team",
             about_role_dev: "Web Developer", about_role_dev_sub: "Project developer & concept contributor",
             about_add_name: "[Add Name]", about_role_designer: "Graphic Designer",
@@ -3637,6 +3678,7 @@ const app = {
         }
 
         document.getElementById('art-action-bar').style.display = 'flex';
+        document.getElementById('art-video-section').style.display = 'none';
         document.getElementById('art-hero-img').src = station.thumb;
         document.getElementById('art-tag').innerText = station.tag || "Botanical Station";
         document.getElementById('art-title').innerText = station.name;
